@@ -1,8 +1,10 @@
-package giovannilenguito.co.uk.parceldelivery;
+package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
+
+import giovannilenguito.co.uk.parceldelivery.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
