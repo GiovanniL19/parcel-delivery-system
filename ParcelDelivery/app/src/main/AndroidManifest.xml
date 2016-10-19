@@ -9,14 +9,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Controllers.MainActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.RegisterActivity"></activity>
+        <activity android:name=".Controllers.RegisterActivity" />
+        <activity android:name=".Controllers.DashboardActivity"></activity>
     </application>
 
 </manifest>

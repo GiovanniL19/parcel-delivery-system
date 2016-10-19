@@ -8,7 +8,7 @@ import android.view.View;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
-
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,7 +16,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToRegister(View view){
-        Intent intent = new Intent(this, RegisterActivity.class);
+        intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    public void login(View view){
+        intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
 }
