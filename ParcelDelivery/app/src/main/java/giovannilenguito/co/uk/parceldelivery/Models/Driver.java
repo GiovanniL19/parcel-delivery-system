@@ -8,6 +8,11 @@ public class Driver extends User {
     private Parcel[] shipments;
     private Customer[] recipients;
     private String[] rocations;
+    private String type = "Customer";
+
+    public String getType() {
+        return type;
+    }
 
     public Driver(String email, String username, String password, String fullName, int contactNumber, Parcel[] shipments, Customer[] recipients, String[] rocations) {
         super(email, username, password, fullName, contactNumber);

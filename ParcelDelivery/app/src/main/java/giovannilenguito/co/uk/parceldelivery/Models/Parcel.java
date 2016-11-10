@@ -6,60 +6,106 @@ import java.util.Date;
  * Created by Giovanni on 19/10/2016.
  */
 
-public class Parcel {
-    private int ParcelID;
-    private Driver Driver;
-    private String Recipient;
-    private String ServiceType;
-    private Date DateBooked;
-    private Date DeliveryDate;
+public class Parcel extends Address{
+    private int id; //used for SQL Lite
 
+    private Driver driver;
+    private String recipient;
+    private String serviceType;
+    private String contents;
+    private String status;
+    private Date dateBooked;
+    private Date deliveryDate;
 
-    public int getParcelID() {
-        return ParcelID;
+    private boolean isDelivered;
+    private boolean isOutForDelivery;
+    private boolean isProcessing;
+
+    public int getId() {
+        return id;
     }
 
-    public void setParcelID(int parcelID) {
-        ParcelID = parcelID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public giovannilenguito.co.uk.parceldelivery.Models.Driver getDriver() {
-        return Driver;
+    public Driver getDriver() {
+        return driver;
     }
 
-    public void setDriver(giovannilenguito.co.uk.parceldelivery.Models.Driver driver) {
-        Driver = driver;
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 
     public String getRecipient() {
-        return Recipient;
+        return recipient;
     }
 
     public void setRecipient(String recipient) {
-        Recipient = recipient;
+        this.recipient = recipient;
     }
 
     public String getServiceType() {
-        return ServiceType;
+        return serviceType;
     }
 
     public void setServiceType(String serviceType) {
-        ServiceType = serviceType;
+        this.serviceType = serviceType;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getDateBooked() {
-        return DateBooked;
+        return dateBooked;
     }
 
     public void setDateBooked(Date dateBooked) {
-        DateBooked = dateBooked;
+        this.dateBooked = dateBooked;
     }
 
     public Date getDeliveryDate() {
-        return DeliveryDate;
+        return deliveryDate;
     }
 
     public void setDeliveryDate(Date deliveryDate) {
-        DeliveryDate = deliveryDate;
+        this.deliveryDate = deliveryDate;
+    }
+
+    public boolean isDelivered() {
+        return isDelivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        isDelivered = delivered;
+    }
+
+    public boolean isOutForDelivery() {
+        return isOutForDelivery;
+    }
+
+    public void setOutForDelivery(boolean outForDelivery) {
+        isOutForDelivery = outForDelivery;
+    }
+
+    public boolean isProcessing() {
+        return isProcessing;
+    }
+
+    public void setProcessing(boolean processing) {
+        isProcessing = processing;
     }
 }

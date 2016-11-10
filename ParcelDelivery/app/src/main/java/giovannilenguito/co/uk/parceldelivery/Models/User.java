@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Giovanni on 19/10/2016.
  */
 
-public class User implements Serializable {
+public class User extends Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private int id; //used for SQL Lite

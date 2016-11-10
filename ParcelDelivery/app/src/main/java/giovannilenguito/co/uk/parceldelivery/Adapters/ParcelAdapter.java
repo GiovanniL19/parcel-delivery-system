@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery;
+package giovannilenguito.co.uk.parceldelivery.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,15 +10,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.R;
 
 
 /**
  * Created by giovannilenguito on 08/11/2016.
  */
 
-public class CustomAdapter extends ArrayAdapter<Parcel>{
+public class ParcelAdapter extends ArrayAdapter<Parcel>{
 
-    public CustomAdapter(Context context, List array) {
+    public ParcelAdapter(Context context, List array) {
         //array is the array of items to display, the custom_row is the custom row
         super(context, R.layout.custom_row, array);
     }
@@ -32,7 +33,7 @@ public class CustomAdapter extends ArrayAdapter<Parcel>{
         Parcel item = getItem(position);
         TextView title = (TextView) customView.findViewById(R.id.title);
 
-        title.setText(String.valueOf(item.getParcelID()));
+        title.setText(String.valueOf(item.getId()));
 
         return customView;
     }
