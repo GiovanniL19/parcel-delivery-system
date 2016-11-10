@@ -1,7 +1,6 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
     private Intent intent;
-    private DatabaseController dC;
+    private CustomerDatabaseController customerDatabase;
 
     EditText username, password;
 
@@ -26,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText)findViewById(R.id.password);
 
         //set up database
-        dC = new DatabaseController(this, null, null, 1);
+        customerDatabase = new CustomerDatabaseController(this, null, null, 1);
     }
 
     public void goToRegister(View view){
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!sUsername.matches("")){
             if(!sPassword.matches("")){
-                Customer customer = dC.authenticate(sUsername, sPassword);
+                Customer customer = customerDatabase.authenticate(sUsername, sPassword);
 
                 if(customer != null) {
                     intent = new Intent(this, DashboardActivity.class);

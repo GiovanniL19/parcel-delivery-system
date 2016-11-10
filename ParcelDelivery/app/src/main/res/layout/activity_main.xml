@@ -52,7 +52,6 @@
 
     <EditText
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/username"
         android:background="@drawable/inputfield"
@@ -67,11 +66,13 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:layout_height="50dp"
+        android:singleLine="true" />
 
     <EditText
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:ems="10"
         android:id="@+id/password"
         android:background="@drawable/inputfield"
@@ -87,7 +88,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:singleLine="true" />
 
     <Button
         android:text="Login"

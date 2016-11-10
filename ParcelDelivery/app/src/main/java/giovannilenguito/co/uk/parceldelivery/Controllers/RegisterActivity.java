@@ -15,7 +15,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText username, password, email, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country;
 
-    DatabaseController dC;
+    CustomerDatabaseController customerDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
         postcode = (EditText)findViewById(R.id.postcode);
         country = (EditText)findViewById(R.id.country);
 
-        dC = new DatabaseController(this, null, null, 1);
+        customerDatabase = new CustomerDatabaseController(this, null, null, 1);
     }
 
     public void registerCustomer(View view){
@@ -53,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
 
         //add the customer and return the id
-        int id = dC.addCustomer(customer);
+        int id = customerDatabase.addCustomer(customer);
 
         Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
