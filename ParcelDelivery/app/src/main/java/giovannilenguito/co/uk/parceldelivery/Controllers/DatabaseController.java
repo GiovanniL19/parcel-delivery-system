@@ -137,4 +137,34 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.close();
         return new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
     }
+
+    public Customer authenticate(String pstUsername, String pstPassword){
+        //Get reference to database
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_CUSTOMERS + " WHERE " + COLUMN_USERNAME +"=\"" + pstUsername + "\" AND "  + COLUMN_PASSWORD +"=\"" + pstPassword + "\";";
+        //Cursor point to a location in the results
+        Cursor cursor = db.rawQuery(query, null);
+        //Move to first row in result
+        cursor.moveToFirst();
+        System.out.println(cursor.getCount());
+        if(cursor.getCount() > 0) {
+            String password = cursor.getString(cursor.getColumnIndex("password"));
+            //Create the user object
+            String rowId = cursor.getString(cursor.getColumnIndex("id"));
+            String username = cursor.getString(cursor.getColumnIndex("username"));
+            String fullName = cursor.getString(cursor.getColumnIndex("fullName"));
+            String email = cursor.getString(cursor.getColumnIndex("email"));
+            int contactNumber = cursor.getInt(cursor.getColumnIndex("contactNumber"));
+
+            String addressLineOne = cursor.getString(cursor.getColumnIndex("addressLineOne"));
+            String addressLineTwo = cursor.getString(cursor.getColumnIndex("addressLineTwo"));
+            String city = cursor.getString(cursor.getColumnIndex("city"));
+            String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
+            String country = cursor.getString(cursor.getColumnIndex("country"));
+
+            return new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
+        }else{
+            return null;
+        }
+    }
 }

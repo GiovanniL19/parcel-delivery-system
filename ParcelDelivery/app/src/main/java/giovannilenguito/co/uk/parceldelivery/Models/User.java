@@ -1,10 +1,14 @@
 package giovannilenguito.co.uk.parceldelivery.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Giovanni on 19/10/2016.
  */
 
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private int id; //used for SQL Lite
 
     private String email;

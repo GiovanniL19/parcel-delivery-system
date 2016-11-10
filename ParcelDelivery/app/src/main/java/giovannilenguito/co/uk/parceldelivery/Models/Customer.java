@@ -1,10 +1,15 @@
 package giovannilenguito.co.uk.parceldelivery.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Giovanni on 19/10/2016.
  */
 
-public class Customer extends User {
+public class Customer extends User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String addressLineOne;
     private String addressLineTwo;
     private String city;
