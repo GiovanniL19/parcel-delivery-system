@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_add_parcel"
     android:layout_width="match_parent"
@@ -10,15 +11,161 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="giovannilenguito.co.uk.parceldelivery.Controllers.AddParcelActivity">
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="35dp"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="20dp"
-        android:id="@+id/textView15" />
-</RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+
+            <TextView
+                android:text="Delivery Type:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView"/>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/deliveryType"
+                android:entries="@array/delivery_type_array"/>
+
+            <TextView
+                android:text="Recipient Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView6" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/recipientName"
+                android:background="@drawable/inputfield"
+                android:layout_marginBottom="10dp"
+                android:inputType="text"
+                android:singleLine="true" />
+
+            <TextView
+                android:text="What is the parcel? (Include weight)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView7" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/contents"
+                android:layout_weight="0.43" />
+
+            <TextView
+                android:text="Prefered Delivery Date (DD/MM/YYYY)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView8" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/deliveryDate"
+                android:layout_marginBottom="30dp"
+                android:inputType="date" />
+
+            <TextView
+                android:text="Delivery Address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView20"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:text="Line One"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView9" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/lineOne"
+                android:background="@drawable/inputfield"
+                android:singleLine="true" />
+
+            <TextView
+                android:text="Line Two"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/lineTwo"
+                android:background="@drawable/inputfield"
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
+
+            <TextView
+                android:text="City"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView12" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/city"
+                android:background="@drawable/inputfield"
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
+
+            <TextView
+                android:text="Postcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView13" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/postcode"
+                android:background="@drawable/inputfield"
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
+
+            <TextView
+                android:text="Country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView14" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/country"
+                android:background="@drawable/inputfield"
+                android:layout_marginBottom="20dp"
+                android:singleLine="true" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -25,11 +25,11 @@ public class User extends Address implements Serializable {
         this.contactNumber = contactNumber;
     }
 
-    public int get_id() {
+    public int getId() {
         return id;
     }
 
-    public void set_id(int _id) {
+    public void setId(int id) {
         this.id = id;
     }
 

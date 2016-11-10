@@ -1,6 +1,7 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,7 @@ import giovannilenguito.co.uk.parceldelivery.R;
 
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer;
+    private DatabaseController database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,13 @@ public class DashboardActivity extends AppCompatActivity {
         customer = (Customer) intent.getSerializableExtra("Customer");
 
         setTitle("Your Parcels");
+
+        //set up database
+        database = new DatabaseController(this, null, null, 1);
+
+        //Get parcels
         generateTable();
+
     }
 
     @Override
@@ -55,29 +64,32 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void generateTable(){
-        Parcel parcel = new Parcel();
-        parcel.setId(12345);
-        parcel.setServiceType("First Class");
+    private void generateTable() {
+        ArrayList parcelList;
+        View view = this.getCurrentFocus();
 
-        List<Parcel> parcelItems = new ArrayList<Parcel>();
-        parcelItems.add(parcel);
+        try {
+            parcelList = database.getRowsByCustomer(customer.getId());
 
-        //Implements custom adapter
-        ListAdapter adapter = new ParcelAdapter(this, parcelItems);
+            //Implements custom adapter
+            ListAdapter adapter = new ParcelAdapter(this, parcelList);
 
-        ListView dashboardList = (ListView)findViewById(R.id.dashboardList);
-        dashboardList.setAdapter(adapter);
+            ListView dashboardList = (ListView)findViewById(R.id.dashboardList);
+            dashboardList.setAdapter(adapter);
 
-        dashboardList.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
+            dashboardList.setOnItemClickListener(
+                    new AdapterView.OnItemClickListener() {
 
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String name = String.valueOf(parent.getItemAtPosition(position));
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            String name = String.valueOf(parent.getItemAtPosition(position));
 
+                        }
                     }
-                }
-        );
+            );
+        }catch(Exception e){
+            e.printStackTrace();
+            //Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+        }
     }
 }

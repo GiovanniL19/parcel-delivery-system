@@ -1,11 +1,13 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
@@ -13,9 +15,9 @@ import giovannilenguito.co.uk.parceldelivery.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText username, password, email, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country;
+    private EditText username, password, email, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country;
+    private DatabaseController database;
 
-    CustomerDatabaseController customerDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         postcode = (EditText)findViewById(R.id.postcode);
         country = (EditText)findViewById(R.id.country);
 
-        customerDatabase = new CustomerDatabaseController(this, null, null, 1);
+        database = new DatabaseController(this, null, null, 1);
     }
 
     public void registerCustomer(View view){
@@ -53,7 +55,13 @@ public class RegisterActivity extends AppCompatActivity {
         Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
 
         //add the customer and return the id
-        int id = customerDatabase.addCustomer(customer);
+        int id = database.addCustomer(customer);
+
+        //Hide keyboard
+        if (view != null) {
+            InputMethodManager inputMethod = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethod.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
         Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);

@@ -35,7 +35,8 @@
                 android:ems="10"
                 android:id="@+id/username"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Password"
@@ -50,7 +51,8 @@
                 android:id="@+id/password"
                 android:background="@drawable/inputfield"
                 android:layout_marginBottom="10dp"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Email"
@@ -64,7 +66,8 @@
                 android:ems="10"
                 android:id="@+id/email"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="30dp"/>
+                android:layout_marginBottom="30dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Full Name"
@@ -79,7 +82,8 @@
                 android:ems="10"
                 android:id="@+id/fullName"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Contact Number"
@@ -94,7 +98,8 @@
                 android:ems="10"
                 android:id="@+id/contactNumber"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="30dp"/>
+                android:layout_marginBottom="30dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Address Line One"
@@ -109,7 +114,8 @@
                 android:ems="10"
                 android:id="@+id/addressLineOne"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Address Line Two"
@@ -124,7 +130,8 @@
                 android:ems="10"
                 android:id="@+id/addressLineTwo"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="City"
@@ -139,7 +146,8 @@
                 android:ems="10"
                 android:id="@+id/city"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Postcode"
@@ -154,7 +162,8 @@
                 android:ems="10"
                 android:id="@+id/postcode"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:singleLine="true" />
 
             <TextView
                 android:text="Country"
@@ -169,7 +178,8 @@
                 android:ems="10"
                 android:id="@+id/country"
                 android:background="@drawable/inputfield"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="20dp"
+                android:singleLine="true" />
 
 
             <Button

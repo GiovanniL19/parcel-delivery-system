@@ -9,13 +9,14 @@ import java.util.Date;
 public class Parcel extends Address{
     private int id; //used for SQL Lite
 
-    private Driver driver;
-    private String recipient;
+    private int driverID;
+    private String recipientName;
     private String serviceType;
     private String contents;
-    private String status;
+
     private Date dateBooked;
     private Date deliveryDate;
+    private int createdByID;
 
     private boolean isDelivered;
     private boolean isOutForDelivery;
@@ -29,20 +30,28 @@ public class Parcel extends Address{
         this.id = id;
     }
 
-    public Driver getDriver() {
-        return driver;
+    public String getRecipientName() {
+        return recipientName;
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
     }
 
-    public String getRecipient() {
-        return recipient;
+    public int getCreatedByID() {
+        return createdByID;
     }
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setCreatedByID(int createdByID) {
+        this.createdByID = createdByID;
+    }
+
+    public int getDriverID() {
+        return driverID;
+    }
+
+    public void setDriverID(int driverID) {
+        this.driverID = driverID;
     }
 
     public String getServiceType() {
@@ -59,14 +68,6 @@ public class Parcel extends Address{
 
     public void setContents(String contents) {
         this.contents = contents;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Date getDateBooked() {

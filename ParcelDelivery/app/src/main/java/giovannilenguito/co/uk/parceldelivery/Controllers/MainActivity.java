@@ -1,10 +1,12 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
@@ -12,7 +14,7 @@ import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
     private Intent intent;
-    private CustomerDatabaseController customerDatabase;
+    private DatabaseController database;
 
     EditText username, password;
 
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText)findViewById(R.id.password);
 
         //set up database
-        customerDatabase = new CustomerDatabaseController(this, null, null, 1);
+        database = new DatabaseController(this, null, null, 1);
     }
 
     public void goToRegister(View view){
@@ -39,20 +41,32 @@ public class MainActivity extends AppCompatActivity {
 
         if(!sUsername.matches("")){
             if(!sPassword.matches("")){
-                Customer customer = customerDatabase.authenticate(sUsername, sPassword);
+                Customer customer = database.authenticate(sUsername, sPassword);
 
                 if(customer != null) {
                     intent = new Intent(this, DashboardActivity.class);
                     intent.putExtra("Customer", customer);
                     startActivity(intent);
                 }else{
+                    hideSoftKeyboard();
                     Snackbar.make(view, "Incorrect login details", Snackbar.LENGTH_LONG).show();
                 }
             }else {
+                hideSoftKeyboard();
                 Snackbar.make(view, "Please enter your password", Snackbar.LENGTH_LONG).show();
             }
         }else{
+            hideSoftKeyboard();
             Snackbar.make(view, "Please enter your username", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    public void hideSoftKeyboard(){
+        //Hide keyboard
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethod = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethod.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

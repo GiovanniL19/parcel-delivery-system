@@ -13,12 +13,8 @@ import giovannilenguito.co.uk.parceldelivery.Models.User;
  * Created by giovannilenguito on 08/11/2016.
  */
 
-public class CustomerDatabaseController extends SQLiteOpenHelper {
-    private static final int Database_VERSION = 1;
-    private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
-
-
-    private static final String TABLE_CUSTOMERS = "customers"; //table name
+public class CustomerDatabaseController extends DatabaseController {
+   private static final String TABLE_NAME = "customers"; //table name
     //table columns
     private static final String COLUMN_ID  = "id";
     private static final String COLUMN_EMAIL = "email";
@@ -32,16 +28,16 @@ public class CustomerDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_CITY = "city";
     private static final String COLUMN_POSTCODE = "postcode";
     private static final String COLUMN_COUNTRY = "country";
-    private static final String COLUMN_PARCELS = "parcels";
 
     public CustomerDatabaseController(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, Database_VERSION);
+        super(context, name, factory, version);
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Create customers table
-        String query = "CREATE TABLE " + TABLE_CUSTOMERS + "(" +
+        String query = "CREATE TABLE " + TABLE_NAME + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_EMAIL + " TEXT, " +
                 COLUMN_USERNAME + " TEXT, " +
@@ -61,7 +57,7 @@ public class CustomerDatabaseController extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Deletes table
-        db.execSQL("DROP TABLE IF EXISTS" + TABLE_CUSTOMERS);
+        db.execSQL("DROP TABLE IF EXISTS" + TABLE_NAME);
 
         //Create new one
         onCreate(db);
@@ -88,7 +84,7 @@ public class CustomerDatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         //Insert new row into users table
-        int id = (int) db.insert(TABLE_CUSTOMERS, null, values);
+        int id = (int) db.insert(TABLE_NAME, null, values);
 
         //Close db
         db.close();
@@ -100,7 +96,7 @@ public class CustomerDatabaseController extends SQLiteOpenHelper {
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
         //Delete row from table where id's match
-        db.execSQL("DELETE FROM " + TABLE_CUSTOMERS + " WHERE " + COLUMN_ID +"=\"" + id + "\";");
+        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + COLUMN_ID +"=\"" + id + "\";");
 
         db.close();
 
@@ -109,7 +105,7 @@ public class CustomerDatabaseController extends SQLiteOpenHelper {
     public Customer getCustomer(int id){
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_CUSTOMERS + " WHERE " + COLUMN_ID +"=\"" + id + "\";";
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID +"=\"" + id + "\";";
         //Cursor point to a location in the results
         Cursor cursor = db.rawQuery(query, null);
         //Move to first row in result
@@ -141,7 +137,7 @@ public class CustomerDatabaseController extends SQLiteOpenHelper {
     public Customer authenticate(String pstUsername, String pstPassword){
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_CUSTOMERS + " WHERE " + COLUMN_USERNAME +"=\"" + pstUsername + "\" AND "  + COLUMN_PASSWORD +"=\"" + pstPassword + "\";";
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_USERNAME +"=\"" + pstUsername + "\" AND "  + COLUMN_PASSWORD +"=\"" + pstPassword + "\";";
         //Cursor point to a location in the results
         Cursor cursor = db.rawQuery(query, null);
         //Move to first row in result
@@ -162,7 +158,9 @@ public class CustomerDatabaseController extends SQLiteOpenHelper {
             String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
             String country = cursor.getString(cursor.getColumnIndex("country"));
 
-            return new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
+            Customer customer = new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
+            customer.setId(Integer.parseInt(rowId));
+            return customer;
         }else{
             return null;
         }
