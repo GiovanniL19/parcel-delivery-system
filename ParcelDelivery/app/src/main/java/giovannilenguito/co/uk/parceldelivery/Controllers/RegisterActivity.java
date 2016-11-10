@@ -37,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         postcode = (EditText)findViewById(R.id.postcode);
         country = (EditText)findViewById(R.id.country);
 
-        database = new DatabaseController(this, null, null, 1);
+        database = new DatabaseController(this, null, null, 0);
     }
 
     public void registerCustomer(View view){

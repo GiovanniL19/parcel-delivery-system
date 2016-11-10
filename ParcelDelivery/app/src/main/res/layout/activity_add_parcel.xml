@@ -30,9 +30,11 @@
 
             <Spinner
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/deliveryType"
-                android:entries="@array/delivery_type_array"/>
+                android:entries="@array/delivery_type_array"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/inputfield"
+                android:layout_height="40dp" />
 
             <TextView
                 android:text="Recipient Name"
@@ -47,7 +49,7 @@
                 android:id="@+id/recipientName"
                 android:background="@drawable/inputfield"
                 android:layout_marginBottom="10dp"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:singleLine="true" />
 
             <TextView
@@ -62,7 +64,8 @@
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/contents"
-                android:layout_weight="0.43" />
+                android:layout_weight="0.43"
+                android:background="@drawable/inputfield"/>
 
             <TextView
                 android:text="Prefered Delivery Date (DD/MM/YYYY)"
@@ -76,14 +79,16 @@
                 android:ems="10"
                 android:id="@+id/deliveryDate"
                 android:layout_marginBottom="30dp"
-                android:inputType="date" />
+                android:inputType="date"
+                android:background="@drawable/inputfield"/>
 
             <TextView
                 android:text="Delivery Address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView20"
-                android:textStyle="normal|bold" />
+                android:textStyle="normal|bold"
+                android:background="@drawable/inputfield"/>
 
             <TextView
                 android:text="Line One"
@@ -111,10 +116,10 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:ems="10"
-                android:id="@+id/lineTwo"
                 android:background="@drawable/inputfield"
                 android:layout_marginBottom="10dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:id="@+id/lineTwo" />
 
             <TextView
                 android:text="City"
@@ -164,6 +169,15 @@
                 android:layout_marginBottom="20dp"
                 android:singleLine="true" />
 
+
+            <Button
+                android:text="Add Parcel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/createParcelBtn"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="@android:color/background_light"
+                android:layout_marginBottom="15dp" />
 
         </LinearLayout>
     </ScrollView>

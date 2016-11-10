@@ -14,13 +14,17 @@ public class Parcel extends Address{
     private String serviceType;
     private String contents;
 
-    private Date dateBooked;
-    private Date deliveryDate;
+    private String dateBooked;
+    private String deliveryDate;
     private int createdByID;
 
     private boolean isDelivered;
     private boolean isOutForDelivery;
     private boolean isProcessing;
+
+    public String getTitle(){
+        return this.id + " - " + this.recipientName;
+    }
 
     public int getId() {
         return id;
@@ -70,20 +74,20 @@ public class Parcel extends Address{
         this.contents = contents;
     }
 
-    public Date getDateBooked() {
-        return dateBooked;
-    }
-
-    public void setDateBooked(Date dateBooked) {
-        this.dateBooked = dateBooked;
-    }
-
-    public Date getDeliveryDate() {
+    public String getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setDeliveryDate(Date deliveryDate) {
+    public void setDeliveryDate(String deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }
+
+    public String getDateBooked() {
+        return dateBooked;
+    }
+
+    public void setDateBooked(String dateBooked) {
+        this.dateBooked = dateBooked;
     }
 
     public boolean isDelivered() {

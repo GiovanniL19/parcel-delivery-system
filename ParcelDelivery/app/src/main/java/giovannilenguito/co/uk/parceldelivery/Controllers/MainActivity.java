@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText)findViewById(R.id.password);
 
         //set up database
-        database = new DatabaseController(this, null, null, 1);
+        database = new DatabaseController(this, null, null, 0);
     }
 
     public void goToRegister(View view){

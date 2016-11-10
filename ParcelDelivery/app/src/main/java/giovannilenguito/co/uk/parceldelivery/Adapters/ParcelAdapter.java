@@ -32,9 +32,18 @@ public class ParcelAdapter extends ArrayAdapter<Parcel>{
 
         Parcel item = getItem(position);
         TextView title = (TextView) customView.findViewById(R.id.title);
+        TextView status = (TextView) customView.findViewById(R.id.statusText);
 
-        title.setText(String.valueOf(item.getId()));
-
+        title.setText(item.getTitle());
+        if(item.isDelivered()){
+            status.setText("DELIVERED");
+        }else if(item.isProcessing()){
+            status.setText("PROCESSING");
+        }else if(item.isOutForDelivery()){
+            status.setText("OUT FOR DELIVERY");
+        }else{
+            status.setText("PENDING");
+        }
         return customView;
     }
 }

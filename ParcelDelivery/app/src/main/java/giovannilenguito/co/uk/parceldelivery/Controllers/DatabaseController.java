@@ -6,24 +6,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 
-import static giovannilenguito.co.uk.parceldelivery.R.id.lineOne;
-import static giovannilenguito.co.uk.parceldelivery.R.id.lineTwo;
 
 /**
  * Created by giovannilenguito on 08/11/2016.
  */
 
 public class DatabaseController extends SQLiteOpenHelper {
-    private static final int Database_VERSION = 1;
+    private static final int Database_VERSION = 3;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
 
@@ -106,8 +102,8 @@ public class DatabaseController extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Deletes table
-        db.execSQL("DROP TABLE IF EXISTS" + TABLE_PARCEL);
-        db.execSQL("DROP TABLE IF EXISTS" + TABLE_CUSTOMERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARCEL);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
 
         //Create new one
         onCreate(db);
@@ -122,8 +118,8 @@ public class DatabaseController extends SQLiteOpenHelper {
         values.put(COLUMN_RECIPIENT_NAME, parcel.getRecipientName());
         values.put(COLUMN_SERVICE_TYPE, parcel.getServiceType());
         values.put(COLUMN_CONTENTS, parcel.getContents());
-        values.put(COLUMN_DATE_BOOKED, parcel.getDateBooked().toString());
-        values.put(COLUMN_DELIVERY_DATE, parcel.getDeliveryDate().toString());
+        values.put(COLUMN_DATE_BOOKED, parcel.getDateBooked());
+        values.put(COLUMN_DELIVERY_DATE, parcel.getDeliveryDate());
 
         values.put(COLUMN_CREATED_BY, parcel.getCreatedByID());
         values.put(COLUMN_IS_DELIVERED, parcel.isDelivered());
@@ -177,10 +173,10 @@ public class DatabaseController extends SQLiteOpenHelper {
         return parseToParcel(cursor);
     }
 
-    public ArrayList getRowsByCustomer(int customerId) throws ParseException {
+    public List<Parcel> getRowsByCustomer(int customerId) throws ParseException {
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_PARCEL + " WHERE " + COLUMN_CREATED_BY +"=\"" + customerId + "\";";
+        String query = "SELECT * FROM " + TABLE_PARCEL + " WHERE " + COLUMN_CREATED_BY +"=\"" + customerId + "\" ORDER BY id DESC;";
         //Cursor point to a location in the results
         Cursor cursor = db.rawQuery(query, null);
         //Move to first row in result
@@ -189,11 +185,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         //Close db
         db.close();
 
-        ArrayList parcelList = new ArrayList();
+        List<Parcel> parcelList = new ArrayList<>();
 
         if(cursor.getCount() != 0) {
-            while (!cursor.isAfterLast()) {
+            for(int i = 1; i <= cursor.getCount(); i++){
                 parcelList.add(parseToParcel(cursor));
+                cursor.moveToNext();
             }
         }
 
@@ -223,17 +220,14 @@ public class DatabaseController extends SQLiteOpenHelper {
         String country = cursor.getString(cursor.getColumnIndex("country"));
 
         Parcel parcel = new Parcel();
-        DateFormat dateFormat = new SimpleDateFormat("DD/MM/YYYY");
-        Date dateOfDelivery = dateFormat.parse(deliveryDate);
-        Date bookedDate = dateFormat.parse(dateBooked);
 
         parcel.setDriverID(Integer.parseInt(driver));
 
         parcel.setServiceType(serviceType);
         parcel.setRecipientName(recipientName);
         parcel.setContents(contents);
-        parcel.setDeliveryDate(dateOfDelivery);
-        parcel.setDateBooked(bookedDate);
+        parcel.setDeliveryDate(deliveryDate);
+        parcel.setDateBooked(dateBooked);
         parcel.setCreatedByID(Integer.parseInt(createdBy));
         parcel.setDelivered(Boolean.parseBoolean(isDelivered));
         parcel.setOutForDelivery(Boolean.parseBoolean(isOutForDelivery));

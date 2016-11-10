@@ -1,7 +1,7 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,8 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Adapters.ParcelAdapter;
@@ -34,12 +32,22 @@ public class DashboardActivity extends AppCompatActivity {
         setTitle("Your Parcels");
 
         //set up database
-        database = new DatabaseController(this, null, null, 1);
+        database = new DatabaseController(this, null, null, 0);
 
         //Get parcels
-        generateTable();
+        new getParcels().execute();
+
 
     }
+
+    private class getParcels extends AsyncTask<Object, Object, Void> {
+        protected Void doInBackground(Object... params)
+        {
+            generateTable();
+            return null;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,7 +73,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void generateTable() {
-        ArrayList parcelList;
+        List<Parcel> parcelList;
         View view = this.getCurrentFocus();
 
         try {

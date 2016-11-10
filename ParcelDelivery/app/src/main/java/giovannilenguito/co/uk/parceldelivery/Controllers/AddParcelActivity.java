@@ -23,6 +23,8 @@ public class AddParcelActivity extends AppCompatActivity {
     Customer customer;
     Spinner deliveryType;
     EditText recipientName, contents, deliveryDate, lineOne, lineTwo, city, country, postcode;
+    Intent intent;
+
     private DatabaseController  database;
 
     @Override
@@ -31,7 +33,7 @@ public class AddParcelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_parcel);
         setTitle("New Parcel");
         //Get customer
-        Intent intent = getIntent();
+        intent = getIntent();
         customer = (Customer) intent.getSerializableExtra("Customer");
 
         deliveryType = (Spinner) findViewById(R.id.deliveryType);
@@ -45,7 +47,7 @@ public class AddParcelActivity extends AppCompatActivity {
         postcode = (EditText) findViewById(R.id.postcode);
 
         //set up database
-        database = new DatabaseController(this, null, null, 1);
+        database = new DatabaseController(this, null, null, 0);
     }
 
     @Override
@@ -67,6 +69,7 @@ public class AddParcelActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -75,31 +78,50 @@ public class AddParcelActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public Intent getParentActivityIntent() {
+        intent = new Intent(this, DashboardActivity.class);
+        intent.putExtra("Customer", customer);
+        return intent;
+    }
+
     private void addParcel(View view) throws ParseException {
         Parcel parcel = new Parcel();
 
-        DateFormat dateFormat = new SimpleDateFormat("DD/MM/YYYY");
-        Date date = dateFormat.parse(deliveryDate.getText().toString());
+        String spinnerChoice = deliveryType.getSelectedItem().toString();
+        String recipientN = recipientName.getText().toString();
+        String cont = contents.getText().toString();
+        String deliveryD = deliveryDate.getText().toString();
+        String lineO = lineOne.getText().toString();
+        String lineT = lineTwo.getText().toString();
+        String cit = city.getText().toString();
+        String coun = country.getText().toString();
+        String post = postcode.getText().toString();
 
-        parcel.setServiceType(deliveryType.toString());
-        parcel.setRecipientName(recipientName.toString());
-        parcel.setContents(contents.toString());
-        parcel.setDeliveryDate(date);
-        parcel.setAddressLineOne(lineOne.toString());
-        parcel.setAddressLineTwo(lineTwo.toString());
-        parcel.setCity(city.toString());
-        parcel.setCountry(country.toString());
-        parcel.setPostcode(postcode.toString());
+
+        parcel.setServiceType(spinnerChoice);
+        parcel.setRecipientName(recipientN);
+        parcel.setContents(cont);
+        parcel.setDeliveryDate(deliveryD);
+        parcel.setAddressLineOne(lineO);
+        parcel.setAddressLineTwo(lineT);
+        parcel.setCity(cit);
+        parcel.setCountry(coun);
+        parcel.setPostcode(post);
 
         parcel.setCreatedByID(customer.getId());
 
         //need to set driver
 
         Date dateBooked = new Date();
-        parcel.setDateBooked(dateBooked);
+        parcel.setDateBooked(dateBooked.toString());
         parcel.setProcessing(true);
 
-        parcelDatabase.addRow(parcel);
+        database.addRow(parcel);
+
+        intent = new Intent(this, DashboardActivity.class);
+        intent.putExtra("Customer", customer);
+        startActivity(intent);
 
     }
 }
