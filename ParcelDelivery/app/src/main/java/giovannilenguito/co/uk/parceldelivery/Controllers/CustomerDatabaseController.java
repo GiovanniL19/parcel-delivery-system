@@ -13,7 +13,7 @@ import giovannilenguito.co.uk.parceldelivery.Models.User;
  * Created by giovannilenguito on 08/11/2016.
  */
 
-public class DatabaseController extends SQLiteOpenHelper {
+public class CustomerDatabaseController extends SQLiteOpenHelper {
     private static final int Database_VERSION = 1;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
@@ -34,7 +34,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_COUNTRY = "country";
     private static final String COLUMN_PARCELS = "parcels";
 
-    public DatabaseController(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public CustomerDatabaseController(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, Database_VERSION);
     }
 
