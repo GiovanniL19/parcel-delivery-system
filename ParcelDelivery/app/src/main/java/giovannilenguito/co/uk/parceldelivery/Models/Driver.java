@@ -5,48 +5,38 @@ package giovannilenguito.co.uk.parceldelivery.Models;
  */
 
 public class Driver extends User {
-    private int DriverID;
-    private Parcel[] Shipments;
-    private Customer[] Recipients;
-    private String[] Locations;
+    private Parcel[] shipments;
+    private Customer[] recipients;
+    private String[] rocations;
 
-    public Driver(int userID, String email, String username, String password, String fullName, int contactNumber, int driverID, Parcel[] shipments, Customer[] recipients, String[] locations) {
-        super(userID, email, username, password, fullName, contactNumber);
-        DriverID = driverID;
-        Shipments = shipments;
-        Recipients = recipients;
-        Locations = locations;
-    }
-
-    public int getDriverID() {
-        return DriverID;
-    }
-
-    public void setDriverID(int driverID) {
-        DriverID = driverID;
+    public Driver(String email, String username, String password, String fullName, int contactNumber, Parcel[] shipments, Customer[] recipients, String[] rocations) {
+        super(email, username, password, fullName, contactNumber);
+        this.shipments = shipments;
+        this.recipients = recipients;
+        this.rocations = rocations;
     }
 
     public Parcel[] getShipments() {
-        return Shipments;
+        return shipments;
     }
 
     public void setShipments(Parcel[] shipments) {
-        Shipments = shipments;
+        this.shipments = shipments;
     }
 
     public Customer[] getRecipients() {
-        return Recipients;
+        return recipients;
     }
 
     public void setRecipients(Customer[] recipients) {
-        Recipients = recipients;
+        this.recipients = recipients;
     }
 
-    public String[] getLocations() {
-        return Locations;
+    public String[] getRocations() {
+        return rocations;
     }
 
-    public void setLocations(String[] locations) {
-        Locations = locations;
+    public void setRocations(String[] rocations) {
+        this.rocations = rocations;
     }
 }

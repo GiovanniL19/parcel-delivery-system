@@ -5,78 +5,68 @@ package giovannilenguito.co.uk.parceldelivery.Models;
  */
 
 public class Customer extends User {
-    private int CustomerID;
-    private String AddressLineOne;
-    private String AddressLineTwo;
-    private String City;
-    private String Postcode;
-    private String Country;
-    private Parcel Parcels;
+    private String addressLineOne;
+    private String addressLineTwo;
+    private String city;
+    private String postcode;
+    private String country;
+    private Parcel parcels;
 
-    public Customer(int userID, String email, String username, String password, String fullName, int contactNumber, int customerID, String addressLineOne, String addressLineTwo, String city, String postcode, String country, Parcel parcels) {
-        super(userID, email, username, password, fullName, contactNumber);
-        CustomerID = customerID;
-        AddressLineOne = addressLineOne;
-        AddressLineTwo = addressLineTwo;
-        City = city;
-        Postcode = postcode;
-        Country = country;
-        Parcels = parcels;
-    }
-
-    public int getCustomerID() {
-        return CustomerID;
-    }
-
-    public void setCustomerID(int customerID) {
-        CustomerID = customerID;
+    public Customer(String email, String username, String password, String fullName, int contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country, Parcel parcels) {
+        super(email, username, password, fullName, contactNumber);
+        this.addressLineOne = addressLineOne;
+        this.addressLineTwo = addressLineTwo;
+        this.city = city;
+        this.postcode = postcode;
+        this.country = country;
+        this.parcels = parcels;
     }
 
     public String getAddressLineOne() {
-        return AddressLineOne;
+        return addressLineOne;
     }
 
     public void setAddressLineOne(String addressLineOne) {
-        AddressLineOne = addressLineOne;
+        this.addressLineOne = addressLineOne;
     }
 
     public String getAddressLineTwo() {
-        return AddressLineTwo;
+        return addressLineTwo;
     }
 
     public void setAddressLineTwo(String addressLineTwo) {
-        AddressLineTwo = addressLineTwo;
+        this.addressLineTwo = addressLineTwo;
     }
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(String city) {
-        City = city;
+        this.city = city;
     }
 
     public String getPostcode() {
-        return Postcode;
+        return postcode;
     }
 
     public void setPostcode(String postcode) {
-        Postcode = postcode;
+        this.postcode = postcode;
     }
 
     public String getCountry() {
-        return Country;
+        return country;
     }
 
     public void setCountry(String country) {
-        Country = country;
+        this.country = country;
     }
 
     public Parcel getParcels() {
-        return Parcels;
+        return parcels;
     }
 
     public void setParcels(Parcel parcels) {
-        Parcels = parcels;
+        this.parcels = parcels;
     }
 }

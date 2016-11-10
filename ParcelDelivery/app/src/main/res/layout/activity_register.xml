@@ -157,21 +157,6 @@
                 android:layout_marginBottom="10dp"/>
 
             <TextView
-                android:text="Postcode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView13" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/postcode"
-                android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
                 android:text="Country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -194,7 +179,8 @@
                 android:id="@+id/registerButton"
                 android:background="@color/colorPrimaryDark"
                 android:textColor="@android:color/background_light"
-                android:layout_marginBottom="15dp" />
+                android:layout_marginBottom="15dp"
+                android:onClick="registerCustomer" />
 
         </LinearLayout>
     </ScrollView>

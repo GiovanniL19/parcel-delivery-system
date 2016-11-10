@@ -5,67 +5,67 @@ package giovannilenguito.co.uk.parceldelivery.Models;
  */
 
 public class User {
-    private int UserID;
-    private String Email;
-    private String Username;
-    private String Password;
-    private String FullName;
-    private int ContactNumber;
+    private int id; //used for SQL Lite
 
-    public User(int userID, String email, String username, String password, String fullName, int contactNumber) {
-        UserID = userID;
-        Email = email;
-        Username = username;
-        Password = password;
-        FullName = fullName;
-        ContactNumber = contactNumber;
+    private String email;
+    private String username;
+    private String password;
+    private String fullName;
+    private int contactNumber;
+
+    public User(String email, String username, String password, String fullName, int contactNumber) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.fullName = fullName;
+        this.contactNumber = contactNumber;
     }
 
-    public int getUserID() {
-        return UserID;
+    public int get_id() {
+        return id;
     }
 
-    public void setUserID(int userID) {
-        UserID = userID;
+    public void set_id(int _id) {
+        this.id = id;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public void setUsername(String username) {
-        Username = username;
+        this.username = username;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
     public String getFullName() {
-        return FullName;
+        return fullName;
     }
 
     public void setFullName(String fullName) {
-        FullName = fullName;
+        this.fullName = fullName;
     }
 
     public int getContactNumber() {
-        return ContactNumber;
+        return contactNumber;
     }
 
     public void setContactNumber(int contactNumber) {
-        ContactNumber = contactNumber;
+        this.contactNumber = contactNumber;
     }
 }
