@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Parcel Delivery</string>
+
+    <string-array name="delivery_type_array">
+        <item>First Class Tracked</item>
+        <item>First Class</item>
+        <item>Second Class Tracked</item>
+        <item>Second Class</item>
+        <item>Economy</item>
+    </string-array>
 </resources>

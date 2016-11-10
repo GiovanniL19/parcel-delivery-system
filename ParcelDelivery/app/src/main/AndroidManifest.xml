@@ -17,7 +17,10 @@
         </activity>
         <activity android:name=".Controllers.RegisterActivity" />
         <activity android:name=".Controllers.DashboardActivity"></activity>
-        <activity android:name=".Controllers.AddParcelActivity"></activity>
+        <activity android:name=".Controllers.AddParcelActivity"><!-- Adds parent for back button in action bar -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Controllers.DashboardActivity" /></activity>
     </application>
 
 </manifest>

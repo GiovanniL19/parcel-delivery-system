@@ -15,7 +15,7 @@ public class AddParcelActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_parcel);
-
+        setTitle("New Parcel");
         //Get customer
         Intent intent = getIntent();
         customer = (Customer) intent.getSerializableExtra("Customer");

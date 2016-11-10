@@ -28,7 +28,7 @@ public class DashboardActivity extends AppCompatActivity {
         Intent intent = getIntent();
         customer = (Customer) intent.getSerializableExtra("Customer");
 
-        setTitle(customer.getFullName());
+        setTitle("Your Parcels");
         generateTable();
     }
 
