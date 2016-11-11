@@ -28,8 +28,10 @@ public class Parcel extends Address implements Serializable{
             return "Delivered";
         }else if(isOutForDelivery){
             return "Out For Delivery";
-        }else {
+        }else if(isProcessing){
             return "Processing";
+        }else{
+            return "Pending";
         }
     }
 

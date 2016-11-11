@@ -52,7 +52,9 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //add the item to action bar
-        getMenuInflater().inflate(R.menu.add_parcel_button, menu);
+        if(!customer.getType().equals("Customer")) {
+            getMenuInflater().inflate(R.menu.add_parcel_button, menu);
+        }
         return true;
     }
 

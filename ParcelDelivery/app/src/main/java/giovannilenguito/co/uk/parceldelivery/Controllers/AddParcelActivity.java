@@ -111,11 +111,15 @@ public class AddParcelActivity extends AppCompatActivity {
 
         parcel.setCreatedByID(customer.getId());
 
-        //need to set driver
+        //TODO: need to set driver
 
         Date dateBooked = new Date();
         parcel.setDateBooked(dateBooked.toString());
+
+        //Set status
         parcel.setProcessing(true);
+        parcel.setOutForDelivery(false);
+        parcel.setDelivered(false);
 
         database.addParcel(parcel);
 

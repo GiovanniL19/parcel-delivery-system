@@ -5,7 +5,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
@@ -18,6 +21,7 @@ public class ViewParcelActivity extends AppCompatActivity {
 
     TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents, deliveryType;
 
+    View thisA;
     private DatabaseController  database;
 
     @Override
@@ -34,6 +38,8 @@ public class ViewParcelActivity extends AppCompatActivity {
 
         //set up database
         database = new DatabaseController(this, null, null, 0);
+
+        thisA = findViewById(R.id.activity_view_parcel);
     }
 
     @Override
@@ -56,6 +62,9 @@ public class ViewParcelActivity extends AppCompatActivity {
 
         deliveryStatus.setText(parcel.getStatus());
         lineOne.setText(parcel.getAddressLineOne());
+        if(parcel.getAddressLineTwo().isEmpty()){
+            lineTwo.setVisibility(View.GONE);
+        }
         lineTwo.setText(parcel.getAddressLineTwo());
         city.setText(parcel.getCity());
         postcode.setText(parcel.getPostcode());
@@ -63,22 +72,90 @@ public class ViewParcelActivity extends AppCompatActivity {
         contents.setText(parcel.getContents());
         deliveryType.setText(parcel.getServiceType());
 
-        System.out.println(parcel.getAddressLineOne());
+
+        //Set all buttons to unselected colour
+        Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
+        Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
+        Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
+        Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
+        
+        if(customer.getType().equals("Customer")){
+            buttonProcessing.setVisibility(View.GONE);
+            buttonOnRoute.setVisibility(View.GONE);
+            buttonDelivered.setVisibility(View.GONE);
+        }else {
+            buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+            //Set appropriate button
+            if (parcel.isOutForDelivery()) {
+                buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                cancelBtn.setVisibility(View.GONE);
+            } else if (parcel.isProcessing()) {
+                buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            } else if (parcel.isDelivered()) {
+                buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                cancelBtn.setVisibility(View.GONE);
+            }
+        }
+
     }
 
     public void cancelParcel(View view){
         if(database.deleteParcel(parcel.getId())){
-            Snackbar.make(view, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
             Intent dashboard = new Intent(this, DashboardActivity.class);
             dashboard.putExtra("Customer", customer);
             startActivity(dashboard);
         }else{
-            Snackbar.make(view, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(thisA, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
         }
     }
 
     public void changeStatus(View view){
-        
-        database.updateParcel(parcel);
+        //Save changes
+
+        //Get selected button
+        Button buttonPressed = (Button) view;
+        String nameOfButton = String.valueOf(buttonPressed.getText());
+
+        parcel.setDelivered(false);
+        parcel.setProcessing(false);
+        parcel.setOutForDelivery(false);
+
+        System.out.println(nameOfButton.toUpperCase());
+        if(nameOfButton.toUpperCase().equals("DELIVERED")){
+            parcel.setDelivered(true);
+            Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
+            cancelBtn.setVisibility(View.GONE);
+        }else if(nameOfButton.toUpperCase().equals("ON ROUTE")){
+            parcel.setOutForDelivery(true);
+            Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
+            cancelBtn.setVisibility(View.GONE);
+        }else  if(nameOfButton.toUpperCase().equals("PROCESSING")){
+            parcel.setProcessing(true);
+            Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
+            cancelBtn.setVisibility(View.VISIBLE);
+        }
+
+
+        if(database.updateParcel(parcel) > 0){
+            //Set all buttons to unselected colour
+            Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
+            Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
+            Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
+
+            buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+            buttonPressed.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
+
+            Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
+        }else{
+            Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();
+        }
     }
 }

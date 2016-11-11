@@ -19,7 +19,7 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
  */
 
 public class DatabaseController extends SQLiteOpenHelper {
-    private static final int Database_VERSION = 3;
+    private static final int Database_VERSION = 6;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
 
@@ -72,9 +72,9 @@ public class DatabaseController extends SQLiteOpenHelper {
                 COLUMN_DATE_BOOKED + " TEXT, " +
                 COLUMN_DELIVERY_DATE + " TEXT, " +
                 COLUMN_CREATED_BY + " INTEGER, " +
-                COLUMN_IS_DELIVERED + " TEXT, " +
-                COLUMN_ID_OUT_FOR_DELIVERY + " TEXT, " +
-                COLUMN_IS_PROCESSING + " TEXT, " +
+                COLUMN_IS_DELIVERED + " INTEGER, " +
+                COLUMN_ID_OUT_FOR_DELIVERY + " INTEGER, " +
+                COLUMN_IS_PROCESSING + " INTEGER, " +
                 COLUMN_ADDRESS_ONE + " TEXT, " +
                 COLUMN_ADDRESS_TWO + " TEXT, " +
                 COLUMN_CITY + " TEXT, " +
@@ -112,7 +112,6 @@ public class DatabaseController extends SQLiteOpenHelper {
     //Add new row to the database
     public int addParcel(Parcel parcel){
         //Create list of values
-
         ContentValues values = new ContentValues();
         values.put(COLUMN_DRIVER, parcel.getDriverID());
         values.put(COLUMN_RECIPIENT_NAME, parcel.getRecipientName());
@@ -182,20 +181,45 @@ public class DatabaseController extends SQLiteOpenHelper {
         return parseToParcel(cursor);
     }
 
-    public Parcel updateParcel(Parcel parcel){
+    public int updateParcel(Parcel parcel){
+        //Create list of values
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_DRIVER, parcel.getDriverID());
+        values.put(COLUMN_RECIPIENT_NAME, parcel.getRecipientName());
+        values.put(COLUMN_SERVICE_TYPE, parcel.getServiceType());
+        values.put(COLUMN_CONTENTS, parcel.getContents());
+        values.put(COLUMN_DATE_BOOKED, parcel.getDateBooked());
+        values.put(COLUMN_DELIVERY_DATE, parcel.getDeliveryDate());
+        values.put(COLUMN_CREATED_BY, parcel.getCreatedByID());
+
+        values.put(COLUMN_IS_DELIVERED, parcel.isDelivered());
+        values.put(COLUMN_ID_OUT_FOR_DELIVERY, parcel.isOutForDelivery());
+        values.put(COLUMN_IS_PROCESSING, parcel.isProcessing());
+
+        values.put(COLUMN_ADDRESS_ONE, parcel.getAddressLineOne());
+        values.put(COLUMN_ADDRESS_TWO, parcel.getAddressLineTwo());
+        values.put(COLUMN_CITY, parcel.getCity());
+        values.put(COLUMN_POSTCODE, parcel.getPostcode());
+        values.put(COLUMN_COUNTRY, parcel.getCountry());
+
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
-        //UPDATES PROGRESS ONLY
-        String query = "UPDATE " + TABLE_PARCEL + " SET " + COLUMN_IS_DELIVERED + "=" + parcel.isDelivered() + "," + COLUMN_IS_PROCESSING + "=" + parcel.isProcessing() + "," + COLUMN_ID_OUT_FOR_DELIVERY + "=" + parcel.isOutForDelivery() + " WHERE " + COLUMN_ID +"=\"" + parcel.getId() + "\";";
-        //Cursor point to a location in the results
-        Cursor cursor = db.rawQuery(query, null);
-        //Move to first row in result
-        cursor.moveToFirst();
+
+        System.out.println("Updating where id is " + parcel.getId());
+
+        System.out.println(parcel.isProcessing());
+        System.out.println(parcel.isOutForDelivery());
+        System.out.println(parcel.isDelivered());
+
+        //Insert new row into users table
+        int rows = db.update(TABLE_PARCEL, values, COLUMN_ID + "=" + parcel.getId(), null);
 
         //Close db
         db.close();
 
-        return parseToParcel(cursor);
+        System.out.println("Returning id of " + rows);
+        return rows;
     }
 
 
@@ -228,26 +252,24 @@ public class DatabaseController extends SQLiteOpenHelper {
         //Create the object
         String rowId = cursor.getString(cursor.getColumnIndex("id"));
 
-        String driver = cursor.getString(cursor.getColumnIndex("driver"));
-        String recipientName = cursor.getString(cursor.getColumnIndex("recipientName"));
-        String serviceType = cursor.getString(cursor.getColumnIndex("serviceType"));
-        String contents = cursor.getString(cursor.getColumnIndex("contents"));
-        String dateBooked = cursor.getString(cursor.getColumnIndex("dateBooked"));
-        String deliveryDate = cursor.getString(cursor.getColumnIndex("deliveryDate"));
-        String createdBy = cursor.getString(cursor.getColumnIndex("createdBy"));
-        String isDelivered = cursor.getString(cursor.getColumnIndex("isDelivered"));
-        String isOutForDelivery = cursor.getString(cursor.getColumnIndex("isOutForDelivery"));
-        String isProcessing = cursor.getString(cursor.getColumnIndex("isProcessing"));
+        String recipientName = cursor.getString(cursor.getColumnIndex(COLUMN_RECIPIENT_NAME));
+        String serviceType = cursor.getString(cursor.getColumnIndex(COLUMN_SERVICE_TYPE));
+        String contents = cursor.getString(cursor.getColumnIndex(COLUMN_CONTENTS));
+        String dateBooked = cursor.getString(cursor.getColumnIndex(COLUMN_DATE_BOOKED));
+        String deliveryDate = cursor.getString(cursor.getColumnIndex(COLUMN_DELIVERY_DATE));
+        String createdBy = cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_BY));
 
-        String addressLineOne = cursor.getString(cursor.getColumnIndex("addressLineOne"));
-        String addressLineTwo = cursor.getString(cursor.getColumnIndex("addressLineTwo"));
-        String city = cursor.getString(cursor.getColumnIndex("city"));
-        String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
-        String country = cursor.getString(cursor.getColumnIndex("country"));
+        boolean isDelivered = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_DELIVERED)) > 0;
+        boolean isOutForDelivery = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_OUT_FOR_DELIVERY)) > 0;
+        boolean isProcessing = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_PROCESSING)) > 0;
+
+        String addressLineOne = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_ONE));
+        String addressLineTwo = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_TWO));
+        String city = cursor.getString(cursor.getColumnIndex(COLUMN_CITY));
+        String postcode = cursor.getString(cursor.getColumnIndex(COLUMN_POSTCODE));
+        String country = cursor.getString(cursor.getColumnIndex(COLUMN_COUNTRY));
 
         Parcel parcel = new Parcel();
-
-        parcel.setDriverID(Integer.parseInt(driver));
 
         parcel.setServiceType(serviceType);
         parcel.setRecipientName(recipientName);
@@ -255,9 +277,11 @@ public class DatabaseController extends SQLiteOpenHelper {
         parcel.setDeliveryDate(deliveryDate);
         parcel.setDateBooked(dateBooked);
         parcel.setCreatedByID(Integer.parseInt(createdBy));
-        parcel.setDelivered(Boolean.parseBoolean(isDelivered));
-        parcel.setOutForDelivery(Boolean.parseBoolean(isOutForDelivery));
-        parcel.setProcessing((Boolean.parseBoolean(isProcessing)));
+
+
+        parcel.setDelivered(isDelivered);
+        parcel.setOutForDelivery(isOutForDelivery);
+        parcel.setProcessing(isProcessing);
 
         parcel.setAddressLineOne(addressLineOne);
         parcel.setAddressLineTwo(addressLineTwo);
