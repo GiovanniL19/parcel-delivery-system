@@ -1,12 +1,13 @@
 package giovannilenguito.co.uk.parceldelivery.Models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Giovanni on 19/10/2016.
  */
 
-public class Parcel extends Address{
+public class Parcel extends Address implements Serializable{
     private int id; //used for SQL Lite
 
     private int driverID;
@@ -21,6 +22,16 @@ public class Parcel extends Address{
     private boolean isDelivered;
     private boolean isOutForDelivery;
     private boolean isProcessing;
+
+    public String getStatus(){
+        if(isDelivered){
+            return "Delivered";
+        }else if(isOutForDelivery){
+            return "Out For Delivery";
+        }else {
+            return "Processing";
+        }
+    }
 
     public String getTitle(){
         return this.id + " - " + this.recipientName;

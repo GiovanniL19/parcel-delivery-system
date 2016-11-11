@@ -90,8 +90,11 @@ public class DashboardActivity extends AppCompatActivity {
 
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            String name = String.valueOf(parent.getItemAtPosition(position));
-
+                            Parcel selectedParcel = (Parcel) parent.getItemAtPosition(position);
+                            Intent intent = new Intent(view.getContext(), ViewParcelActivity.class);
+                            intent.putExtra("Parcel", selectedParcel);
+                            intent.putExtra("Customer", customer);
+                            startActivity(intent);
                         }
                     }
             );
