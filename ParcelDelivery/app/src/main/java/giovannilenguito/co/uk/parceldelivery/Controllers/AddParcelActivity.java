@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
@@ -21,10 +22,12 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class AddParcelActivity extends AppCompatActivity {
-    Driver driver;
-    Spinner deliveryType;
-    EditText recipientName, contents, deliveryDate, lineOne, lineTwo, city, country, postcode;
-    Intent intent;
+    private Driver driver;
+    private Spinner deliveryType;
+    private EditText recipientName, contents, deliveryDate;
+    private Intent intent;
+    private List<Customer> customers;
+    private Spinner spinner;
 
     private DatabaseController  database;
 
@@ -33,6 +36,9 @@ public class AddParcelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_parcel);
         setTitle("New Parcel");
+        //set up database
+        database = new DatabaseController(this, null, null, 0);
+
         //Get customer
         intent = getIntent();
         driver = (Driver) intent.getSerializableExtra("Driver");
@@ -41,14 +47,18 @@ public class AddParcelActivity extends AppCompatActivity {
         recipientName = (EditText) findViewById(R.id.recipientName);
         contents = (EditText) findViewById(R.id.contents);
         deliveryDate = (EditText) findViewById(R.id.deliveryDate);
-        lineOne = (EditText) findViewById(R.id.lineOne);
-        lineTwo = (EditText) findViewById(R.id.lineTwo);
-        city = (EditText) findViewById(R.id.city);
-        country = (EditText) findViewById(R.id.country);
-        postcode = (EditText) findViewById(R.id.postcode);
 
-        //set up database
-        database = new DatabaseController(this, null, null, 0);
+        customers = database.getAllCustomers();
+
+        spinner = (Spinner)findViewById(R.id.customers);
+        ArrayList<String> spinnerArray = new ArrayList<>();
+
+        for(Customer customer: customers){
+            spinnerArray.add(customer.getFullName() + " (" + customer.getId() + ")");
+        }
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        spinner.setAdapter(spinnerArrayAdapter);
     }
 
     @Override
@@ -93,26 +103,27 @@ public class AddParcelActivity extends AppCompatActivity {
         String recipientN = recipientName.getText().toString();
         String cont = contents.getText().toString();
         String deliveryD = deliveryDate.getText().toString();
-        String lineO = lineOne.getText().toString();
-        String lineT = lineTwo.getText().toString();
-        String cit = city.getText().toString();
-        String coun = country.getText().toString();
-        String post = postcode.getText().toString();
 
 
         parcel.setServiceType(spinnerChoice);
         parcel.setRecipientName(recipientN);
         parcel.setContents(cont);
         parcel.setDeliveryDate(deliveryD);
-        parcel.setAddressLineOne(lineO);
-        parcel.setAddressLineTwo(lineT);
-        parcel.setCity(cit);
-        parcel.setCountry(coun);
-        parcel.setPostcode(post);
+
+
+        int selectedCustomerPosition = spinner.getSelectedItemPosition();
+
+        Customer customer = customers.get(selectedCustomerPosition);
+
+        parcel.setCustomerID(customer.getId());
+        parcel.setDriverID(driver.getId());
+        parcel.setAddressLineOne(customer.getAddressLineOne());
+        parcel.setAddressLineTwo(customer.getAddressLineTwo());
+        parcel.setCity(customer.getCity());
+        parcel.setCountry(customer.getCountry());
+        parcel.setPostcode(customer.getPostcode());
 
         parcel.setCreatedByID(driver.getId());
-
-        //TODO: need to set driver
 
         Date dateBooked = new Date();
         parcel.setDateBooked(dateBooked.toString());

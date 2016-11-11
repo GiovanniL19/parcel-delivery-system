@@ -86,12 +86,20 @@ public class ViewParcelActivity extends AppCompatActivity {
         Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
         Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
         Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
-        Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
-        
+        Button cancelBtn = (Button) findViewById(R.id.cancelParcel);
+        TextView txt = (TextView) findViewById(R.id.txt);
+
         if(customer != null){
             buttonProcessing.setVisibility(View.GONE);
             buttonOnRoute.setVisibility(View.GONE);
             buttonDelivered.setVisibility(View.GONE);
+            cancelBtn.setVisibility(View.GONE);
+            txt.setVisibility(View.GONE);
+
+            if (parcel.isProcessing()) {
+                cancelBtn.setVisibility(View.VISIBLE);
+                txt.setVisibility(View.VISIBLE);
+            }
         }else {
             buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
@@ -101,11 +109,15 @@ public class ViewParcelActivity extends AppCompatActivity {
             if (parcel.isOutForDelivery()) {
                 buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
+                txt.setVisibility(View.GONE);
+
             } else if (parcel.isProcessing()) {
                 buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
             } else if (parcel.isDelivered()) {
                 buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
+                txt.setVisibility(View.GONE);
             }
         }
 
@@ -129,6 +141,8 @@ public class ViewParcelActivity extends AppCompatActivity {
         Button buttonPressed = (Button) view;
         String nameOfButton = String.valueOf(buttonPressed.getText());
 
+        TextView txt = (TextView) findViewById(R.id.txt);
+        
         parcel.setDelivered(false);
         parcel.setProcessing(false);
         parcel.setOutForDelivery(false);
@@ -137,14 +151,17 @@ public class ViewParcelActivity extends AppCompatActivity {
             parcel.setDelivered(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
+            txt.setVisibility(View.GONE);
         }else if(nameOfButton.toUpperCase().equals("ON ROUTE")){
             parcel.setOutForDelivery(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
+            txt.setVisibility(View.GONE);
         }else  if(nameOfButton.toUpperCase().equals("PROCESSING")){
             parcel.setProcessing(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.VISIBLE);
+            txt.setVisibility(View.VISIBLE);
         }
 
 

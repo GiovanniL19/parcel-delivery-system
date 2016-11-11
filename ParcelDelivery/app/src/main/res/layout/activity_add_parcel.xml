@@ -83,91 +83,23 @@
                 android:background="@drawable/inputfield"/>
 
             <TextView
-                android:text="Delivery Address"
+                android:text="Customer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView20"
-                android:textStyle="normal|bold"
+                android:textStyle="normal|bold"/>
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/customerLabel" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/customers"
                 android:background="@drawable/inputfield"/>
-
-            <TextView
-                android:text="Line One"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView9" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/lineOne"
-                android:background="@drawable/inputfield"
-                android:singleLine="true" />
-
-            <TextView
-                android:text="Line Two"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/text" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"
-                android:singleLine="true"
-                android:id="@+id/lineTwo" />
-
-            <TextView
-                android:text="City"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView12" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/city"
-                android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"
-                android:singleLine="true" />
-
-            <TextView
-                android:text="Postcode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView13" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/postcode"
-                android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"
-                android:singleLine="true" />
-
-            <TextView
-                android:text="Country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView14" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/country"
-                android:background="@drawable/inputfield"
-                android:layout_marginBottom="20dp"
-                android:singleLine="true" />
 
 
         </LinearLayout>

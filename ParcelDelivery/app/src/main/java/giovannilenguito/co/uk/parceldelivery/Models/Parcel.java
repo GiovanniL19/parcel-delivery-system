@@ -11,6 +11,7 @@ public class Parcel extends Address implements Serializable{
     private int id; //used for SQL Lite
 
     private int driverID;
+    private int customerID;
     private String recipientName;
     private String serviceType;
     private String contents;
@@ -33,6 +34,14 @@ public class Parcel extends Address implements Serializable{
         }else{
             return "Pending";
         }
+    }
+
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
     }
 
     public String getTitle(){
