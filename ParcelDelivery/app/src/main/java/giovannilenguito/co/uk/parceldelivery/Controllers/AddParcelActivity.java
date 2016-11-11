@@ -85,7 +85,7 @@ public class AddParcelActivity extends AppCompatActivity {
         return intent;
     }
 
-    private void addParcel(View view) throws ParseException {
+    private void addParcel(View view){
         Parcel parcel = new Parcel();
 
         String spinnerChoice = deliveryType.getSelectedItem().toString();
@@ -117,7 +117,7 @@ public class AddParcelActivity extends AppCompatActivity {
         parcel.setDateBooked(dateBooked.toString());
         parcel.setProcessing(true);
 
-        database.addRow(parcel);
+        database.addParcel(parcel);
 
         intent = new Intent(this, DashboardActivity.class);
         intent.putExtra("Customer", customer);

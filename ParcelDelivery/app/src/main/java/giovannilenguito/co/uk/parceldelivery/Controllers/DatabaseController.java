@@ -110,7 +110,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     //Add new row to the database
-    public int addRow(Parcel parcel){
+    public int addParcel(Parcel parcel){
         //Create list of values
 
         ContentValues values = new ContentValues();
@@ -144,17 +144,30 @@ public class DatabaseController extends SQLiteOpenHelper {
         return id;
     }
 
-    public void deleteRow(int id){
+    public boolean deleteParcel(int id){
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
         //Delete row from table where id's match
         db.execSQL("DELETE FROM " + TABLE_PARCEL + " WHERE " + COLUMN_ID +"=\"" + id + "\";");
 
+        String query = "SELECT * FROM " + TABLE_PARCEL + " WHERE " + COLUMN_ID +"=\"" + id + "\" ORDER BY id DESC;";
+        //Cursor point to a location in the results
+        Cursor cursor = db.rawQuery(query, null);
+        //Move to first row in result
+        cursor.moveToFirst();
+
         db.close();
 
+
+        if(cursor.getCount() == 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    public Parcel getRow(int id) throws ParseException {
+    public Parcel getParcel(int id){
+        //if is parcel id
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_PARCEL + " WHERE " + COLUMN_ID +"=\"" + id + "\";";
@@ -163,17 +176,30 @@ public class DatabaseController extends SQLiteOpenHelper {
         //Move to first row in result
         cursor.moveToFirst();
 
-        //to loop more than on do while(!cursor.isAfterLast()
-
         //Close db
         db.close();
-
-
 
         return parseToParcel(cursor);
     }
 
-    public List<Parcel> getRowsByCustomer(int customerId) throws ParseException {
+    public Parcel updateParcel(Parcel parcel){
+        //Get reference to database
+        SQLiteDatabase db = getWritableDatabase();
+        //UPDATES PROGRESS ONLY
+        String query = "UPDATE " + TABLE_PARCEL + " SET " + COLUMN_IS_DELIVERED + "=" + parcel.isDelivered() + "," + COLUMN_IS_PROCESSING + "=" + parcel.isProcessing() + "," + COLUMN_ID_OUT_FOR_DELIVERY + "=" + parcel.isOutForDelivery() + " WHERE " + COLUMN_ID +"=\"" + parcel.getId() + "\";";
+        //Cursor point to a location in the results
+        Cursor cursor = db.rawQuery(query, null);
+        //Move to first row in result
+        cursor.moveToFirst();
+
+        //Close db
+        db.close();
+
+        return parseToParcel(cursor);
+    }
+
+
+    public List<Parcel> getRowsByCustomer(int customerId) {
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_PARCEL + " WHERE " + COLUMN_CREATED_BY +"=\"" + customerId + "\" ORDER BY id DESC;";
@@ -198,7 +224,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
 
-    public Parcel parseToParcel(Cursor cursor) throws ParseException {
+    public Parcel parseToParcel(Cursor cursor) {
         //Create the object
         String rowId = cursor.getString(cursor.getColumnIndex("id"));
 

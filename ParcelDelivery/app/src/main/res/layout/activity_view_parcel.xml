@@ -9,22 +9,25 @@
 
     <Button
         android:text="Delivered"
-        android:layout_width="109dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/button"
         android:background="@color/colorPrimary"
         android:textColor="@android:color/background_light"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="9dp"
         app:layout_constraintLeft_toRightOf="@+id/button3"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="9dp"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp" />
+        android:layout_marginRight="16dp"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        android:onClick="changeStatus" />
 
     <Button
-        android:text="Out For Delivery"
+        android:text="On Route"
         android:layout_width="109dp"
         android:layout_height="wrap_content"
         android:id="@+id/button3"
@@ -34,7 +37,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@+id/button2"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:onClick="changeStatus" />
 
     <Button
         android:text="Processing"
@@ -47,7 +51,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="24dp" />
+        android:layout_marginLeft="24dp"
+        android:onClick="changeStatus" />
 
     <TextView
         android:text="Delivery Status:"
@@ -66,30 +71,30 @@
         android:layout_height="wrap_content"
         android:id="@+id/deliveryStatus"
         android:textStyle="normal|bold"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/textView15"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/button3"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toRightOf="@+id/textView15"
+        android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
-        app:layout_constraintHorizontal_bias="0.11" />
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
         android:text="Delivery Address:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView17"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView15"
         android:layout_marginStart="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="24dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/textView18"
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:text="LineOne"
@@ -113,8 +118,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/lineTwo"
         android:textStyle="normal|bold"
-        tools:layout_editor_absoluteY="171dp"
-        tools:layout_editor_absoluteX="24dp" />
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/lineOne"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/lineOne"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
         android:text="City"
@@ -154,15 +166,23 @@
         android:layout_height="wrap_content"
         android:id="@+id/country"
         android:textStyle="normal|bold"
-        tools:layout_editor_absoluteY="246dp"
-        tools:layout_editor_absoluteX="24dp" />
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/postcode"
+        android:layout_marginStart="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
         android:text="The Parcel:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView24"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/country"
         android:layout_marginStart="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -187,4 +207,65 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
         app:layout_constraintHorizontal_bias="0.0" />
+
+    <Button
+        android:text="Cancel Parcel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/cancelParcel"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/txt"
+        android:background="@color/buttonSecondary"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:onClick="cancelParcel" />
+
+    <TextView
+        android:text="Cancel Parcel means this parcel will be deleted from the database"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:id="@+id/txt"
+        android:textAlignment="center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/contents"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp" />
+
+    <TextView
+        android:text="Delivery Type:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView18"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView15"
+        android:layout_marginStart="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="24dp" />
+
+    <TextView
+        android:text="Delivery Type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deliveryType"
+        app:layout_constraintTop_toBottomOf="@+id/deliveryStatus"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toRightOf="@+id/textView18"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintHorizontal_bias="0.06"
+        android:layout_marginTop="8dp"
+        android:textStyle="normal|bold" />
 </android.support.constraint.ConstraintLayout>

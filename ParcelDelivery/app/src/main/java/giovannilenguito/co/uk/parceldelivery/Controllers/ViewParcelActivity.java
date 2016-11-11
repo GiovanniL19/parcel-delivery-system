@@ -1,8 +1,10 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
@@ -14,7 +16,9 @@ public class ViewParcelActivity extends AppCompatActivity {
     Parcel parcel;
     Intent intent;
 
-    TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents;
+    TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents, deliveryType;
+
+    private DatabaseController  database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,9 @@ public class ViewParcelActivity extends AppCompatActivity {
 
         setTitle(parcel.getTitle());
         setUpView();
+
+        //set up database
+        database = new DatabaseController(this, null, null, 0);
     }
 
     @Override
@@ -44,6 +51,8 @@ public class ViewParcelActivity extends AppCompatActivity {
         postcode = (TextView) findViewById(R.id.postcode);
         country = (TextView) findViewById(R.id.country);
         contents = (TextView) findViewById(R.id.contents);
+        deliveryType = (TextView) findViewById(R.id.deliveryType);
+
 
         deliveryStatus.setText(parcel.getStatus());
         lineOne.setText(parcel.getAddressLineOne());
@@ -52,5 +61,24 @@ public class ViewParcelActivity extends AppCompatActivity {
         postcode.setText(parcel.getPostcode());
         country.setText(parcel.getCountry());
         contents.setText(parcel.getContents());
+        deliveryType.setText(parcel.getServiceType());
+
+        System.out.println(parcel.getAddressLineOne());
+    }
+
+    public void cancelParcel(View view){
+        if(database.deleteParcel(parcel.getId())){
+            Snackbar.make(view, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
+            Intent dashboard = new Intent(this, DashboardActivity.class);
+            dashboard.putExtra("Customer", customer);
+            startActivity(dashboard);
+        }else{
+            Snackbar.make(view, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    public void changeStatus(View view){
+        
+        database.updateParcel(parcel);
     }
 }

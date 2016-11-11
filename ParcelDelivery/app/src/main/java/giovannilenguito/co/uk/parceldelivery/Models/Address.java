@@ -1,10 +1,12 @@
 package giovannilenguito.co.uk.parceldelivery.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Giovanni on 10/11/2016.
  */
 
-public class Address {
+public class Address implements Serializable {
     private String addressLineOne;
     private String addressLineTwo;
     private String city;
