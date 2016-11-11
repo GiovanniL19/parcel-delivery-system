@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
+import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -45,17 +47,33 @@ public class RegisterActivity extends AppCompatActivity {
         String pass = String.valueOf(password.getText());
         String eM = String.valueOf(email.getText());
         String fullN = String.valueOf(fullName.getText());
-        //int contact = Integer.parseInt(contactNumber.getText().toString());
+        int contact = 0;
+
+        try {
+            contact = Integer.parseInt(contactNumber.getText().toString());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         String lineOne = String.valueOf(addressLineOne.getText());
         String lineTwo = String.valueOf(addressLineTwo.getText());
         String cit = String.valueOf(city.getText());
         String postC = String.valueOf(postcode.getText());
         String crty = String.valueOf(country.getText());
 
-        Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
+        Switch driverSwitch = (Switch)findViewById(R.id.userType);
+        if(driverSwitch.isChecked()){
+            Driver driver = new Driver(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty);
+            driver.setContactNumber(contact);
 
-        //add the customer and return the id
-        int id = database.addCustomer(customer);
+            //add the customer and return the id
+            int id = database.addDriver(driver);
+        }else{
+            Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
+            customer.setContactNumber(contact);
+
+            //add the customer and return the id
+            int id = database.addCustomer(customer);
+        }
 
         //Hide keyboard
         if (view != null) {

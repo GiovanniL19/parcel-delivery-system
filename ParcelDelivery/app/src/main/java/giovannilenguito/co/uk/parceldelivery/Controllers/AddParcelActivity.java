@@ -16,11 +16,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
+import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class AddParcelActivity extends AppCompatActivity {
-    Customer customer;
+    Driver driver;
     Spinner deliveryType;
     EditText recipientName, contents, deliveryDate, lineOne, lineTwo, city, country, postcode;
     Intent intent;
@@ -34,7 +35,7 @@ public class AddParcelActivity extends AppCompatActivity {
         setTitle("New Parcel");
         //Get customer
         intent = getIntent();
-        customer = (Customer) intent.getSerializableExtra("Customer");
+        driver = (Driver) intent.getSerializableExtra("Driver");
 
         deliveryType = (Spinner) findViewById(R.id.deliveryType);
         recipientName = (EditText) findViewById(R.id.recipientName);
@@ -81,7 +82,7 @@ public class AddParcelActivity extends AppCompatActivity {
     @Override
     public Intent getParentActivityIntent() {
         intent = new Intent(this, DashboardActivity.class);
-        intent.putExtra("Customer", customer);
+        intent.putExtra("Driver", driver);
         return intent;
     }
 
@@ -109,7 +110,7 @@ public class AddParcelActivity extends AppCompatActivity {
         parcel.setCountry(coun);
         parcel.setPostcode(post);
 
-        parcel.setCreatedByID(customer.getId());
+        parcel.setCreatedByID(driver.getId());
 
         //TODO: need to set driver
 
@@ -124,7 +125,7 @@ public class AddParcelActivity extends AppCompatActivity {
         database.addParcel(parcel);
 
         intent = new Intent(this, DashboardActivity.class);
-        intent.putExtra("Customer", customer);
+        intent.putExtra("Driver", driver);
         startActivity(intent);
 
     }

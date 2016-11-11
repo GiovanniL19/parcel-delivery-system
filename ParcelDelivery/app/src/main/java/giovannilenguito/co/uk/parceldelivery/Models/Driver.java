@@ -5,28 +5,33 @@ package giovannilenguito.co.uk.parceldelivery.Models;
  */
 
 public class Driver extends User {
-    private Parcel[] shipments;
+    private Parcel[] parcels;
     private Customer[] recipients;
-    private String[] rocations;
-    private String type = "Customer";
+    private String type = "Driver";
 
     public String getType() {
         return type;
     }
 
-    public Driver(String email, String username, String password, String fullName, int contactNumber, Parcel[] shipments, Customer[] recipients, String[] rocations) {
+    public Driver(String email, String username, String password, String fullName, int contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country) {
         super(email, username, password, fullName, contactNumber);
-        this.shipments = shipments;
-        this.recipients = recipients;
-        this.rocations = rocations;
+        this.setAddressLineOne(addressLineOne);
+        this.setAddressLineTwo(addressLineTwo);
+        this.setCity(city);
+        this.setPostcode(postcode);
+        this.setCountry(country);
     }
 
-    public Parcel[] getShipments() {
-        return shipments;
+    public Parcel[] getParcels() {
+        return parcels;
     }
 
-    public void setShipments(Parcel[] shipments) {
-        this.shipments = shipments;
+    public void setParcels(Parcel[] parcels) {
+        this.parcels = parcels;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Customer[] getRecipients() {
@@ -37,11 +42,4 @@ public class Driver extends User {
         this.recipients = recipients;
     }
 
-    public String[] getRocations() {
-        return rocations;
-    }
-
-    public void setRocations(String[] rocations) {
-        this.rocations = rocations;
-    }
 }

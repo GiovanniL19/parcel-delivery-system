@@ -6,11 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
+import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 
 
@@ -19,12 +19,12 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
  */
 
 public class DatabaseController extends SQLiteOpenHelper {
-    private static final int Database_VERSION = 6;
+    private static final int Database_VERSION = 7;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
 
     private static final String TABLE_PARCEL = "parcels"; //table name
-    private static final String TABLE_CUSTOMERS = "customers"; //table name
+    private static final String TABLE_USERS = "users"; //table name
 
     //generic table columns
     private static final String COLUMN_ID  = "id";
@@ -41,7 +41,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_FULLNAME = "fullName";
     private static final String COLUMN_CONTACTNUMBER = "contactNumber";
-
+    private static final String COLUMN_TYPE = "type";
 
     //parcel table columns
     private static final String COLUMN_DRIVER = "driver";
@@ -81,8 +81,9 @@ public class DatabaseController extends SQLiteOpenHelper {
                 COLUMN_POSTCODE + " TEXT, " +
                 COLUMN_COUNTRY + " TEXT);";
 
-        String customerQuery = "CREATE TABLE " + TABLE_CUSTOMERS + "(" +
+        String customerQuery = "CREATE TABLE " + TABLE_USERS + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_TYPE + " TEXT, " +
                 COLUMN_EMAIL + " TEXT, " +
                 COLUMN_USERNAME + " TEXT, " +
                 COLUMN_PASSWORD + " TEXT, " +
@@ -103,7 +104,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Deletes table
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARCEL);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
 
         //Create new one
         onCreate(db);
@@ -247,6 +248,30 @@ public class DatabaseController extends SQLiteOpenHelper {
         return parcelList;
     }
 
+    public List<Parcel> getRowsByDriver(int customerId) {
+        //Get reference to database
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_PARCEL + " WHERE " + COLUMN_CREATED_BY +"=\"" + customerId + "\" ORDER BY id DESC;";
+        //Cursor point to a location in the results
+        Cursor cursor = db.rawQuery(query, null);
+        //Move to first row in result
+        cursor.moveToFirst();
+
+        //Close db
+        db.close();
+
+        List<Parcel> parcelList = new ArrayList<>();
+
+        if(cursor.getCount() != 0) {
+            for(int i = 1; i <= cursor.getCount(); i++){
+                parcelList.add(parseToParcel(cursor));
+                cursor.moveToNext();
+            }
+        }
+
+        return parcelList;
+    }
+
 
     public Parcel parseToParcel(Cursor cursor) {
         //Create the object
@@ -292,6 +317,9 @@ public class DatabaseController extends SQLiteOpenHelper {
 
         return parcel;
     }
+
+
+
     //Add new row to the database
     public int addCustomer(Customer customer){
         //Create list of values
@@ -308,12 +336,43 @@ public class DatabaseController extends SQLiteOpenHelper {
         values.put(COLUMN_CITY, customer.getCity());
         values.put(COLUMN_POSTCODE, customer.getPostcode());
         values.put(COLUMN_COUNTRY, customer.getCountry());
+        values.put(COLUMN_TYPE, customer.getType());
 
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
 
         //Insert new row into users table
-        int id = (int) db.insert(TABLE_CUSTOMERS, null, values);
+        int id = (int) db.insert(TABLE_USERS, null, values);
+
+        //Close db
+        db.close();
+
+        return id;
+    }
+
+    //Add new row to the database
+    public int addDriver(Driver driver){
+        //Create list of values
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_EMAIL, driver.getEmail());
+        values.put(COLUMN_USERNAME, driver.getUsername());
+        values.put(COLUMN_PASSWORD, driver.getPassword());
+        values.put(COLUMN_FULLNAME, driver.getFullName());
+        values.put(COLUMN_CONTACTNUMBER, driver.getContactNumber());
+
+
+        values.put(COLUMN_ADDRESS_ONE, driver.getAddressLineOne());
+        values.put(COLUMN_ADDRESS_TWO, driver.getAddressLineTwo());
+        values.put(COLUMN_CITY, driver.getCity());
+        values.put(COLUMN_POSTCODE, driver.getPostcode());
+        values.put(COLUMN_COUNTRY, driver.getCountry());
+        values.put(COLUMN_TYPE, driver.getType());
+
+        //Get reference to database
+        SQLiteDatabase db = getWritableDatabase();
+
+        //Insert new row into users table
+        int id = (int) db.insert(TABLE_USERS, null, values);
 
         //Close db
         db.close();
@@ -325,7 +384,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
         //Delete row from table where id's match
-        db.execSQL("DELETE FROM " + TABLE_CUSTOMERS + " WHERE " + COLUMN_ID +"=\"" + id + "\";");
+        db.execSQL("DELETE FROM " + TABLE_USERS + " WHERE " + COLUMN_ID +"=\"" + id + "\";");
 
         db.close();
 
@@ -334,39 +393,60 @@ public class DatabaseController extends SQLiteOpenHelper {
     public Customer getCustomer(int id){
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_CUSTOMERS + " WHERE " + COLUMN_ID +"=\"" + id + "\";";
+        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_ID +"=\"" + id + "\";";
         //Cursor point to a location in the results
         Cursor cursor = db.rawQuery(query, null);
         //Move to first row in result
         cursor.moveToFirst();
 
-        //to loop more than on do while(!cursor.isAfterLast()
+        //Close db
+        db.close();
+        return parseToCustomer(cursor);
+    }
 
-        //Create the user object
-        String rowId = cursor.getString(cursor.getColumnIndex("id"));
-        String username = cursor.getString(cursor.getColumnIndex("username"));
-        String password = cursor.getString(cursor.getColumnIndex("password"));
-        String fullName = cursor.getString(cursor.getColumnIndex("fullName"));
-        String email = cursor.getString(cursor.getColumnIndex("email"));
-        int contactNumber = cursor.getInt(cursor.getColumnIndex("contactNumber"));
+    public List<Customer> getAllCustomers(){
+        //Get reference to database
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_TYPE +"=\"Customer\";";
+        //Cursor point to a location in the results
+        Cursor cursor = db.rawQuery(query, null);
+        //Move to first row in result
+        cursor.moveToFirst();
 
-        String addressLineOne = cursor.getString(cursor.getColumnIndex("addressLineOne"));
-        String addressLineTwo = cursor.getString(cursor.getColumnIndex("addressLineTwo"));
-        String city = cursor.getString(cursor.getColumnIndex("city"));
-        String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
-        String country = cursor.getString(cursor.getColumnIndex("country"));
+        List<Customer> customersList = new ArrayList<>();
 
-
+        for(int i = 1; i <= cursor.getCount(); i++){
+            customersList.add(parseToCustomer(cursor));
+            cursor.moveToNext();
+        }
 
         //Close db
         db.close();
+        return customersList;
+    }
+
+    public Customer parseToCustomer(Cursor cursor){
+        //Create the user object
+        String rowId = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+        String username = cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME));
+        String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
+        String fullName = cursor.getString(cursor.getColumnIndex(COLUMN_FULLNAME));
+        String email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL));
+        int contactNumber = cursor.getInt(cursor.getColumnIndex(COLUMN_CONTACTNUMBER));
+
+        String addressLineOne = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_ONE));
+        String addressLineTwo = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_TWO));
+        String city = cursor.getString(cursor.getColumnIndex(COLUMN_CITY));
+        String postcode = cursor.getString(cursor.getColumnIndex(COLUMN_POSTCODE));
+        String country = cursor.getString(cursor.getColumnIndex(COLUMN_COUNTRY));
+
         return new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
     }
 
-    public Customer authenticate(String pstUsername, String pstPassword){
+    public <T> T authenticate(String pstUsername, String pstPassword){
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_CUSTOMERS + " WHERE " + COLUMN_USERNAME +"=\"" + pstUsername + "\" AND "  + COLUMN_PASSWORD +"=\"" + pstPassword + "\";";
+        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME +"=\"" + pstUsername + "\" AND "  + COLUMN_PASSWORD +"=\"" + pstPassword + "\";";
         //Cursor point to a location in the results
         Cursor cursor = db.rawQuery(query, null);
         //Move to first row in result
@@ -387,9 +467,16 @@ public class DatabaseController extends SQLiteOpenHelper {
             String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
             String country = cursor.getString(cursor.getColumnIndex("country"));
 
-            Customer customer = new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
-            customer.setId(Integer.parseInt(rowId));
-            return customer;
+            String type = cursor.getString(cursor.getColumnIndex("type"));
+            if(type.equals("Customer")) {
+                Customer customer = new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
+                customer.setId(Integer.parseInt(rowId));
+                return (T) customer;
+            }else{
+                Driver driver = new Driver(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country);
+                driver .setId(Integer.parseInt(rowId));
+                return (T) driver;
+            }
         }else{
             return null;
         }

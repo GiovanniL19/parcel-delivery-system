@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
+import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,11 +42,19 @@ public class MainActivity extends AppCompatActivity {
 
         if(!sUsername.matches("")){
             if(!sPassword.matches("")){
-                Customer customer = database.authenticate(sUsername, sPassword);
+                Object user = database.authenticate(sUsername, sPassword);
 
-                if(customer != null) {
-                    intent = new Intent(this, DashboardActivity.class);
-                    intent.putExtra("Customer", customer);
+                intent = new Intent(this, DashboardActivity.class);
+
+                if( user instanceof Customer )
+                {
+                    intent.putExtra("Customer", (Customer) user);
+                }
+                else if( user instanceof Driver)
+                {
+                    intent.putExtra("Driver", (Driver) user);
+                }
+                if(user != null) {
                     startActivity(intent);
                 }else{
                     hideSoftKeyboard();

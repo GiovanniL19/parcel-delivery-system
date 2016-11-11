@@ -11,11 +11,13 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
+import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class ViewParcelActivity extends AppCompatActivity {
     Customer customer;
+    Driver driver;
     Parcel parcel;
     Intent intent;
 
@@ -30,8 +32,14 @@ public class ViewParcelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_parcel);
 
         intent = getIntent();
-        customer = (Customer) intent.getSerializableExtra("Customer");
+
         parcel = (Parcel) intent.getSerializableExtra("Parcel");
+
+        if(intent.getSerializableExtra("Customer") != null){
+            customer = (Customer) intent.getSerializableExtra("Customer");
+        }else{
+            driver = (Driver) intent.getSerializableExtra("Driver");
+        }
 
         setTitle(parcel.getTitle());
         setUpView();
@@ -46,6 +54,7 @@ public class ViewParcelActivity extends AppCompatActivity {
     public Intent getParentActivityIntent() {
         intent = new Intent(this, DashboardActivity.class);
         intent.putExtra("Customer", customer);
+        intent.putExtra("Driver", driver);
         return intent;
     }
 
@@ -79,7 +88,7 @@ public class ViewParcelActivity extends AppCompatActivity {
         Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
         Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
         
-        if(customer.getType().equals("Customer")){
+        if(customer != null){
             buttonProcessing.setVisibility(View.GONE);
             buttonOnRoute.setVisibility(View.GONE);
             buttonDelivered.setVisibility(View.GONE);
@@ -124,7 +133,6 @@ public class ViewParcelActivity extends AppCompatActivity {
         parcel.setProcessing(false);
         parcel.setOutForDelivery(false);
 
-        System.out.println(nameOfButton.toUpperCase());
         if(nameOfButton.toUpperCase().equals("DELIVERED")){
             parcel.setDelivered(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);

@@ -170,15 +170,6 @@
                 android:singleLine="true" />
 
 
-            <Button
-                android:text="Add Parcel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/createParcelBtn"
-                android:background="@color/colorPrimaryDark"
-                android:textColor="@android:color/background_light"
-                android:layout_marginBottom="15dp" />
-
         </LinearLayout>
     </ScrollView>
 

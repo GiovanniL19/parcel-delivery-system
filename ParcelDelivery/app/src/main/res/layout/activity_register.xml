@@ -94,12 +94,12 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:ems="10"
                 android:id="@+id/contactNumber"
                 android:background="@drawable/inputfield"
                 android:layout_marginBottom="30dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:inputType="phone" />
 
             <TextView
                 android:text="Address Line One"
@@ -181,6 +181,14 @@
                 android:layout_marginBottom="20dp"
                 android:singleLine="true" />
 
+
+            <Switch
+                android:text="Driver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/userType"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
 
             <Button
                 android:text="Register"
