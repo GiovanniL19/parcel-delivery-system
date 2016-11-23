@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import java.net.URL;
+
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.R;
@@ -72,7 +74,10 @@ public class RegisterActivity extends AppCompatActivity {
             customer.setContactNumber(contact);
 
             //add the customer and return the id
-            int id = database.addCustomer(customer);
+            //int id = database.addCustomer(customer); //SQLITE
+
+            //RETURNS OBJECT
+            (T) new UserDAOController().execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "POST", "driver").get();
         }
 
         //Hide keyboard

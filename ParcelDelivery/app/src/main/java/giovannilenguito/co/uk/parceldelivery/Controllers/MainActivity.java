@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseController database;
 
     EditText username, password;
+    Switch isDriver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
         username = (EditText)findViewById(R.id.username);
         password = (EditText)findViewById(R.id.password);
+
+        isDriver = (Switch)findViewById(R.id.isDriver);
 
         //set up database
         database = new DatabaseController(this, null, null, 0);
@@ -39,9 +43,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public <T> T isAuthenticatedCustomer(String username, String password) throws MalformedURLException {
+    public <T> T isAuthenticatedCustomer(String username) throws MalformedURLException {
         try {
-            return (T) new UserDAOController().execute(new URL("http://www.giovannilenguito.co.uk/XML/users.xml"), "XML", username, password).get();
+            //XML
+            //return (T) new UserDAOController().execute(new URL("http://10.205.205.198:8080/main/PDS?WSDL"), "XML", username).get();
+
+            //JSON
+            if(isDriver.isChecked()){
+                return (T) new UserDAOController().execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "GET", "driver").get();
+            }else{
+                return (T) new UserDAOController().execute(new URL("http://10.205.205.198:9998/customers/byUsername/"+ username), "GET", "customer").get();
+            }
 
         }catch(Exception e){
             e.printStackTrace();
@@ -57,25 +69,34 @@ public class MainActivity extends AppCompatActivity {
             if(!sPassword.matches("")){
                 intent = new Intent(this, DashboardActivity.class);
 
-                Object user = isAuthenticatedCustomer(sUsername, sPassword);
+                Object user = isAuthenticatedCustomer(sUsername);
 
-                if( user instanceof Customer )
-                {
-                    intent.putExtra("Customer", (Customer) user);
-                }
-                else if( user instanceof Driver)
-                {
-                    intent.putExtra("Driver", (Driver) user);
-                }
-
-                if(user != null){
-                    startActivity(intent);
-                }else{
+                if(user == null){
                     hideSoftKeyboard();
                     Snackbar.make(view, "Incorrect login details", Snackbar.LENGTH_LONG).show();
+                }else {
+                    if (user instanceof Customer) {
+                        Customer customer = (Customer) user;
+                        if (customer.getPassword().equals(sPassword)) {
+                            intent.putExtra("Customer", (Customer) user);
+                            startActivity(intent);
+                        } else {
+                            hideSoftKeyboard();
+                            Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else if (user instanceof Driver) {
+                        Driver driver = (Driver) user;
+                        if (driver.getPassword().equals(sPassword)) {
+                            intent.putExtra("Driver", (Driver) user);
+                            startActivity(intent);
+                        } else {
+                            hideSoftKeyboard();
+                            Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
                 }
 
-                /*
+                /* //OLD CODE
                 Object user = database.authenticate(sUsername, sPassword);
 
                 if( user instanceof Customer )
