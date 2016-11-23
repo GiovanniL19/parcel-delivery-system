@@ -66,7 +66,21 @@ public class Parser {
                 boolean isOutForDelivery = Boolean.parseBoolean(jsonMap.get("isOutForDelivery").toString());
                 boolean isProcessing = Boolean.parseBoolean(jsonMap.get("isProcessing").toString());
 
+                Map address = (Map) jsonMap.get("address");
+                String lineOne = address.get("lineOne").toString();
+                String lineTwo = address.get("lineTwo").toString();
+                String city = address.get("city").toString();
+                String postcode = address.get("postcode").toString();
+                String country = address.get("country").toString();
+
+
                 Parcel parcel = new Parcel(id, customerID, recipientName, serviceType, contents, dateBooked, deliveryDate, createdByID, isDelivered, isOutForDelivery, isProcessing);
+                parcel.setAddressLineOne(lineOne);
+                parcel.setAddressLineTwo(lineTwo);
+                parcel.setCity(city);
+                parcel.setPostcode(postcode);
+                parcel.setCountry(country);
+
                 listOfParcels.add(parcel);
             }
             return listOfParcels;

@@ -103,32 +103,30 @@ public class DashboardActivity extends AppCompatActivity {
         contentProvider = new ParcelContentProvider();
         try {
             Object parcels = getContent();
-            if(parcels instanceof List){
-             parcelList = (List) parcels;
-            }
-            System.out.println(parcelList);
+            if(parcels instanceof List) {
+                parcelList = (List) parcels;
 
-            //Implements custom adapter
-            ListAdapter adapter = new ParcelAdapter(this, parcelList);
+                //Implements custom adapter
+                ListAdapter adapter = new ParcelAdapter(this, parcelList);
 
-            ListView dashboardList = (ListView)findViewById(R.id.dashboardList);
-            dashboardList.setAdapter(adapter);
+                ListView dashboardList = (ListView) findViewById(R.id.dashboardList);
+                dashboardList.setAdapter(adapter);
 
-            dashboardList.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener() {
+                dashboardList.setOnItemClickListener(
+                        new AdapterView.OnItemClickListener() {
 
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Parcel selectedParcel = (Parcel) parent.getItemAtPosition(position);
-                            Intent intent = new Intent(view.getContext(), ViewParcelActivity.class);
-                            intent.putExtra("Parcel", selectedParcel);
-                            intent.putExtra("Customer", customer);
-                            intent.putExtra("Driver", driver);
-                            startActivity(intent);
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Parcel selectedParcel = (Parcel) parent.getItemAtPosition(position);
+                                Intent intent = new Intent(view.getContext(), ViewParcelActivity.class);
+                                intent.putExtra("Parcel", selectedParcel);
+                                intent.putExtra("Customer", customer);
+                                intent.putExtra("Driver", driver);
+                                startActivity(intent);
+                            }
                         }
-                    }
-            );
-
+                );
+            }
         }catch(Exception e){
             e.printStackTrace();
             Snackbar.make(findViewById(R.id.activity_dashboard), "There was an error", Snackbar.LENGTH_LONG).show();

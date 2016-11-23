@@ -69,7 +69,7 @@ public class ViewParcelActivity extends AppCompatActivity {
 
         deliveryStatus.setText(parcel.getStatus());
         lineOne.setText(parcel.getAddressLineOne());
-        if(parcel.getAddressLineTwo().isEmpty()){
+        if(parcel.getAddressLineTwo() == null || parcel.getAddressLineTwo().isEmpty()){
             lineTwo.setVisibility(View.GONE);
         }
         lineTwo.setText(parcel.getAddressLineTwo());
