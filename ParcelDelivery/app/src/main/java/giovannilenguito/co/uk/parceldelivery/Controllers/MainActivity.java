@@ -19,7 +19,6 @@ import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
     private Intent intent;
-    private SQLiteDatabaseController database;
 
     private EditText username, password;
     private Switch isDriver;
@@ -35,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText)findViewById(R.id.password);
 
         isDriver = (Switch)findViewById(R.id.isDriver);
-
-        //set up database
-        database = new SQLiteDatabaseController(this, null, null, 0);
     }
 
     public void goToRegister(View view){
@@ -51,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
             //return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:8080/main/PDS?WSDL"), "XML", username).get();
 
             //JSON
-
             UCP = new UserContentProvider();
             if(isDriver.isChecked()){
                 return (T) UCP.execute(new URL(getString(R.string.WS_IP) +  "/drivers/byUsername/"+ username), "GET", "driver").get();

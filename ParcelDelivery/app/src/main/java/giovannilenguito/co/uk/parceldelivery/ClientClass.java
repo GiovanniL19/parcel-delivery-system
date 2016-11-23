@@ -11,11 +11,13 @@ import java.net.URL;
 
 /**
  * Created by giovannilenguito on 22/11/2016.
+ * Class controls of operations including GET, POST, PUT, AND DELETE
+ * ClientClass contains operations for PARCEL, CUSTOMER, AND DRIVER
  */
 
 public class ClientClass {
 
-    public static boolean putParcel(URL url, int timeout, JSONObject JSONUser) throws IOException {
+    public static String put(URL url, int timeout, JSONObject JSONUser) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setDoOutput(true);
@@ -32,20 +34,21 @@ public class ClientClass {
         out.close();
         int statusCode = connection.getResponseCode();
 
-        //BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
         switch (statusCode) {
             case 200:
                 System.out.println("All okay");
-                return true;
+                return Parser.buildString(buffRead);
             case 201:
                 System.out.println("Created");
-                return true;
+                return Parser.buildString(buffRead);
         }
 
-        return false;
+        return null;
     }
-    public static String postUser(URL url, int timeout, JSONObject JSONUser) throws IOException {
+
+    public static String post(URL url, int timeout, JSONObject JSONUser) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setDoOutput(true);

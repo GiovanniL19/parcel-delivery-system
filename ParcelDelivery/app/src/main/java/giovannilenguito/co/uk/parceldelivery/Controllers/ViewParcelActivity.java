@@ -167,8 +167,7 @@ public class ViewParcelActivity extends AppCompatActivity {
 
         try {
             contentProvider = new ParcelContentProvider();
-            URL url = new URL(getString(R.string.WS_IP) + "/parcels/update");
-            boolean didUpdate = (boolean) contentProvider.execute(url, "PUT", null, null, parcel).get();
+            boolean didUpdate = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
             contentProvider.cancel(true);
             if (didUpdate) {
                 //Set all buttons to unselected colour

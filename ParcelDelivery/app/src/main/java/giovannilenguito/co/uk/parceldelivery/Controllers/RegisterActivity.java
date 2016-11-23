@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
             Driver driver = new Driver(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty);
             driver.setContactNumber(contact);
 
-            //RETURNS OBJECT
+            //RETURNS ID of new driver
             String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) +  "/users/new"), "POST", "driver", driver).get();
             if(id != null){
                 Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
@@ -80,7 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
             Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
             customer.setContactNumber(contact);
 
-            //RETURNS OBJECT
+            //RETURNS ID of new customer
             String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) + "/users/new"), "POST", "customer", customer).get();
             if(id != null){
                 Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();

@@ -39,7 +39,7 @@ public class UserContentProvider extends AsyncTask<Object, Object, Object> {
             case "POST":
                 if(userType.equals("customer")){
                     try {
-                        return ClientClass.postUser(url, 60000, Parser.customerToJSON((Customer) params[3]));
+                        return ClientClass.post(url, 60000, Parser.customerToJSON((Customer) params[3]));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -47,7 +47,7 @@ public class UserContentProvider extends AsyncTask<Object, Object, Object> {
                     }
                 }else{
                     try {
-                        return ClientClass.postUser(url, 60000, Parser.driverToJSON((Driver) params[3]));
+                        return ClientClass.post(url, 60000, Parser.driverToJSON((Driver) params[3]));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {

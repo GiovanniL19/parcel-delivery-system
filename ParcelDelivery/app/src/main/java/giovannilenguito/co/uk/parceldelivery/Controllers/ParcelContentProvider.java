@@ -33,15 +33,34 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
                     }
                 }
             case "POST":
-
-            case "PUT":
                 try {
-                    return ClientClass.putParcel(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                    String response = ClientClass.post(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                    if (response == null) {
+                        return false;
+                    }else{
+                        return true;
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    return null;
+                    return false;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return false;
+                }
+            case "PUT":
+                try {
+                    String response = ClientClass.put(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                    if (response == null) {
+                        return false;
+                    }else{
+                        return true;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
                 }
             case "DELETE":
 

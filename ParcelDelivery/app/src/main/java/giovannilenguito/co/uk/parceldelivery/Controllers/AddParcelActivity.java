@@ -33,11 +33,13 @@ public class AddParcelActivity extends AppCompatActivity {
 
     private SQLiteDatabaseController database;
     private UserContentProvider UCP;
+    private ParcelContentProvider PCP;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_parcel);
         setTitle("New Parcel");
+
         //set up database
         database = new SQLiteDatabaseController(this, null, null, 0);
 
@@ -51,10 +53,9 @@ public class AddParcelActivity extends AppCompatActivity {
         deliveryDate = (EditText) findViewById(R.id.deliveryDate);
 
         UCP = new UserContentProvider();
-        //customers = database.getAllCustomers(); //sqllite
+
         try {
-            URL url = new URL(getString(R.string.WS_IP) + "/customers/all");
-            customers = (List<Customer>) UCP.execute(url, "GETALL", "customer", null).get();
+            customers = (List<Customer>) UCP.execute(new URL(getString(R.string.WS_IP) + "/customers/all"), "GETALL", "customer", null).get();
             UCP.cancel(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -90,14 +91,12 @@ public class AddParcelActivity extends AppCompatActivity {
                 try {
                     addParcel(view);
                 } catch (Exception e) {
-                    Snackbar.make(view, "There was an error with the delivery date", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, "There was an error, please try again", Snackbar.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }
@@ -110,7 +109,7 @@ public class AddParcelActivity extends AppCompatActivity {
         return intent;
     }
 
-    private void addParcel(View view){
+    private void addParcel(View view) throws MalformedURLException {
         Parcel parcel = new Parcel();
 
         String spinnerChoice = deliveryType.getSelectedItem().toString();
@@ -146,11 +145,26 @@ public class AddParcelActivity extends AppCompatActivity {
         parcel.setOutForDelivery(false);
         parcel.setDelivered(false);
 
-        database.addParcel(parcel);
+        //POST REQUEST TO WEB SERVICE
+        PCP = new ParcelContentProvider();
+        try {
+            boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
+            PCP.cancel(true);
+            if(response){
+                intent = new Intent(this, DashboardActivity.class);
+                intent.putExtra("Driver", driver);
+                startActivity(intent);
+            }else{
+                Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+            }
 
-        intent = new Intent(this, DashboardActivity.class);
-        intent.putExtra("Driver", driver);
-        startActivity(intent);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
 
     }
 }
