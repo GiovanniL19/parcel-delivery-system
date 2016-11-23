@@ -11,7 +11,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
@@ -44,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
         database = new DatabaseController(this, null, null, 0);
     }
 
-    public void registerCustomer(View view){
+    public void registerCustomer(View view) throws MalformedURLException, ExecutionException, InterruptedException {
         String usN = String.valueOf(username.getText());
         String pass = String.valueOf(password.getText());
         String eM = String.valueOf(email.getText());
@@ -68,7 +70,18 @@ public class RegisterActivity extends AppCompatActivity {
             driver.setContactNumber(contact);
 
             //add the customer and return the id
-            int id = database.addDriver(driver);
+            //int id = database.addDriver(driver); //SQLITE
+
+            //RETURNS OBJECT
+            String id = (String) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/users/new"), "POST", "driver", driver).get();
+            if(id != null){
+                Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }else{
+                Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
+            }
+
         }else{
             Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
             customer.setContactNumber(contact);
@@ -77,7 +90,14 @@ public class RegisterActivity extends AppCompatActivity {
             //int id = database.addCustomer(customer); //SQLITE
 
             //RETURNS OBJECT
-            (T) new UserDAOController().execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "POST", "driver").get();
+            String id = (String) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/users/new"), "POST", "customer", customer).get();
+            if(id != null){
+                Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }else{
+                Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
+            }
         }
 
         //Hide keyboard
@@ -85,10 +105,6 @@ public class RegisterActivity extends AppCompatActivity {
             InputMethodManager inputMethod = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethod.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-
-        Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
 
     }
 }

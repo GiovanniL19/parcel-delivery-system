@@ -2,11 +2,16 @@ package giovannilenguito.co.uk.parceldelivery;
 
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
@@ -21,11 +26,23 @@ import giovannilenguito.co.uk.parceldelivery.Models.Driver;
  */
 
 public class Parser {
+    public static String buildString(BufferedReader buffRead) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+
+        while ((line = buffRead.readLine()) != null) {
+            stringBuilder.append(line+"\n");
+        }
+        buffRead.close();
+
+        return stringBuilder.toString();
+    }
+
     public static <T> T JSONtoUser(String json, String type) {
         if(json != null) {
             Map jsonMap = new Gson().fromJson(json, Map.class);
 
-            int id = Integer.parseInt(jsonMap.get("id").toString());
+            String id = jsonMap.get("id").toString();
             String username = jsonMap.get("username").toString();
             String password = jsonMap.get("password").toString();
             String email = jsonMap.get("email").toString();
@@ -75,13 +92,13 @@ public class Parser {
                     String username = user.getElementsByTagName("username").item(0).getTextContent();
                     String password = user.getElementsByTagName("password").item(0).getTextContent();
 
-                    String email, fullName, lineOne, lineTwo, city, postcode, country;
-                    int contactNumber, id;
+                    String id, email, fullName, lineOne, lineTwo, city, postcode, country;
+                    int contactNumber;
 
                     email = user.getElementsByTagName("email").item(0).getTextContent();
                     fullName = user.getElementsByTagName("fullName").item(0).getTextContent();
                     contactNumber = (Integer.parseInt(user.getElementsByTagName("contactNumber").item(0).getTextContent()));
-                    id = (Integer.parseInt(user.getElementsByTagName("id").item(0).getTextContent()));
+                    id = user.getElementsByTagName("id").item(0).getTextContent();
 
                     Element address = (Element) user.getElementsByTagName("address").item(0);
 
@@ -114,5 +131,51 @@ public class Parser {
         }
 
         return null;
+    }
+
+    public static JSONObject driverToJSON(Driver driver) throws JSONException {
+
+        JSONObject address = new JSONObject();
+        address.put("lineOne", driver.getAddressLineTwo());
+        address.put("lineTwo", driver.getAddressLineTwo());
+        address.put("city", driver.getCity());
+        address.put("postcode", driver.getPostcode());
+        address.put("country", driver.getCountry());
+
+        JSONObject user = new JSONObject();
+        user.put("id", driver.getId());
+        user.put("type", driver.getType());
+        user.put("username", driver.getUsername());
+        user.put("password", driver.getPassword());
+        user.put("email", driver.getEmail());
+        user.put("fullName", driver.getFullName());
+        user.put("contactNumber", driver.getContactNumber());
+        user.put("address", address);
+
+
+        return user;
+    }
+
+    public static JSONObject customerToJSON(Customer customer) throws JSONException {
+
+        JSONObject address = new JSONObject();
+        address.put("lineOne", customer.getAddressLineTwo());
+        address.put("lineTwo", customer.getAddressLineTwo());
+        address.put("city", customer.getCity());
+        address.put("postcode", customer.getPostcode());
+        address.put("country", customer.getCountry());
+
+        JSONObject user = new JSONObject();
+        user.put("id", customer.getId());
+        user.put("type", customer.getType());
+        user.put("username", customer.getUsername());
+        user.put("password", customer.getPassword());
+        user.put("email", customer.getEmail());
+        user.put("fullName", customer.getFullName());
+        user.put("contactNumber", customer.getContactNumber());
+        user.put("address", address);
+
+
+        return user;
     }
 }

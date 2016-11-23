@@ -292,8 +292,8 @@ public class DatabaseController extends SQLiteOpenHelper {
         String dateBooked = cursor.getString(cursor.getColumnIndex(COLUMN_DATE_BOOKED));
         String deliveryDate = cursor.getString(cursor.getColumnIndex(COLUMN_DELIVERY_DATE));
         String createdBy = cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_BY));
-        int customerID = cursor.getInt(cursor.getColumnIndex(COLUMN_CUSTOMER));
-        int driverID = cursor.getInt(cursor.getColumnIndex(COLUMN_DRIVER));
+        String customerID = cursor.getString(cursor.getColumnIndex(COLUMN_CUSTOMER));
+        String driverID = cursor.getString(cursor.getColumnIndex(COLUMN_DRIVER));
 
         boolean isDelivered = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_DELIVERED)) > 0;
         boolean isOutForDelivery = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_OUT_FOR_DELIVERY)) > 0;
@@ -312,7 +312,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         parcel.setContents(contents);
         parcel.setDeliveryDate(deliveryDate);
         parcel.setDateBooked(dateBooked);
-        parcel.setCreatedByID(Integer.parseInt(createdBy));
+        parcel.setCreatedByID(createdBy);
         parcel.setCustomerID(customerID);
         parcel.setDriverID(driverID);
 
@@ -325,7 +325,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         parcel.setCity(city);
         parcel.setCountry(country);
         parcel.setPostcode(postcode);
-        parcel.setId(Integer.parseInt(rowId));
+        parcel.setId(rowId);
 
         return parcel;
     }
@@ -453,7 +453,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         String country = cursor.getString(cursor.getColumnIndex(COLUMN_COUNTRY));
 
         Customer customer = new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
-        customer.setId(Integer.parseInt(rowId));
+        customer.setId(rowId);
         return customer;
     }
 
@@ -485,11 +485,11 @@ public class DatabaseController extends SQLiteOpenHelper {
 
             if(type.equals("Customer")) {
                 Customer customer = new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
-                customer.setId(Integer.parseInt(rowId));
+                customer.setId(rowId);
                 return (T) customer;
             }else{
                 Driver driver = new Driver(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country);
-                driver.setId(Integer.parseInt(rowId));
+                driver.setId(rowId);
                 return (T) driver;
             }
         }else{

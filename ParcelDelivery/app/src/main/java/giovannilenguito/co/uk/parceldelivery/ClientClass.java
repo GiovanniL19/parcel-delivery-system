@@ -1,7 +1,11 @@
 package giovannilenguito.co.uk.parceldelivery;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -10,6 +14,36 @@ import java.net.URL;
  */
 
 public class ClientClass {
+    public static String postUser(URL url, int timeout, JSONObject JSONUser) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setDoOutput(true);
+        connection.setRequestMethod("POST");
+        connection.setUseCaches(false);
+        connection.setConnectTimeout(timeout);
+        connection.setReadTimeout(timeout);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Content-Type", "text/plain");
+        connection.connect();
+
+        OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+        out.write(String.valueOf(JSONUser));
+        out.close();
+        int statusCode = connection.getResponseCode();
+
+        BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+        switch (statusCode) {
+            case 200:
+                System.out.println("All okay");
+                return Parser.buildString(buffRead);
+            case 201:
+                System.out.println("Created");
+                return Parser.buildString(buffRead);
+        }
+
+        return null;
+    }
 
     public static String getJSONByURL(URL url, int timeout) {
         HttpURLConnection connection = null;
@@ -34,15 +68,7 @@ public class ClientClass {
                     System.out.println("All okay");
                 case 201:
                     BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-
-                    while ((line = buffRead.readLine()) != null) {
-                        stringBuilder.append(line+"\n");
-                    }
-                    buffRead.close();
-
-                    return stringBuilder.toString();
+                    return Parser.buildString(buffRead);
             }
 
         } catch (Exception e) {

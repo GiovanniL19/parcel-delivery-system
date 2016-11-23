@@ -8,17 +8,17 @@ import java.util.Date;
  */
 
 public class Parcel extends Address implements Serializable{
-    private int id; //used for SQL Lite
+    private String id;
 
-    private int driverID;
-    private int customerID;
+    private String driverID;
+    private String customerID;
     private String recipientName;
     private String serviceType;
     private String contents;
 
     private String dateBooked;
     private String deliveryDate;
-    private int createdByID;
+    private String createdByID;
 
     private boolean isDelivered;
     private boolean isOutForDelivery;
@@ -36,11 +36,11 @@ public class Parcel extends Address implements Serializable{
         }
     }
 
-    public int getCustomerID() {
+    public String getCustomerID() {
         return customerID;
     }
 
-    public void setCustomerID(int customerID) {
+    public void setCustomerID(String customerID) {
         this.customerID = customerID;
     }
 
@@ -48,11 +48,11 @@ public class Parcel extends Address implements Serializable{
         return this.id + " - " + this.recipientName;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -64,19 +64,19 @@ public class Parcel extends Address implements Serializable{
         this.recipientName = recipientName;
     }
 
-    public int getCreatedByID() {
+    public String getCreatedByID() {
         return createdByID;
     }
 
-    public void setCreatedByID(int createdByID) {
+    public void setCreatedByID(String createdByID) {
         this.createdByID = createdByID;
     }
 
-    public int getDriverID() {
+    public String getDriverID() {
         return driverID;
     }
 
-    public void setDriverID(int driverID) {
+    public void setDriverID(String driverID) {
         this.driverID = driverID;
     }
 

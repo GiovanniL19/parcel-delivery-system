@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class User extends Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private int id; //used for SQL Lite
+    private String id; //used for SQL Lite
 
     private String email;
     private String username;
@@ -25,11 +25,11 @@ public class User extends Address implements Serializable {
         this.contactNumber = contactNumber;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

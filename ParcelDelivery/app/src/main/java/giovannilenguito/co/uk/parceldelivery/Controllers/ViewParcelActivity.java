@@ -124,14 +124,14 @@ public class ViewParcelActivity extends AppCompatActivity {
     }
 
     public void cancelParcel(View view){
-        if(database.deleteParcel(parcel.getId())){
-            Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
-            Intent dashboard = new Intent(this, DashboardActivity.class);
-            dashboard.putExtra("Customer", customer);
-            startActivity(dashboard);
-        }else{
-            Snackbar.make(thisA, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
-        }
+        //if(database.deleteParcel(parcel.getId())){
+        //    Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
+        //    Intent dashboard = new Intent(this, DashboardActivity.class);
+        //    dashboard.putExtra("Customer", customer);
+        //    startActivity(dashboard);
+       // }else{
+       //     Snackbar.make(thisA, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
+       // }
     }
 
     public void changeStatus(View view){

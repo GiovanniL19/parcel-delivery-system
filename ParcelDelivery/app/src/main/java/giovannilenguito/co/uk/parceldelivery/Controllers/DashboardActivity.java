@@ -90,18 +90,18 @@ public class DashboardActivity extends AppCompatActivity {
 
         try {
             if(customer != null){
-                parcelList = database.getRowsByCustomer(customer.getId());
+                //parcelList = database.getRowsByCustomer(customer.getId());
             }else{
-                parcelList = database.getRowsByDriver(driver.getId());
+                //parcelList = database.getRowsByDriver(driver.getId());
             }
 
             //Implements custom adapter
-            ListAdapter adapter = new ParcelAdapter(this, parcelList);
+           // ListAdapter adapter = new ParcelAdapter(this, parcelList);
 
-            ListView dashboardList = (ListView)findViewById(R.id.dashboardList);
-            dashboardList.setAdapter(adapter);
+            //ListView dashboardList = (ListView)findViewById(R.id.dashboardList);
+            //dashboardList.setAdapter(adapter);
 
-            dashboardList.setOnItemClickListener(
+            /*dashboardList.setOnItemClickListener(
                     new AdapterView.OnItemClickListener() {
 
                         @Override
@@ -114,7 +114,7 @@ public class DashboardActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }
-            );
+            );*/
         }catch(Exception e){
             e.printStackTrace();
             Snackbar.make(findViewById(R.id.activity_dashboard), "There was an error", Snackbar.LENGTH_LONG).show();

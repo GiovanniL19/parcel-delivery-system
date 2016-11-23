@@ -46,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
     public <T> T isAuthenticatedCustomer(String username) throws MalformedURLException {
         try {
             //XML
-            //return (T) new UserDAOController().execute(new URL("http://10.205.205.198:8080/main/PDS?WSDL"), "XML", username).get();
+            //return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:8080/main/PDS?WSDL"), "XML", username).get();
 
             //JSON
             if(isDriver.isChecked()){
-                return (T) new UserDAOController().execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "GET", "driver").get();
+                return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "GET", "driver").get();
             }else{
-                return (T) new UserDAOController().execute(new URL("http://10.205.205.198:9998/customers/byUsername/"+ username), "GET", "customer").get();
+                return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/customers/byUsername/"+ username), "GET", "customer").get();
             }
 
         }catch(Exception e){
