@@ -27,7 +27,7 @@ public class UserContentProvider extends AsyncTask<Object, Object, Object> {
 
         switch(method){
             case "GET":
-                return getUser(url, 60000, userType);
+                return Parser.JSONtoUser(ClientClass.getJSONByURL(url, 60000), userType);
             case "POST":
                 if(userType.equals("customer")){
                     try {
@@ -56,10 +56,6 @@ public class UserContentProvider extends AsyncTask<Object, Object, Object> {
         }
 
         return null;
-    }
-
-    private Object getUser(URL url, int timeout, String userType){
-        return Parser.JSONtoUser(ClientClass.getJSONByURL(url, timeout), userType);
     }
 }
 

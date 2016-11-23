@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
@@ -24,7 +22,7 @@ public class ViewParcelActivity extends AppCompatActivity {
     TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents, deliveryType;
 
     View thisA;
-    private DatabaseController  database;
+    private SQLiteDatabaseController database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +43,7 @@ public class ViewParcelActivity extends AppCompatActivity {
         setUpView();
 
         //set up database
-        database = new DatabaseController(this, null, null, 0);
+        database = new SQLiteDatabaseController(this, null, null, 0);
 
         thisA = findViewById(R.id.activity_view_parcel);
     }

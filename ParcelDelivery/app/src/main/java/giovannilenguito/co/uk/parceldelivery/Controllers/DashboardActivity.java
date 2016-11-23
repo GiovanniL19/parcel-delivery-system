@@ -12,6 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Adapters.ParcelAdapter;
@@ -23,8 +26,9 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
-    private DatabaseController database;
+    private SQLiteDatabaseController database;
 
+    private ParcelContentProvider contentProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,22 +44,11 @@ public class DashboardActivity extends AppCompatActivity {
         setTitle("Your Parcels");
 
         //set up database
-        database = new DatabaseController(this, null, null, 0);
+        database = new SQLiteDatabaseController(this, null, null, 0);
 
         //Get parcels
-        new getParcels().execute();
-
-
+        generateTable();
     }
-
-    private class getParcels extends AsyncTask<Object, Object, Void> {
-        protected Void doInBackground(Object... params)
-        {
-            generateTable();
-            return null;
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,24 +77,44 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void generateTable() {
-        List<Parcel> parcelList;
-        View view = this.getCurrentFocus();
-
+    public <T> T getContent() throws MalformedURLException {
         try {
+            URL url = null;
+            //MAKE URL
             if(customer != null){
-                //parcelList = database.getRowsByCustomer(customer.getId());
-            }else{
+                //parcelList = database.getRowsByCustomer(customer.getId()); //SQLITE
+                url = new URL("http://10.205.205.198:9998/parcels/byCustomer/"+ customer.getId());
+            }else if(driver != null){
                 //parcelList = database.getRowsByDriver(driver.getId());
+                url = new URL("http://10.205.205.198:9998/parcels/byCreatedId/"+ driver.getId());
             }
 
+            //GET CONTENT
+            return (T) contentProvider.execute(url, "GET", null, "ARRAY").get();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void generateTable() {
+        List<Parcel> parcelList = null;
+        View view = this.getCurrentFocus();
+        contentProvider = new ParcelContentProvider();
+        try {
+            Object parcels = getContent();
+            if(parcels instanceof List){
+             parcelList = (List) parcels;
+            }
+            System.out.println(parcelList);
+
             //Implements custom adapter
-           // ListAdapter adapter = new ParcelAdapter(this, parcelList);
+            ListAdapter adapter = new ParcelAdapter(this, parcelList);
 
-            //ListView dashboardList = (ListView)findViewById(R.id.dashboardList);
-            //dashboardList.setAdapter(adapter);
+            ListView dashboardList = (ListView)findViewById(R.id.dashboardList);
+            dashboardList.setAdapter(adapter);
 
-            /*dashboardList.setOnItemClickListener(
+            dashboardList.setOnItemClickListener(
                     new AdapterView.OnItemClickListener() {
 
                         @Override
@@ -114,7 +127,8 @@ public class DashboardActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }
-            );*/
+            );
+
         }catch(Exception e){
             e.printStackTrace();
             Snackbar.make(findViewById(R.id.activity_dashboard), "There was an error", Snackbar.LENGTH_LONG).show();

@@ -19,11 +19,12 @@ import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
     private Intent intent;
-    private DatabaseController database;
+    private SQLiteDatabaseController database;
 
     EditText username, password;
     Switch isDriver;
 
+    UserContentProvider UCP;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         isDriver = (Switch)findViewById(R.id.isDriver);
 
         //set up database
-        database = new DatabaseController(this, null, null, 0);
+        database = new SQLiteDatabaseController(this, null, null, 0);
     }
 
     public void goToRegister(View view){
@@ -49,10 +50,11 @@ public class MainActivity extends AppCompatActivity {
             //return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:8080/main/PDS?WSDL"), "XML", username).get();
 
             //JSON
+            UCP = new UserContentProvider();
             if(isDriver.isChecked()){
-                return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "GET", "driver").get();
+                return (T) UCP.execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "GET", "driver").get();
             }else{
-                return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/customers/byUsername/"+ username), "GET", "customer").get();
+                return (T) UCP.execute(new URL("http://10.205.205.198:9998/customers/byUsername/"+ username), "GET", "customer").get();
             }
 
         }catch(Exception e){
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                         if (customer.getPassword().equals(sPassword)) {
                             intent.putExtra("Customer", (Customer) user);
                             startActivity(intent);
+                            UCP.cancel(true);
                         } else {
                             hideSoftKeyboard();
                             Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                         if (driver.getPassword().equals(sPassword)) {
                             intent.putExtra("Driver", (Driver) user);
                             startActivity(intent);
+                            UCP.cancel(true);
                         } else {
                             hideSoftKeyboard();
                             Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();

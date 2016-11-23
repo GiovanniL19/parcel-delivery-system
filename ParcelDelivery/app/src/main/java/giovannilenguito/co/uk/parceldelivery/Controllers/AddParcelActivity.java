@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +28,7 @@ public class AddParcelActivity extends AppCompatActivity {
     private List<Customer> customers;
     private Spinner spinner;
 
-    private DatabaseController  database;
+    private SQLiteDatabaseController database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class AddParcelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_parcel);
         setTitle("New Parcel");
         //set up database
-        database = new DatabaseController(this, null, null, 0);
+        database = new SQLiteDatabaseController(this, null, null, 0);
 
         //Get customer
         intent = getIntent();
@@ -116,7 +115,6 @@ public class AddParcelActivity extends AppCompatActivity {
         Customer customer = customers.get(selectedCustomerPosition);
 
         parcel.setCustomerID(customer.getId());
-        parcel.setDriverID(driver.getId());
         parcel.setAddressLineOne(customer.getAddressLineOne());
         parcel.setAddressLineTwo(customer.getAddressLineTwo());
         parcel.setCity(customer.getCity());

@@ -18,7 +18,7 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
  * Created by giovannilenguito on 08/11/2016.
  */
 
-public class DatabaseController extends SQLiteOpenHelper {
+public class SQLiteDatabaseController extends SQLiteOpenHelper {
     private static final int Database_VERSION = 8;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
@@ -57,7 +57,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_ID_OUT_FOR_DELIVERY = "isOutForDelivery";
     private static final String COLUMN_IS_PROCESSING = "isProcessing";
 
-    public DatabaseController(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public SQLiteDatabaseController(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, Database_VERSION);
     }
 
@@ -116,7 +116,6 @@ public class DatabaseController extends SQLiteOpenHelper {
     public int addParcel(Parcel parcel){
         //Create list of values
         ContentValues values = new ContentValues();
-        values.put(COLUMN_DRIVER, parcel.getDriverID());
         values.put(COLUMN_RECIPIENT_NAME, parcel.getRecipientName());
         values.put(COLUMN_SERVICE_TYPE, parcel.getServiceType());
         values.put(COLUMN_CONTENTS, parcel.getContents());
@@ -191,8 +190,6 @@ public class DatabaseController extends SQLiteOpenHelper {
     public int updateParcel(Parcel parcel){
         //Create list of values
         ContentValues values = new ContentValues();
-
-        values.put(COLUMN_DRIVER, parcel.getDriverID());
         values.put(COLUMN_RECIPIENT_NAME, parcel.getRecipientName());
         values.put(COLUMN_SERVICE_TYPE, parcel.getServiceType());
         values.put(COLUMN_CONTENTS, parcel.getContents());
@@ -314,7 +311,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         parcel.setDateBooked(dateBooked);
         parcel.setCreatedByID(createdBy);
         parcel.setCustomerID(customerID);
-        parcel.setDriverID(driverID);
 
         parcel.setDelivered(isDelivered);
         parcel.setOutForDelivery(isOutForDelivery);

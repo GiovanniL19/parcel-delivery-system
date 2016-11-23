@@ -2,6 +2,7 @@ package giovannilenguito.co.uk.parceldelivery;
 
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -9,10 +10,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 
 /**
  * Created by giovannilenguito on 22/11/2016.
@@ -38,6 +41,38 @@ public class Parser {
         return stringBuilder.toString();
     }
 
+    public static List<Parcel> parcelList(String json) throws JSONException {
+        if(json != null) {
+            //Create json array
+            List<Parcel> listOfParcels = new ArrayList<>();
+
+            JSONArray jsonArray = new JSONArray(json);
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject object = jsonArray.getJSONObject(i);
+
+                Map jsonMap = new Gson().fromJson(object.toString(), Map.class);
+
+                String id = jsonMap.get("id").toString();
+                String customerID = jsonMap.get("customerID").toString();
+                String recipientName = jsonMap.get("recipientName").toString();
+                String serviceType = jsonMap.get("serviceType").toString();
+                String contents = jsonMap.get("contents").toString();
+
+                String dateBooked = jsonMap.get("dateBooked").toString();
+                String deliveryDate = jsonMap.get("deliveryDate").toString();
+                String createdByID = jsonMap.get("createdByID").toString();
+
+                boolean isDelivered = Boolean.parseBoolean(jsonMap.get("isDelivered").toString());
+                boolean isOutForDelivery = Boolean.parseBoolean(jsonMap.get("isOutForDelivery").toString());
+                boolean isProcessing = Boolean.parseBoolean(jsonMap.get("isProcessing").toString());
+
+                Parcel parcel = new Parcel(id, customerID, recipientName, serviceType, contents, dateBooked, deliveryDate, createdByID, isDelivered, isOutForDelivery, isProcessing);
+                listOfParcels.add(parcel);
+            }
+            return listOfParcels;
+        }
+        return null;
+    }
     public static <T> T JSONtoUser(String json, String type) {
         if(json != null) {
             Map jsonMap = new Gson().fromJson(json, Map.class);

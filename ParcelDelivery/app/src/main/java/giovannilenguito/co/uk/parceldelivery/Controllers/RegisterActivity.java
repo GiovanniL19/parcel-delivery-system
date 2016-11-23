@@ -22,7 +22,7 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText username, password, email, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country;
-    private DatabaseController database;
+    private SQLiteDatabaseController database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         postcode = (EditText)findViewById(R.id.postcode);
         country = (EditText)findViewById(R.id.country);
 
-        database = new DatabaseController(this, null, null, 0);
+        database = new SQLiteDatabaseController(this, null, null, 0);
     }
 
     public void registerCustomer(View view) throws MalformedURLException, ExecutionException, InterruptedException {

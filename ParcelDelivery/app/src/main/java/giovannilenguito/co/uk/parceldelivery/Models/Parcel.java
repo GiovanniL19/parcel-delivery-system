@@ -10,7 +10,6 @@ import java.util.Date;
 public class Parcel extends Address implements Serializable{
     private String id;
 
-    private String driverID;
     private String customerID;
     private String recipientName;
     private String serviceType;
@@ -18,7 +17,8 @@ public class Parcel extends Address implements Serializable{
 
     private String dateBooked;
     private String deliveryDate;
-    private String createdByID;
+
+    private String createdByID; //is also the drive id
 
     private boolean isDelivered;
     private boolean isOutForDelivery;
@@ -34,6 +34,22 @@ public class Parcel extends Address implements Serializable{
         }else{
             return "Pending";
         }
+    }
+
+    public Parcel(){}
+
+    public Parcel(String id, String customerID, String recipientName, String serviceType, String contents, String dateBooked, String deliveryDate, String createdByID, boolean isDelivered, boolean isOutForDelivery, boolean isProcessing) {
+        this.id = id;
+        this.customerID = customerID;
+        this.recipientName = recipientName;
+        this.serviceType = serviceType;
+        this.contents = contents;
+        this.dateBooked = dateBooked;
+        this.deliveryDate = deliveryDate;
+        this.createdByID = createdByID;
+        this.isDelivered = isDelivered;
+        this.isOutForDelivery = isOutForDelivery;
+        this.isProcessing = isProcessing;
     }
 
     public String getCustomerID() {
@@ -70,14 +86,6 @@ public class Parcel extends Address implements Serializable{
 
     public void setCreatedByID(String createdByID) {
         this.createdByID = createdByID;
-    }
-
-    public String getDriverID() {
-        return driverID;
-    }
-
-    public void setDriverID(String driverID) {
-        this.driverID = driverID;
     }
 
     public String getServiceType() {
