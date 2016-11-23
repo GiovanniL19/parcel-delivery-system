@@ -28,7 +28,6 @@ public class ViewParcelActivity extends AppCompatActivity {
 
     private ParcelContentProvider contentProvider;
 
-    private SQLiteDatabaseController database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +47,6 @@ public class ViewParcelActivity extends AppCompatActivity {
         setTitle(parcel.getTitle());
         setUpView();
 
-        //set up database
-        database = new SQLiteDatabaseController(this, null, null, 0);
 
         thisA = findViewById(R.id.activity_view_parcel);
     }
@@ -168,11 +165,9 @@ public class ViewParcelActivity extends AppCompatActivity {
             txt.setVisibility(View.VISIBLE);
         }
 
-
-        //if(database.updateParcel(parcel) > 0){ //SQLITE
         try {
             contentProvider = new ParcelContentProvider();
-            URL url = new URL("http://10.205.205.198:9998/parcels/update");
+            URL url = new URL(getString(R.string.WS_IP) + "/parcels/update");
             boolean didUpdate = (boolean) contentProvider.execute(url, "PUT", null, null, parcel).get();
             contentProvider.cancel(true);
             if (didUpdate) {

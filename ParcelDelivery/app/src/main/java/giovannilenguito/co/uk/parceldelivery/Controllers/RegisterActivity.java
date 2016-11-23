@@ -22,7 +22,6 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText username, password, email, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country;
-    private SQLiteDatabaseController database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +41,6 @@ public class RegisterActivity extends AppCompatActivity {
         city = (EditText)findViewById(R.id.city);
         postcode = (EditText)findViewById(R.id.postcode);
         country = (EditText)findViewById(R.id.country);
-
-        database = new SQLiteDatabaseController(this, null, null, 0);
     }
 
     public void registerCustomer(View view) throws MalformedURLException, ExecutionException, InterruptedException {
@@ -69,11 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
             Driver driver = new Driver(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty);
             driver.setContactNumber(contact);
 
-            //add the customer and return the id
-            //int id = database.addDriver(driver); //SQLITE
-
             //RETURNS OBJECT
-            String id = (String) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/users/new"), "POST", "driver", driver).get();
+            String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) +  "/users/new"), "POST", "driver", driver).get();
             if(id != null){
                 Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
@@ -86,11 +80,8 @@ public class RegisterActivity extends AppCompatActivity {
             Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
             customer.setContactNumber(contact);
 
-            //add the customer and return the id
-            //int id = database.addCustomer(customer); //SQLITE
-
             //RETURNS OBJECT
-            String id = (String) new UserContentProvider().execute(new URL("http://10.205.205.198:9998/users/new"), "POST", "customer", customer).get();
+            String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) + "/users/new"), "POST", "customer", customer).get();
             if(id != null){
                 Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);

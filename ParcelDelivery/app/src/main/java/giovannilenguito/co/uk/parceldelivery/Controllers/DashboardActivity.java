@@ -26,7 +26,6 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
-    //private SQLiteDatabaseController database;
 
     private ParcelContentProvider contentProvider;
     @Override
@@ -42,9 +41,6 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         setTitle("Your Parcels");
-
-        //set up database sqlite
-        //database = new SQLiteDatabaseController(this, null, null, 0);
 
         //Get parcels
         generateTable();
@@ -78,11 +74,9 @@ public class DashboardActivity extends AppCompatActivity {
             URL url = null;
             //MAKE URL
             if(customer != null){
-                //parcelList = database.getRowsByCustomer(customer.getId()); //SQLITE
-                url = new URL("http://10.205.205.198:9998/parcels/byCustomer/"+ customer.getId());
+                url = new URL(getString(R.string.WS_IP) + "/parcels/byCustomer/"+ customer.getId());
             }else if(driver != null){
-                //parcelList = database.getRowsByDriver(driver.getId());
-                url = new URL("http://10.205.205.198:9998/parcels/byCreatedId/"+ driver.getId());
+                url = new URL(getString(R.string.WS_IP) + "/parcels/byCreatedId/"+ driver.getId());
             }
 
             //GET CONTENT

@@ -52,10 +52,10 @@ public class AddParcelActivity extends AppCompatActivity {
 
         UCP = new UserContentProvider();
         //customers = database.getAllCustomers(); //sqllite
-        URL url = null;
         try {
-            url = new URL("http://10.205.205.198:9998/customers/all");
+            URL url = new URL(getString(R.string.WS_IP) + "/customers/all");
             customers = (List<Customer>) UCP.execute(url, "GETALL", "customer", null).get();
+            UCP.cancel(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

@@ -51,11 +51,12 @@ public class MainActivity extends AppCompatActivity {
             //return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:8080/main/PDS?WSDL"), "XML", username).get();
 
             //JSON
+
             UCP = new UserContentProvider();
             if(isDriver.isChecked()){
-                return (T) UCP.execute(new URL("http://10.205.205.198:9998/drivers/byUsername/"+ username), "GET", "driver").get();
+                return (T) UCP.execute(new URL(getString(R.string.WS_IP) +  "/drivers/byUsername/"+ username), "GET", "driver").get();
             }else{
-                return (T) UCP.execute(new URL("http://10.205.205.198:9998/customers/byUsername/"+ username), "GET", "customer").get();
+                return (T) UCP.execute(new URL(getString(R.string.WS_IP) + "/customers/byUsername/"+ username), "GET", "customer").get();
             }
 
         }catch(Exception e){
@@ -101,26 +102,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-
-                /* //OLD CODE
-                Object user = database.authenticate(sUsername, sPassword);
-
-                if( user instanceof Customer )
-                {
-                    intent.putExtra("Customer", (Customer) user);
-                }
-                else if( user instanceof Driver)
-                {
-                    intent.putExtra("Driver", (Driver) user);
-                }
-
-                if(user != null) {
-                    startActivity(intent);
-                }else{
-                    hideSoftKeyboard();
-                    Snackbar.make(view, "Incorrect login details", Snackbar.LENGTH_LONG).show();
-                }
-                */
             }else {
                 hideSoftKeyboard();
                 Snackbar.make(view, "Please enter your password", Snackbar.LENGTH_LONG).show();
