@@ -87,6 +87,42 @@ public class Parser {
         }
         return null;
     }
+
+    public static List<Customer> customerList(String json) throws JSONException {
+        if(json != null) {
+            //Create json array
+            List<Customer> listOfCustomers = new ArrayList<>();
+
+            JSONArray jsonArray = new JSONArray(json);
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject object = jsonArray.getJSONObject(i);
+
+                Map jsonMap = new Gson().fromJson(object.toString(), Map.class);
+
+                String id = jsonMap.get("id").toString();
+                String username = jsonMap.get("username").toString();
+                String password = jsonMap.get("password").toString();
+                String email = jsonMap.get("email").toString();
+                String fullName = jsonMap.get("fullName").toString();
+                int contactNumber = Integer.parseInt(jsonMap.get("contactNumber").toString());
+
+
+                Map address = (Map) jsonMap.get("address");
+                String lineOne = address.get("lineOne").toString();
+                String lineTwo = address.get("lineTwo").toString();
+                String city = address.get("city").toString();
+                String postcode = address.get("postcode").toString();
+                String country = address.get("country").toString();
+                Customer customer = new Customer(email, username, password, fullName, contactNumber, lineOne, lineTwo, city, postcode, country, null);
+                customer.setId(id);
+
+                listOfCustomers.add(customer);
+            }
+            return listOfCustomers;
+        }
+        return null;
+    }
+
     public static <T> T JSONtoUser(String json, String type) {
         if(json != null) {
             Map jsonMap = new Gson().fromJson(json, Map.class);
@@ -226,5 +262,30 @@ public class Parser {
 
 
         return user;
+    }
+
+    public static JSONObject parcelToJSON(Parcel parcel) throws JSONException {
+
+        JSONObject address = new JSONObject();
+        address.put("lineOne", parcel.getAddressLineTwo());
+        address.put("lineTwo", parcel.getAddressLineTwo());
+        address.put("city", parcel.getCity());
+        address.put("postcode", parcel.getPostcode());
+        address.put("country", parcel.getCountry());
+
+        JSONObject json = new JSONObject();
+        json.put("id", parcel.getId());
+        json.put("customerID", parcel.getCustomerID());
+        json.put("recipientName", parcel.getRecipientName());
+        json.put("serviceType", parcel.getServiceType());
+        json.put("contents", parcel.getContents());
+        json.put("dateBooked", parcel.getDateBooked());
+        json.put("deliveryDate", parcel.getDeliveryDate());
+        json.put("createdByID", parcel.getCreatedByID());
+        json.put("isDelivered", parcel.isDelivered());
+        json.put("isOutForDelivery", parcel.isOutForDelivery());
+        json.put("isProcessing", parcel.isProcessing());
+
+        return json;
     }
 }

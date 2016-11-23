@@ -8,20 +8,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class ViewParcelActivity extends AppCompatActivity {
-    Customer customer;
-    Driver driver;
-    Parcel parcel;
-    Intent intent;
+    private Customer customer;
+    private Driver driver;
+    private Parcel parcel;
+    private Intent intent;
 
-    TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents, deliveryType;
+    private TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents, deliveryType;
 
-    View thisA;
+    private View thisA;
+
+    private ParcelContentProvider contentProvider;
+
     private SQLiteDatabaseController database;
 
     @Override
@@ -132,7 +138,7 @@ public class ViewParcelActivity extends AppCompatActivity {
        // }
     }
 
-    public void changeStatus(View view){
+    public void changeStatus(View view) throws MalformedURLException {
         //Save changes
 
         //Get selected button
@@ -163,21 +169,31 @@ public class ViewParcelActivity extends AppCompatActivity {
         }
 
 
-        if(database.updateParcel(parcel) > 0){
-            //Set all buttons to unselected colour
-            Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
-            Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
-            Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
+        //if(database.updateParcel(parcel) > 0){ //SQLITE
+        try {
+            contentProvider = new ParcelContentProvider();
+            URL url = new URL("http://10.205.205.198:9998/parcels/update");
+            boolean didUpdate = (boolean) contentProvider.execute(url, "PUT", null, null, parcel).get();
+            contentProvider.cancel(true);
+            if (didUpdate) {
+                //Set all buttons to unselected colour
+                Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
+                Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
+                Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
 
-            buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-            buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-            buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
 
-            buttonPressed.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                buttonPressed.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
 
-            Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
-        }else{
+                Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
             Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();
         }
     }

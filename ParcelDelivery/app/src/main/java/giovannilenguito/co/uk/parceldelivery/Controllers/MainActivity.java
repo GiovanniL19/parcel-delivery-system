@@ -21,10 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private Intent intent;
     private SQLiteDatabaseController database;
 
-    EditText username, password;
-    Switch isDriver;
+    private EditText username, password;
+    private Switch isDriver;
 
-    UserContentProvider UCP;
+    private UserContentProvider UCP;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!sUsername.matches("")){
             if(!sPassword.matches("")){
+                Snackbar.make(view, "Attempting login...", Snackbar.LENGTH_LONG).show();
                 intent = new Intent(this, DashboardActivity.class);
 
                 Object user = isAuthenticatedCustomer(sUsername);

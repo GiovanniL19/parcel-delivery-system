@@ -11,9 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
@@ -29,7 +32,7 @@ public class AddParcelActivity extends AppCompatActivity {
     private Spinner spinner;
 
     private SQLiteDatabaseController database;
-
+    private UserContentProvider UCP;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +50,19 @@ public class AddParcelActivity extends AppCompatActivity {
         contents = (EditText) findViewById(R.id.contents);
         deliveryDate = (EditText) findViewById(R.id.deliveryDate);
 
-        customers = database.getAllCustomers();
+        UCP = new UserContentProvider();
+        //customers = database.getAllCustomers(); //sqllite
+        URL url = null;
+        try {
+            url = new URL("http://10.205.205.198:9998/customers/all");
+            customers = (List<Customer>) UCP.execute(url, "GETALL", "customer", null).get();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
         spinner = (Spinner)findViewById(R.id.customers);
         ArrayList<String> spinnerArray = new ArrayList<>();

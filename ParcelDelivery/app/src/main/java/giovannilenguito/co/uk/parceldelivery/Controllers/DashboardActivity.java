@@ -26,7 +26,7 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
-    private SQLiteDatabaseController database;
+    //private SQLiteDatabaseController database;
 
     private ParcelContentProvider contentProvider;
     @Override
@@ -43,8 +43,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         setTitle("Your Parcels");
 
-        //set up database
-        database = new SQLiteDatabaseController(this, null, null, 0);
+        //set up database sqlite
+        //database = new SQLiteDatabaseController(this, null, null, 0);
 
         //Get parcels
         generateTable();
@@ -53,9 +53,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //add the item to action bar
-        if(customer != null){
-
-        }else{
+        if(driver != null){
             getMenuInflater().inflate(R.menu.add_parcel_button, menu);
         }
         return true;
@@ -70,8 +68,6 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }
@@ -98,14 +94,14 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void generateTable() {
-        List<Parcel> parcelList = null;
-        View view = this.getCurrentFocus();
+        List<Parcel> parcelList;
         contentProvider = new ParcelContentProvider();
+
         try {
             Object parcels = getContent();
             if(parcels instanceof List) {
                 parcelList = (List) parcels;
-
+                contentProvider.cancel(true);
                 //Implements custom adapter
                 ListAdapter adapter = new ParcelAdapter(this, parcelList);
 

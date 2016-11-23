@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import giovannilenguito.co.uk.parceldelivery.ClientClass;
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.Parser;
 
 /**
@@ -36,8 +35,14 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
             case "POST":
 
             case "PUT":
-
-                break;
+                try {
+                    return ClientClass.putParcel(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             case "DELETE":
 
                 break;

@@ -28,6 +28,14 @@ public class UserContentProvider extends AsyncTask<Object, Object, Object> {
         switch(method){
             case "GET":
                 return Parser.JSONtoUser(ClientClass.getJSONByURL(url, 60000), userType);
+            case "GETALL":
+                if(userType.equals("customer")) {
+                    try {
+                        return Parser.customerList(ClientClass.getJSONByURL(url, 60000));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             case "POST":
                 if(userType.equals("customer")){
                     try {

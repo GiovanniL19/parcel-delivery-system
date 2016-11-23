@@ -14,6 +14,37 @@ import java.net.URL;
  */
 
 public class ClientClass {
+
+    public static boolean putParcel(URL url, int timeout, JSONObject JSONUser) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setDoOutput(true);
+        connection.setRequestMethod("PUT");
+        connection.setUseCaches(false);
+        connection.setConnectTimeout(timeout);
+        connection.setReadTimeout(timeout);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Content-Type", "text/plain");
+        connection.connect();
+
+        OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+        out.write(String.valueOf(JSONUser));
+        out.close();
+        int statusCode = connection.getResponseCode();
+
+        //BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+        switch (statusCode) {
+            case 200:
+                System.out.println("All okay");
+                return true;
+            case 201:
+                System.out.println("Created");
+                return true;
+        }
+
+        return false;
+    }
     public static String postUser(URL url, int timeout, JSONObject JSONUser) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
