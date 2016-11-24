@@ -4,8 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -53,10 +51,11 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
     private String encImage;
 
 
+    //LOCATION
     private double lat;
     private double lon;
     private GoogleApiClient mGoogleApiClient;
-    android.location.Location mLastLocation;
+    private android.location.Location mLastLocation;
 
     private boolean locationReady = false;
     @Override
@@ -253,7 +252,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
             }
             Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
         }else{
-            Snackbar.make(view, "There was an error getting location", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
         }
 
     }
