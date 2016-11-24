@@ -25,7 +25,7 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
             case "GET":
                 if(returnType.equals("ARRAY")){
                     try {
-                        String json = ClientClass.getJSONByURL(url, 6000);
+                        String json = ClientClass.get(url, 6000);
                         return Parser.parcelList(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -63,8 +63,12 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
                     return false;
                 }
             case "DELETE":
-
-                break;
+                String response = ClientClass.delete(url, 6000);
+                if (response == null) {
+                    return false;
+                }else{
+                    return true;
+                }
         }
         return null;
     }

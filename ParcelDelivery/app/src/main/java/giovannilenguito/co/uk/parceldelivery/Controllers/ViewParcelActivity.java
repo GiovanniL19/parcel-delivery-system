@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
@@ -124,15 +125,19 @@ public class ViewParcelActivity extends AppCompatActivity {
 
     }
 
-    public void cancelParcel(View view){
-        //if(database.deleteParcel(parcel.getId())){
-        //    Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
-        //    Intent dashboard = new Intent(this, DashboardActivity.class);
-        //    dashboard.putExtra("Customer", customer);
-        //    startActivity(dashboard);
-       // }else{
-       //     Snackbar.make(thisA, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
-       // }
+    public void cancelParcel(View view) throws MalformedURLException, ExecutionException, InterruptedException {
+        contentProvider = new ParcelContentProvider();
+        boolean didDelete = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/delete/" + parcel.getId()), "DELETE", null, null).get();
+        if (didDelete) {
+            Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
+            Intent dashboard = new Intent(this, DashboardActivity.class);
+            dashboard.putExtra("Customer", customer);
+            dashboard.putExtra("Driver", driver);
+            startActivity(dashboard);
+        }else{
+            Snackbar.make(thisA, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
+        }
+        contentProvider.cancel(true);
     }
 
     public void changeStatus(View view) throws MalformedURLException {
