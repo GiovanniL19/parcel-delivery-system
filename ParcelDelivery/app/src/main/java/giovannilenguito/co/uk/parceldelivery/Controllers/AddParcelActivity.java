@@ -1,9 +1,15 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -15,6 +21,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,10 +35,11 @@ import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.Models.Location;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
-public class AddParcelActivity extends AppCompatActivity {
+public class AddParcelActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Driver driver;
     private Spinner deliveryType;
     private EditText recipientName, contents, deliveryDate;
@@ -36,22 +47,23 @@ public class AddParcelActivity extends AppCompatActivity {
     private List<Customer> customers;
     private Spinner spinner;
     private ImageView previewImage;
-    private SQLiteDatabaseController database;
     private UserContentProvider UCP;
     private ParcelContentProvider PCP;
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String encImage;
 
+
+    private double lat;
+    private double lon;
+    private GoogleApiClient mGoogleApiClient;
+    android.location.Location mLastLocation;
+
+    private boolean locationReady = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_parcel);
         setTitle("New Parcel");
-
-        //set up database
-        database = new SQLiteDatabaseController(this, null, null, 0);
-
         //Get customer
         intent = getIntent();
         driver = (Driver) intent.getSerializableExtra("Driver");
@@ -75,16 +87,50 @@ public class AddParcelActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        spinner = (Spinner)findViewById(R.id.customers);
+        spinner = (Spinner) findViewById(R.id.customers);
         ArrayList<String> spinnerArray = new ArrayList<>();
 
-        for(Customer customer: customers){
+        for (Customer customer : customers) {
             spinnerArray.add(customer.getFullName() + " (" + customer.getId() + ")");
         }
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
         spinner.setAdapter(spinnerArrayAdapter);
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
+        }
     }
+
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                lat = mLastLocation.getLatitude();
+                lon = mLastLocation.getLongitude();
+                locationReady = true;
+            }
+        }else {
+            Snackbar.make(this.getCurrentFocus(), "You need to allow the permission", Snackbar.LENGTH_LONG).show();
+        }
+    }
+    @Override
+    public void onConnectionSuspended(int i) {locationReady = false;}
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {locationReady = false;}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,7 +171,7 @@ public class AddParcelActivity extends AppCompatActivity {
             previewImage.setImageBitmap(imageBitmap);
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] bytes = byteArrayOutputStream.toByteArray();
             String encodedImage = Base64.encodeToString(bytes, Base64.DEFAULT);
             encImage = "data:image/jpeg;base64," + encodedImage;
@@ -178,26 +224,37 @@ public class AddParcelActivity extends AppCompatActivity {
 
         //Set image
         parcel.setImage(encImage);
-        //POST REQUEST TO WEB SERVICE
-        PCP = new ParcelContentProvider();
-        try {
-            boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
-            PCP.cancel(true);
-            if(response){
-                intent = new Intent(this, DashboardActivity.class);
-                intent.putExtra("Driver", driver);
-                startActivity(intent);
-            }else{
-                Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+
+        //Set location
+        if(locationReady) {
+            Location location = new Location(parcel.getId(), lon, lat);
+            parcel.setLocation(location);
+
+            //POST REQUEST TO WEB SERVICE
+            PCP = new ParcelContentProvider();
+            try {
+                boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
+                PCP.cancel(true);
+                if (response) {
+                    intent = new Intent(this, DashboardActivity.class);
+                    intent.putExtra("Driver", driver);
+                    System.out.println(parcel.getLocation().getLongitude());
+                    System.out.println(parcel.getLocation().getLatitude());
+                    System.out.println("WORKED");
+                    startActivity(intent);
+                } else {
+                    Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
+        }else{
+            Snackbar.make(view, "There was an error getting location", Snackbar.LENGTH_LONG).show();
         }
-
-        Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
 
     }
 }

@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Giovanni on 19/10/2016.
  */
 
-public class Parcel extends Address implements Serializable{
+public class Parcel extends Address implements Serializable {
     private String id;
 
     private String customerID;
@@ -26,19 +26,22 @@ public class Parcel extends Address implements Serializable{
 
     private String image;
 
-    public String getStatus(){
-        if(isDelivered){
+    private Location location;
+
+    public String getStatus() {
+        if (isDelivered) {
             return "Delivered";
-        }else if(isOutForDelivery){
+        } else if (isOutForDelivery) {
             return "Out For Delivery";
-        }else if(isProcessing){
+        } else if (isProcessing) {
             return "Processing";
-        }else{
+        } else {
             return "Pending";
         }
     }
 
-    public Parcel(){}
+    public Parcel() {
+    }
 
     public Parcel(String id, String customerID, String recipientName, String serviceType, String contents, String dateBooked, String deliveryDate, String createdByID, boolean isDelivered, boolean isOutForDelivery, boolean isProcessing) {
         this.id = id;
@@ -62,7 +65,7 @@ public class Parcel extends Address implements Serializable{
         this.customerID = customerID;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return this.id + " - " + this.recipientName;
     }
 
@@ -152,5 +155,13 @@ public class Parcel extends Address implements Serializable{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

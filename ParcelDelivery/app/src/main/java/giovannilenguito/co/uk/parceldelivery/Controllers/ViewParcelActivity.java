@@ -3,10 +3,13 @@ package giovannilenguito.co.uk.parceldelivery.Controllers;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,6 +60,26 @@ public class ViewParcelActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //add the item to action bar
+        getMenuInflater().inflate(R.menu.view_map_parcel_button, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        View view = this.getCurrentFocus();
+        switch (item.getItemId()) {
+            case R.id.action_view_map_parcel:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
     public Intent getParentActivityIntent() {
         intent = new Intent(this, DashboardActivity.class);
         intent.putExtra("Customer", customer);
@@ -74,7 +97,6 @@ public class ViewParcelActivity extends AppCompatActivity {
         contents = (TextView) findViewById(R.id.contents);
         deliveryType = (TextView) findViewById(R.id.deliveryType);
 
-
         deliveryStatus.setText(parcel.getStatus());
         lineOne.setText(parcel.getAddressLineOne());
         if(parcel.getAddressLineTwo() == null || parcel.getAddressLineTwo().isEmpty()){
@@ -86,7 +108,6 @@ public class ViewParcelActivity extends AppCompatActivity {
         country.setText(parcel.getCountry());
         contents.setText(parcel.getContents());
         deliveryType.setText(parcel.getServiceType());
-
 
         //Set all buttons to unselected colour
         Button buttonProcessing = (Button) findViewById(R.id.processingBtn);

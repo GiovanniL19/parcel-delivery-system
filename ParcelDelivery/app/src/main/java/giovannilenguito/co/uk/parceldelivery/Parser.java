@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.Models.Location;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 
 /**
@@ -77,6 +78,15 @@ public class Parser {
                 String country = address.get("country").toString();
 
 
+                Map location = (Map) jsonMap.get("location");
+
+                String parcelID = location.get("parcelID").toString();
+                double longitude = Double.parseDouble(location.get("longitude").toString());
+                double latitude = Double.parseDouble(location.get("latitude").toString());
+
+                Location loc = new Location(parcelID, longitude, latitude);
+                loc.setLocationID(location.get("locationID").toString());
+
                 Parcel parcel = new Parcel(id, customerID, recipientName, serviceType, contents, dateBooked, deliveryDate, createdByID, isDelivered, isOutForDelivery, isProcessing);
                 parcel.setAddressLineOne(lineOne);
                 parcel.setAddressLineTwo(lineTwo);
@@ -84,6 +94,7 @@ public class Parser {
                 parcel.setPostcode(postcode);
                 parcel.setCountry(country);
                 parcel.setImage(image);
+                parcel.setLocation(loc);
 
                 listOfParcels.add(parcel);
             }
@@ -162,66 +173,6 @@ public class Parser {
         return null;
     }
 
-    public static <T> T XMLtoUser(String body) {
-        try{
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
-            Document doc = builder.parse(new InputSource(new StringReader(body)));
-
-            if(doc != null) {
-                //get all user elements
-                NodeList nodes = doc.getElementsByTagName("user");
-
-                //loop over all nodes (users)
-                for(int i = 0; i < nodes.getLength(); i++ ){
-                    //get current user from iteration
-                    Element user = (Element) nodes.item(i);
-                    //Create the type of object
-                    String type = user.getElementsByTagName("type").item(0).getTextContent();
-                    String username = user.getElementsByTagName("username").item(0).getTextContent();
-                    String password = user.getElementsByTagName("password").item(0).getTextContent();
-
-                    String id, email, fullName, lineOne, lineTwo, city, postcode, country;
-                    int contactNumber;
-
-                    email = user.getElementsByTagName("email").item(0).getTextContent();
-                    fullName = user.getElementsByTagName("fullName").item(0).getTextContent();
-                    contactNumber = (Integer.parseInt(user.getElementsByTagName("contactNumber").item(0).getTextContent()));
-                    id = user.getElementsByTagName("id").item(0).getTextContent();
-
-                    Element address = (Element) user.getElementsByTagName("address").item(0);
-
-                    lineOne = address.getElementsByTagName("lineOne").item(0).getTextContent();
-                    lineTwo = address.getElementsByTagName("lineTwo").item(0).getTextContent();
-                    city = address.getElementsByTagName("city").item(0).getTextContent();
-                    postcode = address.getElementsByTagName("postcode").item(0).getTextContent();
-                    country = address.getElementsByTagName("country").item(0).getTextContent();
-
-
-                    if(type.equals("Customer")){
-                        Customer customer = new Customer(email, username, password, fullName, contactNumber, lineOne, lineTwo, city, postcode, country, null);
-                        customer.setId(id);
-
-                        return (T) customer;
-                    }else{
-                        Driver driver = new Driver(email, username, password, fullName, contactNumber, lineOne, lineTwo, city, postcode, country);
-                        driver.setId(id);
-
-                        return (T) driver;
-                    }
-                }
-                return null;
-            }else{
-                System.out.println("No Document");
-                return null;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public static JSONObject driverToJSON(Driver driver) throws JSONException {
 
         JSONObject address = new JSONObject();
@@ -277,6 +228,12 @@ public class Parser {
         address.put("postcode", parcel.getPostcode());
         address.put("country", parcel.getCountry());
 
+        JSONObject location = new JSONObject();
+        location.put("longitude", parcel.getLocation().getLongitude());
+        location.put("latitude", parcel.getLocation().getLatitude());
+        location.put("parcelID", parcel.getId());
+        location.put("locationID", parcel.getLocation().getLocationID());
+
         JSONObject json = new JSONObject();
         json.put("id", parcel.getId());
         json.put("customerID", parcel.getCustomerID());
@@ -290,6 +247,8 @@ public class Parser {
         json.put("isOutForDelivery", parcel.isOutForDelivery());
         json.put("isProcessing", parcel.isProcessing());
         json.put("image", parcel.getImage());
+        json.put("address", address);
+        json.put("location", location);
 
         return json;
     }
