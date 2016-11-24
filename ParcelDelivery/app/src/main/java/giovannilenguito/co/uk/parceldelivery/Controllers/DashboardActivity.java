@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,7 +42,13 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         setTitle("Your Parcels");
+        TextView welcome = (TextView) findViewById(R.id.welcomeMsg);
 
+        if(driver == null){
+            welcome.setText("Hello " + customer.getFullName());
+        }else{
+            welcome.setText("Hello " + driver.getFullName());
+        }
         //Get parcels
         generateTable();
     }
@@ -96,6 +103,25 @@ public class DashboardActivity extends AppCompatActivity {
             if(parcels instanceof List) {
                 parcelList = (List) parcels;
                 contentProvider.cancel(true);
+
+                TextView processing = (TextView) findViewById(R.id.numberOfProcessing);
+                TextView onWay = (TextView) findViewById(R.id.numberOfOnWay);
+                TextView totalParcels = (TextView) findViewById(R.id.numberOfParcels);
+
+                totalParcels.setText(String.valueOf(parcelList.size()));
+
+                int processingCount = 0;
+                int onWayCount = 0;
+                for(int i = 0; i < parcelList.size(); i++){
+                    if(parcelList.get(i).isOutForDelivery()){
+                        onWayCount++;
+                    }else if(parcelList.get(i).isProcessing()){
+                        processingCount++;
+                    }
+                }
+
+                processing.setText(String.valueOf(processingCount));
+                onWay.setText(String.valueOf(onWayCount));
                 //Implements custom adapter
                 ListAdapter adapter = new ParcelAdapter(this, parcelList);
 
