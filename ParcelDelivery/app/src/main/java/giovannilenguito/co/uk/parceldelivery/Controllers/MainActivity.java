@@ -10,8 +10,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
@@ -61,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    public void login(View view) throws MalformedURLException {
+    public void login(View view) throws MalformedURLException, ExecutionException, InterruptedException, JSONException {
         String sUsername = username.getText().toString();
         String sPassword = password.getText().toString();
 
@@ -80,8 +88,15 @@ public class MainActivity extends AppCompatActivity {
                         Customer customer = (Customer) user;
                         if (customer.getPassword().equals(sPassword)) {
                             intent.putExtra("Customer", (Customer) user);
-                            startActivity(intent);
                             UCP.cancel(true);
+
+                            UCP = new UserContentProvider();
+                            //LOG USER LOGIN
+                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + customer.getId() + "\"}";
+                            JSONObject jsonLog = new JSONObject(jsonString);
+                            UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+
+                            startActivity(intent);
                         } else {
                             hideSoftKeyboard();
                             Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();
@@ -90,8 +105,15 @@ public class MainActivity extends AppCompatActivity {
                         Driver driver = (Driver) user;
                         if (driver.getPassword().equals(sPassword)) {
                             intent.putExtra("Driver", (Driver) user);
-                            startActivity(intent);
                             UCP.cancel(true);
+
+                            UCP = new UserContentProvider();
+                            //LOG USER LOGIN
+                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getId() + "\"}";
+                            JSONObject jsonLog = new JSONObject(jsonString);
+                            UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+
+                            startActivity(intent);
                         } else {
                             hideSoftKeyboard();
                             Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();

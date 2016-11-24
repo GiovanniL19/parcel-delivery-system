@@ -60,6 +60,12 @@ public class UserContentProvider extends AsyncTask<Object, Object, Object> {
             case "DELETE":
 
                 break;
+            case "LOG":
+                try {
+                    ClientClass.post(url, 6000, (JSONObject) params[3]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
         }
 

@@ -44,10 +44,10 @@ public class DashboardActivity extends AppCompatActivity {
         setTitle("Your Parcels");
         TextView welcome = (TextView) findViewById(R.id.welcomeMsg);
 
-        if(driver == null){
-            welcome.setText("Hello " + customer.getFullName());
+        if(driver != null){
+            welcome.setText("Hello driver!");
         }else{
-            welcome.setText("Hello " + driver.getFullName());
+            welcome.setText("Hello " + customer.getFullName());
         }
         //Get parcels
         generateTable();
