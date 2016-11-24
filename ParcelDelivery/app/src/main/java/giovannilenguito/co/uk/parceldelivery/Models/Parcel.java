@@ -24,6 +24,8 @@ public class Parcel extends Address implements Serializable{
     private boolean isOutForDelivery;
     private boolean isProcessing;
 
+    private String image;
+
     public String getStatus(){
         if(isDelivered){
             return "Delivered";
@@ -142,5 +144,13 @@ public class Parcel extends Address implements Serializable{
 
     public void setProcessing(boolean processing) {
         isProcessing = processing;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

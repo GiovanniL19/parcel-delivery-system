@@ -66,7 +66,10 @@ public class Parser {
                 boolean isOutForDelivery = Boolean.parseBoolean(jsonMap.get("isOutForDelivery").toString());
                 boolean isProcessing = Boolean.parseBoolean(jsonMap.get("isProcessing").toString());
 
+                String image = jsonMap.get("image").toString();
+
                 Map address = (Map) jsonMap.get("address");
+
                 String lineOne = address.get("lineOne").toString();
                 String lineTwo = address.get("lineTwo").toString();
                 String city = address.get("city").toString();
@@ -80,6 +83,7 @@ public class Parser {
                 parcel.setCity(city);
                 parcel.setPostcode(postcode);
                 parcel.setCountry(country);
+                parcel.setImage(image);
 
                 listOfParcels.add(parcel);
             }
@@ -285,6 +289,7 @@ public class Parser {
         json.put("isDelivered", parcel.isDelivered());
         json.put("isOutForDelivery", parcel.isOutForDelivery());
         json.put("isProcessing", parcel.isProcessing());
+        json.put("image", parcel.getImage());
 
         return json;
     }

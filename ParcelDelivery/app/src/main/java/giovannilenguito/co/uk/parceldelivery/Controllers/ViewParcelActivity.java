@@ -1,11 +1,15 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.net.MalformedURLException;
@@ -90,6 +94,15 @@ public class ViewParcelActivity extends AppCompatActivity {
         Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
         Button cancelBtn = (Button) findViewById(R.id.cancelParcel);
         TextView txt = (TextView) findViewById(R.id.txt);
+
+        ImageView image = (ImageView) findViewById(R.id.image);
+        try {
+            byte[] decodedString = Base64.decode(parcel.getImage(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            image.setImageBitmap(decodedByte);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
         if(customer != null){
             buttonProcessing.setVisibility(View.GONE);

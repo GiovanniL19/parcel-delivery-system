@@ -1,16 +1,21 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
+import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,10 +35,14 @@ public class AddParcelActivity extends AppCompatActivity {
     private Intent intent;
     private List<Customer> customers;
     private Spinner spinner;
-
+    private ImageView previewImage;
     private SQLiteDatabaseController database;
     private UserContentProvider UCP;
     private ParcelContentProvider PCP;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private String encImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +60,7 @@ public class AddParcelActivity extends AppCompatActivity {
         recipientName = (EditText) findViewById(R.id.recipientName);
         contents = (EditText) findViewById(R.id.contents);
         deliveryDate = (EditText) findViewById(R.id.deliveryDate);
+        previewImage = (ImageView) findViewById(R.id.preview);
 
         UCP = new UserContentProvider();
 
@@ -95,10 +105,30 @@ public class AddParcelActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 return true;
-
+            case R.id.action_add_image:
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            previewImage.setImageBitmap(imageBitmap);
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            String encodedImage = Base64.encodeToString(bytes, Base64.DEFAULT);
+            encImage = "data:image/jpeg;base64," + encodedImage;
         }
     }
 
@@ -145,6 +175,9 @@ public class AddParcelActivity extends AppCompatActivity {
         parcel.setOutForDelivery(false);
         parcel.setDelivered(false);
 
+
+        //Set image
+        parcel.setImage(encImage);
         //POST REQUEST TO WEB SERVICE
         PCP = new ParcelContentProvider();
         try {

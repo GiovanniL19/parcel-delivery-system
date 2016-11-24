@@ -101,6 +101,18 @@
                 android:id="@+id/customers"
                 android:background="@drawable/inputfield"/>
 
+            <TextView
+                android:text="Preview Image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView16" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                app:srcCompat="@color/buttonPrimary"
+                android:id="@+id/preview"
+                android:layout_height="140sp" />
+
 
         </LinearLayout>
     </ScrollView>
