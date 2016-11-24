@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText)findViewById(R.id.password);
 
         isDriver = (Switch)findViewById(R.id.isDriver);
+        getSupportActionBar().hide();
     }
 
     public void goToRegister(View view){

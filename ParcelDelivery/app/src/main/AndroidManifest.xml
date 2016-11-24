@@ -15,9 +15,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.RegisterActivity" />
+        <activity android:name=".Controllers.RegisterActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Controllers.MainActivity" />
+        </activity>
         <activity android:name=".Controllers.DashboardActivity" />
-        <activity android:name=".Controllers.AddParcelActivity"> <!-- Adds parent for back button in action bar -->
+        <activity android:name=".Controllers.AddParcelActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Controllers.DashboardActivity" />
