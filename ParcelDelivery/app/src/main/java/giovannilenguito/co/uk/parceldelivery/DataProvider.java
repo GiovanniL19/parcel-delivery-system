@@ -12,10 +12,10 @@ import java.net.URL;
 /**
  * Created by giovannilenguito on 22/11/2016.
  * Class controls of operations including GET, POST, PUT, AND DELETE
- * ClientClass contains operations for PARCEL, CUSTOMER, AND DRIVER
+ * DataProvider contains operations for PARCEL, CUSTOMER, AND DRIVER
  */
 
-public class ClientClass {
+public class DataProvider {
 
     public static String delete(URL url, int timeout) {
         HttpURLConnection connection = null;
@@ -158,64 +158,4 @@ public class ClientClass {
         }
         return null;
     }
-    /*FOR USE WITH SOAP
-    public static String result(URL urlWSDL, String xmlBody) {
-        URL url = null;
-        try {
-            url = urlWSDL;
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            try {
-                //Set up connection
-                connection.setReadTimeout(10000);
-                connection.setConnectTimeout(15000);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "text/xml, application/xml");
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-
-                //Set the body content
-                String body = xmlBody;
-
-                OutputStream output = new BufferedOutputStream(connection.getOutputStream());
-                output.write(body.getBytes());
-                output.flush();
-
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    System.out.println("successful request");
-
-
-                    //Create response
-                    InputStream inputStream = connection.getInputStream();
-
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    String line;
-
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                    }
-
-                    //returns the response
-                    //decode
-                    return stringBuilder.toString();
-
-                } else {
-                    System.out.println("bad request " + connection.getResponseCode());
-                    return null;
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                connection.disconnect();
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    */
 }

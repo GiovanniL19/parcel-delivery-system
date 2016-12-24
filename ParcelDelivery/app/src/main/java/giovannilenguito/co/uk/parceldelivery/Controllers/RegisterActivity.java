@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
             driver.setContactNumber(contact);
 
             //RETURNS ID of new driver
-            String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) +  "/users/new"), "POST", "driver", driver).get();
+            String id = (String) new UserHTTPManager().execute(new URL(getString(R.string.WS_IP) +  "/users/new"), "POST", "driver", driver).get();
             if(id != null){
                 Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
             customer.setContactNumber(contact);
 
             //RETURNS ID of new customer
-            String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) + "/users/new"), "POST", "customer", customer).get();
+            String id = (String) new UserHTTPManager().execute(new URL(getString(R.string.WS_IP) + "/users/new"), "POST", "customer", customer).get();
             if(id != null){
                 Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);

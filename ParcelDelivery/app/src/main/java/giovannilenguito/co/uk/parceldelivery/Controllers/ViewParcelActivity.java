@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -24,7 +23,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
@@ -44,7 +42,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
     private View thisA;
 
-    private ParcelContentProvider contentProvider;
+    private ParcelHTTPManager contentProvider;
 
     //LOCATION
     private double lat;
@@ -215,7 +213,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
     }
 
     public void cancelParcel(View view) throws MalformedURLException, ExecutionException, InterruptedException {
-        contentProvider = new ParcelContentProvider();
+        contentProvider = new ParcelHTTPManager();
         boolean didDelete = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/delete/" + parcel.getId()), "DELETE", null, null).get();
         if (didDelete) {
             Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
@@ -262,7 +260,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         }
 
         try {
-            contentProvider = new ParcelContentProvider();
+            contentProvider = new ParcelHTTPManager();
             boolean didUpdate = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
             contentProvider.cancel(true);
             if (didUpdate) {

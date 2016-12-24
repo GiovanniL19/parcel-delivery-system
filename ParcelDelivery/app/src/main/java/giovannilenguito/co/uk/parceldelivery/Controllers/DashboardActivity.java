@@ -1,7 +1,6 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Adapters.ParcelAdapter;
@@ -28,7 +26,7 @@ public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
 
-    private ParcelContentProvider contentProvider;
+    private ParcelHTTPManager contentProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +94,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void generateTable() {
         List<Parcel> parcelList;
-        contentProvider = new ParcelContentProvider();
+        contentProvider = new ParcelHTTPManager();
 
         try {
             Object parcels = getContent();

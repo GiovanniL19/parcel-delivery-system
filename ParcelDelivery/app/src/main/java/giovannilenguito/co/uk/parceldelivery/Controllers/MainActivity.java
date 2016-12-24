@@ -15,10 +15,6 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
@@ -31,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText username, password;
     private Switch isDriver;
 
-    private UserContentProvider UCP;
+    private UserHTTPManager UCP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     public <T> T isAuthenticatedCustomer(String username) throws MalformedURLException {
         try {
-            //XML
-            //return (T) new UserContentProvider().execute(new URL("http://10.205.205.198:8080/main/PDS?WSDL"), "XML", username).get();
-
             //JSON
-            UCP = new UserContentProvider();
+            UCP = new UserHTTPManager();
             if(isDriver.isChecked()){
                 return (T) UCP.execute(new URL(getString(R.string.WS_IP) +  "/drivers/byUsername/"+ username), "GET", "driver").get();
             }else{
@@ -79,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, DashboardActivity.class);
 
                 Object user = isAuthenticatedCustomer(sUsername);
-
+                UCP.cancel(true);
                 if(user == null){
                     hideSoftKeyboard();
                     Snackbar.make(view, "Incorrect login details", Snackbar.LENGTH_LONG).show();
@@ -90,12 +83,12 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("Customer", (Customer) user);
                             UCP.cancel(true);
 
-                            UCP = new UserContentProvider();
+                            UCP = new UserHTTPManager();
                             //LOG USER LOGIN
                             String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + customer.getId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
                             UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
-
+                            UCP.cancel(true);
                             startActivity(intent);
                         } else {
                             hideSoftKeyboard();
@@ -107,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("Driver", (Driver) user);
                             UCP.cancel(true);
 
-                            UCP = new UserContentProvider();
+                            UCP = new UserHTTPManager();
                             //LOG USER LOGIN
                             String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
                             UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
-
+                            UCP.cancel(true);
                             startActivity(intent);
                         } else {
                             hideSoftKeyboard();

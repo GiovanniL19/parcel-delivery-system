@@ -1,6 +1,7 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,18 +16,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -40,16 +47,17 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class AddParcelActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Driver driver;
     private Spinner deliveryType;
-    private EditText recipientName, contents, deliveryDate;
+    private EditText recipientName, contents;
+    private String deliveryDate;
     private Intent intent;
     private List<Customer> customers;
     private Spinner spinner;
     private ImageView previewImage;
-    private UserContentProvider UCP;
-    private ParcelContentProvider PCP;
+    private UserHTTPManager UCP;
+    private ParcelHTTPManager PCP;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String encImage;
-
+    private TextView dateTitle;
 
     //LOCATION
     private double lat;
@@ -70,10 +78,11 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         deliveryType = (Spinner) findViewById(R.id.deliveryType);
         recipientName = (EditText) findViewById(R.id.recipientName);
         contents = (EditText) findViewById(R.id.contents);
-        deliveryDate = (EditText) findViewById(R.id.deliveryDate);
         previewImage = (ImageView) findViewById(R.id.preview);
 
-        UCP = new UserContentProvider();
+        dateTitle = (TextView) findViewById(R.id.dateTitle);
+
+        UCP = new UserHTTPManager();
 
         try {
             customers = (List<Customer>) UCP.execute(new URL(getString(R.string.WS_IP) + "/customers/all"), "GETALL", "customer", null).get();
@@ -184,76 +193,97 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         return intent;
     }
 
+    public void selectDate(View view){
+        final Calendar calendar = Calendar.getInstance();
+        int cYear = calendar.get(Calendar.YEAR);
+        int cMonth = calendar.get(Calendar.MONTH);
+        int cDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                String date = day + "-" + (month + 1) + "-" + year;
+                deliveryDate = date;
+                dateTitle.setText("Prefered Delivery Date ("+date+")");
+            }
+        }, cYear, cMonth, cDay);
+        datePickerDialog.show();
+    }
+
     private void addParcel(View view) throws MalformedURLException {
         Parcel parcel = new Parcel();
 
-        String spinnerChoice = deliveryType.getSelectedItem().toString();
-        String recipientN = recipientName.getText().toString();
-        String cont = contents.getText().toString();
-        String deliveryD = deliveryDate.getText().toString();
+        if(deliveryDate != null && !deliveryDate.isEmpty()) {
+            String spinnerChoice = deliveryType.getSelectedItem().toString();
+            String recipientN = recipientName.getText().toString();
+            String cont = contents.getText().toString();
+            String deliveryD = deliveryDate;
 
 
-        parcel.setServiceType(spinnerChoice);
-        parcel.setRecipientName(recipientN);
-        parcel.setContents(cont);
-        parcel.setDeliveryDate(deliveryD);
+            parcel.setServiceType(spinnerChoice);
+            parcel.setRecipientName(recipientN);
+            parcel.setContents(cont);
+            parcel.setDeliveryDate(deliveryD);
 
 
-        int selectedCustomerPosition = spinner.getSelectedItemPosition();
+            int selectedCustomerPosition = spinner.getSelectedItemPosition();
 
-        Customer customer = customers.get(selectedCustomerPosition);
+            Customer customer = customers.get(selectedCustomerPosition);
 
-        parcel.setCustomerID(customer.getId());
-        parcel.setAddressLineOne(customer.getAddressLineOne());
-        parcel.setAddressLineTwo(customer.getAddressLineTwo());
-        parcel.setCity(customer.getCity());
-        parcel.setCountry(customer.getCountry());
-        parcel.setPostcode(customer.getPostcode());
+            parcel.setCustomerID(customer.getId());
+            parcel.setAddressLineOne(customer.getAddressLineOne());
+            parcel.setAddressLineTwo(customer.getAddressLineTwo());
+            parcel.setCity(customer.getCity());
+            parcel.setCountry(customer.getCountry());
+            parcel.setPostcode(customer.getPostcode());
 
-        parcel.setCreatedByID(driver.getId());
+            parcel.setCreatedByID(driver.getId());
 
-        Date dateBooked = new Date();
-        parcel.setDateBooked(dateBooked.toString());
+            Date dateBooked = new Date();
+            parcel.setDateBooked(dateBooked.toString());
 
-        //Set status
-        parcel.setProcessing(true);
-        parcel.setOutForDelivery(false);
-        parcel.setDelivered(false);
+            //Set status
+            parcel.setProcessing(true);
+            parcel.setOutForDelivery(false);
+            parcel.setDelivered(false);
 
 
-        //Set image
-        parcel.setImage(encImage);
+            //Set image
+            parcel.setImage(encImage);
 
-        //Set location
-        if(locationReady) {
-            Location location = new Location(parcel.getId(), lon, lat);
-            parcel.setLocation(location);
+            //Set location
+            if (locationReady) {
+                Location location = new Location(parcel.getId(), lon, lat);
+                parcel.setLocation(location);
 
-            //POST REQUEST TO WEB SERVICE
-            PCP = new ParcelContentProvider();
-            try {
-                boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
-                PCP.cancel(true);
-                if (response) {
-                    intent = new Intent(this, DashboardActivity.class);
-                    intent.putExtra("Driver", driver);
-                    System.out.println(parcel.getLocation().getLongitude());
-                    System.out.println(parcel.getLocation().getLatitude());
-                    System.out.println("WORKED");
-                    startActivity(intent);
-                } else {
-                    Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+                //POST REQUEST TO WEB SERVICE
+                PCP = new ParcelHTTPManager();
+                try {
+                    boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
+                    PCP.cancel(true);
+                    if (response) {
+                        intent = new Intent(this, DashboardActivity.class);
+                        intent.putExtra("Driver", driver);
+                        System.out.println(parcel.getLocation().getLongitude());
+                        System.out.println(parcel.getLocation().getLatitude());
+                        System.out.println("WORKED");
+                        startActivity(intent);
+                    } else {
+                        Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
                 }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+                Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
+            } else {
+                Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
             }
-            Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
         }else{
-            Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(view, "Please select delivery date", Snackbar.LENGTH_LONG).show();
         }
-
     }
 }

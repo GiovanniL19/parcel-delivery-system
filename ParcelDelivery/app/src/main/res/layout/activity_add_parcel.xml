@@ -71,16 +71,17 @@
                 android:text="Prefered Delivery Date (DD/MM/YYYY)"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView8" />
+                android:id="@+id/dateTitle" />
 
-            <EditText
+            <Button
+                android:text="Select Date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:id="@+id/deliveryDate"
-                android:layout_marginBottom="30dp"
-                android:inputType="date"
-                android:background="@drawable/inputfield"/>
+                android:id="@+id/dateSelect"
+                android:background="@color/colorAccent"
+                android:textColor="@color/cast_expanded_controller_text_color"
+                android:onClick="selectDate"
+                android:layout_marginBottom="20dp"/>
 
             <TextView
                 android:text="Customer"

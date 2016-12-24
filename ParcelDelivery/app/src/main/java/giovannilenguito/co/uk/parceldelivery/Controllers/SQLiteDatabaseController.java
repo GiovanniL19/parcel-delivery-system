@@ -18,6 +18,8 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
  * Created by giovannilenguito on 08/11/2016.
  */
 
+//to call - = new SQLiteDatabaseController(this, null, null, 0);
+
 public class SQLiteDatabaseController extends SQLiteOpenHelper {
     private static final int Database_VERSION = 8;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
