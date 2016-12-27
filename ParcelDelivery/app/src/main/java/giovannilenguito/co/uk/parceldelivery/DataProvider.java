@@ -57,7 +57,7 @@ public class DataProvider {
         return null;
     }
 
-    public static String put(URL url, int timeout, JSONObject JSONUser) throws IOException {
+    public static String put(URL url, int timeout, JSONObject json) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setDoOutput(true);
@@ -70,7 +70,7 @@ public class DataProvider {
         connection.connect();
 
         OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-        out.write(String.valueOf(JSONUser));
+        out.write(String.valueOf(json));
         out.close();
         int statusCode = connection.getResponseCode();
 
@@ -88,7 +88,7 @@ public class DataProvider {
         return null;
     }
 
-    public static String post(URL url, int timeout, JSONObject JSONUser) throws IOException {
+    public static String post(URL url, int timeout, JSONObject json) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setDoOutput(true);
@@ -101,7 +101,7 @@ public class DataProvider {
         connection.connect();
 
         OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-        out.write(String.valueOf(JSONUser));
+        out.write(String.valueOf(json));
         out.close();
         int statusCode = connection.getResponseCode();
 

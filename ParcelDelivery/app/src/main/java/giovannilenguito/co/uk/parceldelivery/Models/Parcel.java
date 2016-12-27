@@ -18,7 +18,7 @@ public class Parcel extends Address implements Serializable {
     private String dateBooked;
     private String deliveryDate;
 
-    private String createdByID; //is also the drive id
+    private String createdByID; //drive id
 
     private boolean isDelivered;
     private boolean isOutForDelivery;
