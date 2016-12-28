@@ -48,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         String pass = String.valueOf(password.getText());
         String eM = String.valueOf(email.getText());
         String fullN = String.valueOf(fullName.getText());
+
         int contact = 0;
 
         try {

@@ -49,7 +49,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
     private double lon;
     private GoogleApiClient mGoogleApiClient;
     private android.location.Location mLastLocation;
-    boolean locationReady = false;
+    private boolean locationReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
     }
 
     @Override
-    public void onConnected(Bundle connectionHint) {
+    public void onConnected(Bundle connection) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

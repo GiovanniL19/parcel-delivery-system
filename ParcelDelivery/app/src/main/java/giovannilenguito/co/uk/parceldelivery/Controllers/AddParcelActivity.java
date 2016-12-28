@@ -55,7 +55,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
     private ImageView previewImage;
     private UserHTTPManager UCP;
     private ParcelHTTPManager PCP;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private final int REQUEST_IMAGE_CAPTURE = 1;
     private String encImage;
     private TextView dateTitle;
 
@@ -66,6 +66,8 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
     private android.location.Location mLastLocation;
 
     private boolean locationReady = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
