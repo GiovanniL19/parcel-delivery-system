@@ -5,7 +5,21 @@
     android:id="@+id/activity_dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="giovannilenguito.co.uk.parceldelivery.Controllers.DashboardActivity">
+    tools:context="giovannilenguito.co.uk.parceldelivery.Controllers.DashboardActivity"
+    android:background="@color/backColour">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="214dp"
+        app:srcCompat="@drawable/box"
+        android:id="@+id/imageView2"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/dashboardList"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:text="Welcome"
@@ -21,26 +35,8 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp" />
-
-    <ListView
-        android:layout_width="361dp"
-        android:id="@+id/dashboardList"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/numberOfParcels"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_height="350dp"
-        android:layout_marginTop="24dp" />
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/cast_expanded_controller_text_color" />
 
     <TextView
         android:text="All Parcels"
@@ -51,7 +47,8 @@
         app:layout_constraintTop_toBottomOf="@+id/welcomeMsg"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp" />
+        android:layout_marginRight="16dp"
+        android:textColor="@color/cast_expanded_controller_text_color" />
 
     <TextView
         android:text="0"
@@ -65,7 +62,8 @@
         android:layout_marginEnd="35dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="35dp"
-        android:textStyle="normal|bold" />
+        android:textStyle="normal|bold"
+        android:textColor="@color/cast_expanded_controller_text_color" />
 
     <TextView
         android:text="On Its Way"
@@ -80,7 +78,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@+id/textView25"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:textColor="@color/cast_expanded_controller_text_color" />
 
     <TextView
         android:text="Processing"
@@ -92,7 +91,8 @@
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@+id/welcomeMsg"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp" />
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/cast_expanded_controller_text_color" />
 
     <TextView
         android:text="0"
@@ -109,7 +109,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@+id/numberOfProcessing"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:textColor="@color/cast_expanded_controller_text_color" />
 
     <TextView
         android:text="0"
@@ -123,6 +124,28 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="32dp" />
+        android:layout_marginLeft="32dp"
+        android:textColor="@color/cast_expanded_controller_text_color" />
+
+    <ListView
+        android:layout_width="0dp"
+        android:id="@+id/dashboardList"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/numberOfParcels"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/cast_expanded_controller_text_color"
+        app:layout_constraintHorizontal_bias="0.66" />
 
 </android.support.constraint.ConstraintLayout>

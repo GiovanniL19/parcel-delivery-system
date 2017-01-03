@@ -221,11 +221,11 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/txt"
-        android:background="@color/buttonSecondary"
-        android:textColor="@android:color/background_light"
+        android:textColor="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
-        android:onClick="cancelParcel" />
+        android:onClick="cancelParcel"
+        android:background="@color/common_google_signin_btn_text_dark_default" />
 
     <TextView
         android:text="Cancel Parcel means this parcel will be deleted from the database"

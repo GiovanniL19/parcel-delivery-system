@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +19,8 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -140,6 +146,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         return intent;
     }
 
+    @RequiresApi(api = android.os.Build.VERSION_CODES.LOLLIPOP)
     public void setUpView(){
         deliveryStatus = (TextView) findViewById(R.id.deliveryStatus);
         lineOne = (TextView) findViewById(R.id.lineOne);
@@ -200,6 +207,11 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 cancelBtn.setVisibility(View.GONE);
                 txt.setVisibility(View.GONE);
 
+                //Change status bar colour
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.orange));
+
             } else if (parcel.isProcessing()) {
                 buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
@@ -207,6 +219,11 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
                 txt.setVisibility(View.GONE);
+
+                //Change status bar colour
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.green));
             }
         }
 
@@ -227,6 +244,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         contentProvider.cancel(true);
     }
 
+    @RequiresApi(api = android.os.Build.VERSION_CODES.LOLLIPOP)
     public void changeStatus(View view) throws MalformedURLException {
         //Save changes
 
@@ -247,16 +265,32 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
             txt.setVisibility(View.GONE);
+
+            //Change status bar colour
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.green));
         }else if(nameOfButton.toUpperCase().equals("ON ROUTE")){
             parcel.setOutForDelivery(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
             txt.setVisibility(View.GONE);
+
+            //Change status bar colour
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.orange));
+
         }else  if(nameOfButton.toUpperCase().equals("PROCESSING")){
             parcel.setProcessing(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.VISIBLE);
             txt.setVisibility(View.VISIBLE);
+
+            //Change status bar colour
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
         try {
@@ -284,5 +318,8 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             e.printStackTrace();
             Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    private class Build {
     }
 }
