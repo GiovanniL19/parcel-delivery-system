@@ -146,6 +146,8 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
     @RequiresApi(api = android.os.Build.VERSION_CODES.LOLLIPOP)
     public void setUpView(){
+        Button collectionBtn = (Button) findViewById(R.id.collectionBtn);
+
         deliveryStatus = (TextView) findViewById(R.id.deliveryStatus);
         lineOne = (TextView) findViewById(R.id.lineOne);
         lineTwo = (TextView) findViewById(R.id.lineTwo);
@@ -195,6 +197,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 cancelBtn.setVisibility(View.VISIBLE);
             }
         }else {
+            collectionBtn.setVisibility(View.INVISIBLE);
             buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
@@ -223,6 +226,16 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             }
         }
 
+        if(parcel.isCollecting()) {
+            Button cancelButton = (Button) findViewById(R.id.cancelParcel);
+
+            buttonProcessing.setVisibility(View.INVISIBLE);
+            buttonOnRoute.setVisibility(View.INVISIBLE);
+            buttonDelivered.setVisibility(View.INVISIBLE);
+            cancelButton.setVisibility(View.INVISIBLE);
+
+            collectionBtn.setText("Awaiting Collection");
+        }
     }
 
     public void cancelParcel(View view) throws MalformedURLException, ExecutionException, InterruptedException {
@@ -311,6 +324,35 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         }
     }
 
-    private class Build {
+    public void setCollection(View view){
+        parcel.setCollecting(true);
+
+        //Set all buttons to hidden
+        Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
+        Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
+        Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
+        Button cancelButton = (Button) findViewById(R.id.cancelParcel);
+        Button collectionBtn = (Button) findViewById(R.id.collectionBtn);
+
+        buttonProcessing.setVisibility(View.INVISIBLE);
+        buttonOnRoute.setVisibility(View.INVISIBLE);
+        buttonDelivered.setVisibility(View.INVISIBLE);
+        cancelButton.setVisibility(View.INVISIBLE);
+
+        collectionBtn.setText("Awaiting Collection");
+
+        try {
+            contentProvider = new ParcelHTTPManager();
+            boolean didUpdate = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
+            contentProvider.cancel(true);
+            if (didUpdate) {
+                Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();
+        }
     }
 }

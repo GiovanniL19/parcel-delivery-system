@@ -226,10 +226,10 @@
         android:layout_marginBottom="8dp" />
 
     <Button
-        android:text="Collect"
+        android:text="Collect Parcel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/button2"
+        android:id="@+id/collectionBtn"
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="16dp"
@@ -237,10 +237,11 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
         android:textColor="@color/wallet_bright_foreground_holo_dark"
-        android:onClick="cancelParcel"
+        android:onClick="setCollection"
         android:background="@color/colorPrimaryDark"
         app:layout_constraintBottom_toTopOf="@+id/cancelParcel"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        app:layout_constraintHorizontal_bias="0.43" />
 
     <TextView
         android:text="Delivery Type:"

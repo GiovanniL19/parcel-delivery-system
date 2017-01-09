@@ -173,4 +173,5 @@ public class Parcel extends Address implements Serializable {
     public void setCollecting(boolean collecting) {
         isCollecting = collecting;
     }
+
 }
