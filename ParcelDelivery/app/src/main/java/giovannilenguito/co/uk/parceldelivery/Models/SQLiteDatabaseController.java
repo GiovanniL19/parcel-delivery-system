@@ -241,4 +241,12 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
         driver.setId(rowId);
         return driver;
     }
+
+    public void dropUsers(){
+        SQLiteDatabase db = getWritableDatabase();
+        //Delete row from table where id's match
+        db.execSQL("DELETE FROM " + TABLE_USERS);
+
+        db.close();
+    }
 }

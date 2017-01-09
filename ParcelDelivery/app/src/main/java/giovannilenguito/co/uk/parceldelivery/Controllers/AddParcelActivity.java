@@ -268,7 +268,6 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                         intent.putExtra("Driver", driver);
                         System.out.println(parcel.getLocation().getLongitude());
                         System.out.println(parcel.getLocation().getLatitude());
-                        System.out.println("WORKED");
                         startActivity(intent);
                     } else {
                         Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
@@ -279,9 +278,9 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-                Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Connection request issue", Snackbar.LENGTH_LONG).show();
             } else {
-                Snackbar.make(view, "There was an error creating parcel", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Could not get location", Snackbar.LENGTH_LONG).show();
             }
         }else{
             Snackbar.make(view, "Please select delivery date", Snackbar.LENGTH_LONG).show();

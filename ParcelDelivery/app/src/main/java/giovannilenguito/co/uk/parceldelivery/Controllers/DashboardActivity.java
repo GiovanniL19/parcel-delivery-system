@@ -52,10 +52,16 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     @Override
+    //Stays blank to prevent back button from doing anything
+    public void onBackPressed() {}
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //add the item to action bar
-        if(driver != null){
-            getMenuInflater().inflate(R.menu.add_parcel_button, menu);
+        getMenuInflater().inflate(R.menu.add_parcel_button, menu);
+        if(driver == null) {
+            MenuItem add = menu.findItem(R.id.action_add_parcel);
+            add.setVisible(false);
         }
         return true;
     }
@@ -67,6 +73,12 @@ public class DashboardActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AddParcelActivity.class);
                 intent.putExtra("Driver", driver);
                 startActivity(intent);
+                return true;
+            case R.id.action_account:
+                Intent accountIntent = new Intent(this, AccountActivity.class);
+                accountIntent.putExtra("Driver", driver);
+                accountIntent.putExtra("Customer", customer);
+                startActivity(accountIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
