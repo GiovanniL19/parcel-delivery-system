@@ -23,6 +23,7 @@ public class Parcel extends Address implements Serializable {
     private boolean isDelivered;
     private boolean isOutForDelivery;
     private boolean isProcessing;
+    private boolean isCollecting;
 
     private String image;
 
@@ -66,7 +67,7 @@ public class Parcel extends Address implements Serializable {
     }
 
     public String getTitle() {
-        return this.id + " for " + this.recipientName;
+        return this.getAddressLineOne() + " (" + this.id + ")";
     }
 
     public String getId() {
@@ -163,5 +164,13 @@ public class Parcel extends Address implements Serializable {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public boolean isCollecting() {
+        return isCollecting;
+    }
+
+    public void setCollecting(boolean collecting) {
+        isCollecting = collecting;
     }
 }

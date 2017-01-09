@@ -21,11 +21,9 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 //to call - = new SQLiteDatabaseController(this, null, null, 0);
 
 public class SQLiteDatabaseController extends SQLiteOpenHelper {
-    private static final int Database_VERSION = 8;
+    private static final int Database_VERSION = 9;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
-
-    private static final String TABLE_PARCEL = "parcels"; //table name
     private static final String TABLE_USERS = "users"; //table name
 
     //customer table columns
@@ -69,7 +67,6 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Deletes table
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARCEL);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
 
         //Create new one

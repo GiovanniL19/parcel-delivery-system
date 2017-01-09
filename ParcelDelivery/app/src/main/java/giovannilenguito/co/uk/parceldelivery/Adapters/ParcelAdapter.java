@@ -45,7 +45,7 @@ public class ParcelAdapter extends ArrayAdapter<Parcel>{
                 break;
         }
 
-        type.setText(item.getServiceType());
+        type.setText("As requested, your parcel will be delivered via " + item.getServiceType() + " on " + item.getDeliveryDate() + " to " + item.getRecipientName());
         title.setText(item.getTitle());
         status.setText(item.getStatus());
         return customView;

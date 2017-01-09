@@ -17,7 +17,7 @@
         tools:layout_editor_absoluteY="0dp" />
 
     <TextView
-        android:text="PARCEL IT"
+        android:text="DELIVERY"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textView3"

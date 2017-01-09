@@ -103,8 +103,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 lon = mLastLocation.getLongitude();
                 locationReady = true;
             }
-        }else {
-            Snackbar.make(this.getCurrentFocus(), "You need to allow the permission", Snackbar.LENGTH_LONG).show();
         }
     }
     @Override
@@ -177,6 +175,8 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         TextView txt = (TextView) findViewById(R.id.txt);
 
         ImageView image = (ImageView) findViewById(R.id.image);
+
+        txt.setText("As requested, your parcel will be delivered via " + parcel.getServiceType() + " on " + parcel.getDeliveryDate() + " to " + parcel.getRecipientName());
         try {
             byte[] decodedString = Base64.decode(parcel.getImage(), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -190,11 +190,9 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             buttonOnRoute.setVisibility(View.GONE);
             buttonDelivered.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.GONE);
-            txt.setVisibility(View.GONE);
 
             if (parcel.isProcessing()) {
                 cancelBtn.setVisibility(View.VISIBLE);
-                txt.setVisibility(View.VISIBLE);
             }
         }else {
             buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
@@ -205,7 +203,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             if (parcel.isOutForDelivery()) {
                 buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
-                txt.setVisibility(View.GONE);
 
                 //Change status bar colour
                 Window window = getWindow();
@@ -218,7 +215,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             } else if (parcel.isDelivered()) {
                 buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
-                txt.setVisibility(View.GONE);
 
                 //Change status bar colour
                 Window window = getWindow();
@@ -251,8 +247,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         //Get selected button
         Button buttonPressed = (Button) view;
         String nameOfButton = String.valueOf(buttonPressed.getText());
-
-        TextView txt = (TextView) findViewById(R.id.txt);
         
         parcel.setDelivered(false);
         parcel.setProcessing(false);
@@ -264,7 +258,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             parcel.setDelivered(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
-            txt.setVisibility(View.GONE);
 
             //Change status bar colour
             Window window = getWindow();
@@ -274,7 +267,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             parcel.setOutForDelivery(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
-            txt.setVisibility(View.GONE);
 
             //Change status bar colour
             Window window = getWindow();
@@ -285,7 +277,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             parcel.setProcessing(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.VISIBLE);
-            txt.setVisibility(View.VISIBLE);
 
             //Change status bar colour
             Window window = getWindow();

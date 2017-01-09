@@ -26,11 +26,10 @@
 
         <TextView
             android:text="DELIVERY TYPE"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_width="197dp"
+            android:layout_height="wrap_content"
             android:id="@+id/type"
             android:paddingBottom="15dp"
-            android:layout_weight="0.05"
             android:textSize="12sp" />
     </LinearLayout>
 
