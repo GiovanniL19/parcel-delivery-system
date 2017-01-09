@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Parcel Delivery</string>
+    <string name="app_name">Delivery</string>
     <!-- <string name="WS_IP">http://10.205.205.198:9998</string> <!-MAC-->
     <string name="WS_IP">http://10.205.205.198:9998</string><!--OTHER-->
 
