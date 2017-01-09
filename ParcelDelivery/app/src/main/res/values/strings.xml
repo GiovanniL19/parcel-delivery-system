@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Parcel Delivery</string>
     <!-- <string name="WS_IP">http://10.205.205.198:9998</string> <!-MAC-->
-    <string name="WS_IP">http://192.168.0.15:9998</string><!--OTHER-->
+    <string name="WS_IP">http://10.205.205.198:9998</string><!--OTHER-->
 
     <string-array name="delivery_type_array">
         <item>First Class Tracked</item>

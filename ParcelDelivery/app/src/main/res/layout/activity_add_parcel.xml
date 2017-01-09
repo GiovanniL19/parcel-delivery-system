@@ -23,10 +23,45 @@
 
 
             <TextView
+                android:text="You are now adding a new parcel for a customer, the newly created parcel will be added to your jobs list "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView21"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:text="Customer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView26"
+                android:textStyle="normal|bold"
+                android:paddingTop="10dp" />
+
+            <TextView
+                android:text="Select customer recipient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/customerLabel" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/customers"
+                android:background="@drawable/inputfield"/>
+
+            <TextView
+                android:text="Delivery Options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView20"
+                android:textStyle="normal|bold"
+                android:paddingTop="20dp" />
+
+            <TextView
                 android:text="Delivery Type:"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView"/>
+                android:id="@+id/textView" />
 
             <Spinner
                 android:layout_width="match_parent"
@@ -35,37 +70,6 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/inputfield"
                 android:layout_height="40dp" />
-
-            <TextView
-                android:text="Recipient Name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView6" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:id="@+id/recipientName"
-                android:background="@drawable/inputfield"
-                android:layout_marginBottom="10dp"
-                android:inputType="text"
-                android:singleLine="true" />
-
-            <TextView
-                android:text="What is the parcel? (Include weight)"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView7" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:id="@+id/contents"
-                android:layout_weight="0.43"
-                android:background="@drawable/inputfield"/>
 
             <TextView
                 android:text="Prefered Delivery Date (DD/MM/YYYY)"
@@ -84,22 +88,26 @@
                 android:layout_marginBottom="20dp"/>
 
             <TextView
-                android:text="Customer"
+                android:text="Parcel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView20"
-                android:textStyle="normal|bold"/>
+                android:id="@+id/textView22"
+                android:textStyle="normal|bold"
+                android:paddingTop="20dp" />
 
             <TextView
-                android:text="Select customer recipient"
+                android:text="What is the parcel? (Include weight)"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/customerLabel" />
+                android:id="@+id/textView7" />
 
-            <Spinner
+            <EditText
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/customers"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/contents"
+                android:layout_weight="0.43"
                 android:background="@drawable/inputfield"/>
 
             <TextView

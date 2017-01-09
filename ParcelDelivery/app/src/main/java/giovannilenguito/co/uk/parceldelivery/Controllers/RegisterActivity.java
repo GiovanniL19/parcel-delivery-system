@@ -1,5 +1,6 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
@@ -61,6 +62,18 @@ public class RegisterActivity extends AppCompatActivity {
         String cit = String.valueOf(city.getText());
         String postC = String.valueOf(postcode.getText());
         String crty = String.valueOf(country.getText());
+
+        ContentValues values = new ContentValues();
+        values.put("USERNAME", usN);
+        values.put("PASSWORD", pass);
+        values.put("EMAIL", eM);
+        values.put("FULL_NAME", fullN);
+        values.put("CONTACT", contact);
+        values.put("ADDRESS_LINE_ONE", lineOne);
+        values.put("ADDRESS_LINE_TWO", lineTwo);
+        values.put("ADDRESS_CITY", cit);
+        values.put("ADDRESS_POSTCODE", postC);
+        values.put("ADDRESS_COUNTRY", crty);
 
         Switch driverSwitch = (Switch)findViewById(R.id.userType);
         if(driverSwitch.isChecked()){

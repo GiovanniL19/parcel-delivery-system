@@ -1,5 +1,11 @@
 package giovannilenguito.co.uk.parceldelivery;
 
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -7,21 +13,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * Created by giovannilenguito on 22/11/2016.
- * Class controls of operations including GET, POST, PUT, AND DELETE
- * DataProvider contains operations for PARCEL, CUSTOMER, AND DRIVER
- */
+public class ParcelDeliveryContentProvider extends ContentProvider {
+    HttpURLConnection connection = null;
+    Parser parser;
 
-public class DataProvider {
-    public static HttpURLConnection connection;
+    public ParcelDeliveryContentProvider() {
+    }
 
-    public static String delete(URL url) {
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
         try {
-            //make the request
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Content-length", "0");
             connection.setUseCaches(false);
@@ -37,10 +44,9 @@ public class DataProvider {
 
             switch (statusCode) {
                 case 200:
-                    System.out.println("All okay");
+                    return 1;
                 case 201:
-                    BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    return Parser.buildString(buffRead);
+                    return 1;
             }
 
         } catch (Exception e) {
@@ -54,56 +60,20 @@ public class DataProvider {
                 }
             }
         }
-        return null;
+        return 0;
     }
 
-    public static String put(URL url, JSONObject json) throws IOException {
-        try{
-            connection = (HttpURLConnection) url.openConnection();
-
-            connection.setDoOutput(true);
-            connection.setRequestMethod("PUT");
-            connection.setUseCaches(false);
-            connection.setConnectTimeout(60000);
-            connection.setReadTimeout(60000);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Content-Type", "text/plain");
-            connection.connect();
-
-            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            out.write(String.valueOf(json));
-            out.close();
-            int statusCode = connection.getResponseCode();
-
-            BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            switch (statusCode) {
-                case 200:
-                    System.out.println("All okay");
-                    return Parser.buildString(buffRead);
-                case 201:
-                    System.out.println("Created");
-                    return Parser.buildString(buffRead);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
+    @Override
+    public String getType(Uri uri) {
+        // TODO: Implement this to handle requests for the MIME type of the data
+        // at the given URI.
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public static String post(URL url, JSONObject json) throws IOException {
-        try{
-            connection = (HttpURLConnection) url.openConnection();
-
+    @Override
+    public Uri insert(Uri uri, ContentValues values) {
+        try {
+            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setUseCaches(false);
@@ -114,38 +84,40 @@ public class DataProvider {
             connection.connect();
 
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            out.write(String.valueOf(json));
+
+            out.write(String.valueOf(parser.contentValuesToJSON(values)));
             out.close();
             int statusCode = connection.getResponseCode();
-
-            BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
             switch (statusCode) {
                 case 200:
                     System.out.println("All okay");
-                    return Parser.buildString(buffRead);
+                    return uri;
                 case 201:
                     System.out.println("Created");
-                    return Parser.buildString(buffRead);
+                    return uri;
             }
-        } catch (Exception e) {
+
+            return null;
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return null;
+        return uri;
     }
 
-    public static String get(URL url) {
+    @Override
+    public boolean onCreate() {
+        // TODO: Implement this to initialize your content provider on startup.
+        return false;
+    }
+
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         try {
             //make the request
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-length", "0");
             connection.setUseCaches(false);
@@ -163,8 +135,8 @@ public class DataProvider {
                 case 200:
                     System.out.println("All okay");
                 case 201:
+                    //TODO: Return cursor
                     BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    return Parser.buildString(buffRead);
             }
 
         } catch (Exception e) {
@@ -180,4 +152,48 @@ public class DataProvider {
         }
         return null;
     }
+
+    @Override
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        try{
+            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+
+            connection.setDoOutput(true);
+            connection.setRequestMethod("PUT");
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(60000);
+            connection.setReadTimeout(60000);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Content-Type", "text/plain");
+            connection.connect();
+
+            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+            out.write(String.valueOf(parser.contentValuesToJSON(values)));
+            out.close();
+            int statusCode = connection.getResponseCode();
+
+            switch (statusCode) {
+                case 200:
+                    System.out.println("All okay");
+                    return 1;
+                case 201:
+                    System.out.println("Created");
+                    return 1;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return 0;
+    }
+
+
 }

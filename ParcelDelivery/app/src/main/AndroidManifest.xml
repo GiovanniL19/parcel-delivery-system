@@ -2,6 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="giovannilenguito.co.uk.parceldelivery">
 
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.RegisterActivity" >
+        <activity android:name=".Controllers.RegisterActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Controllers.MainActivity" />
@@ -31,10 +46,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Controllers.DashboardActivity" />
         </activity>
+
+        <provider
+            android:name=".ParcelDeliveryContentProvider"
+            android:authorities="giovannilenguito.co.uk.parceldelivery"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" android:required="true"/>
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:required="true"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:required="true"/>
 
 </manifest>

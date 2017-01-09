@@ -8,14 +8,31 @@
     android:paddingLeft="20dp"
     android:paddingRight="20dp">
 
-    <TextView
-        android:text="TITLE"
-        android:layout_width="200dp"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/title"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"/>
+        android:weightSum="1"
+        android:layout_weight="0.29">
+
+        <TextView
+            android:text="TITLE"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/title"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:text="DELIVERY TYPE"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:id="@+id/type"
+            android:paddingBottom="15dp"
+            android:layout_weight="0.05"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
         android:text="STATUS"
@@ -23,7 +40,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/statusText"
         android:layout_weight="1"
-        android:paddingTop="15dp"
+        android:paddingTop="30dp"
         android:paddingBottom="15dp"
+        android:textAlignment="textEnd"
+        android:textAllCaps="true"
         android:textStyle="normal|bold" />
 </LinearLayout>

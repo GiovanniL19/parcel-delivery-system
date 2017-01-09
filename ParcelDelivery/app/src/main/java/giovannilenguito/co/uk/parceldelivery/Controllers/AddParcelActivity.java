@@ -27,8 +27,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.w3c.dom.Text;
-
 import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,7 +45,7 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class AddParcelActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Driver driver;
     private Spinner deliveryType;
-    private EditText recipientName, contents;
+    private EditText contents;
     private String deliveryDate;
     private Intent intent;
     private List<Customer> customers;
@@ -78,7 +76,6 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         driver = (Driver) intent.getSerializableExtra("Driver");
 
         deliveryType = (Spinner) findViewById(R.id.deliveryType);
-        recipientName = (EditText) findViewById(R.id.recipientName);
         contents = (EditText) findViewById(R.id.contents);
         previewImage = (ImageView) findViewById(R.id.preview);
 
@@ -87,7 +84,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         UCP = new UserHTTPManager();
 
         try {
-            customers = (List<Customer>) UCP.execute(new URL(getString(R.string.WS_IP) + "/customers/all"), "GETALL", "customer", null).get();
+            customers = (List<Customer>) UCP.execute(new URL(getString(R.string.WS_IP) + "/customers/all"), "GET", "customers", null).get();
             UCP.cancel(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -217,8 +214,14 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         Parcel parcel = new Parcel();
 
         if(deliveryDate != null && !deliveryDate.isEmpty()) {
+
+            int selectedCustomerPosition = spinner.getSelectedItemPosition();
+
+            Customer customer = customers.get(selectedCustomerPosition);
+            String recipientName = customer.getFullName();
+
             String spinnerChoice = deliveryType.getSelectedItem().toString();
-            String recipientN = recipientName.getText().toString();
+            String recipientN = recipientName;
             String cont = contents.getText().toString();
             String deliveryD = deliveryDate;
 
@@ -228,10 +231,6 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
             parcel.setContents(cont);
             parcel.setDeliveryDate(deliveryD);
 
-
-            int selectedCustomerPosition = spinner.getSelectedItemPosition();
-
-            Customer customer = customers.get(selectedCustomerPosition);
 
             parcel.setCustomerID(customer.getId());
             parcel.setAddressLineOne(customer.getAddressLineOne());

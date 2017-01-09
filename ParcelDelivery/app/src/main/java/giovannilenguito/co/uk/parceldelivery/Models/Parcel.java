@@ -66,7 +66,7 @@ public class Parcel extends Address implements Serializable {
     }
 
     public String getTitle() {
-        return this.id + " - " + this.recipientName;
+        return this.id + " for " + this.recipientName;
     }
 
     public String getId() {

@@ -1,16 +1,21 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import giovannilenguito.co.uk.parceldelivery.DataProvider;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.ParcelDeliveryContentProvider;
 import giovannilenguito.co.uk.parceldelivery.Parser;
 
 /**
@@ -25,19 +30,23 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
 
         switch(method){
             case "GET":
-                return Parser.JSONtoUser(DataProvider.get(url, 60000), userType);
-            case "GETALL":
-                if(userType.equals("customer")) {
+                if(userType.equals("customers")) {
                     try {
-                        return Parser.customerList(DataProvider.get(url, 60000));
+                        return Parser.customerList(DataProvider.get(url));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else{
+                    return Parser.JSONtoUser(DataProvider.get(url), userType);
                 }
             case "POST":
+                //ContentValues values = (ContentValues) params[3];
+                //ParcelDeliveryContentProvider contentProvider = new ParcelDeliveryContentProvider();
+                //contentProvider.insert(Uri.parse(url), values);
+
                 if(userType.equals("customer")){
                     try {
-                        return DataProvider.post(url, 60000, Parser.customerToJSON((Customer) params[3]));
+                        return DataProvider.post(url, Parser.customerToJSON((Customer) params[3]));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -45,22 +54,16 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
                     }
                 }else{
                     try {
-                        return DataProvider.post(url, 60000, Parser.driverToJSON((Driver) params[3]));
+                        return DataProvider.post(url, Parser.driverToJSON((Driver) params[3]));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-            case "PUT":
-
-                break;
-            case "DELETE":
-
-                break;
             case "LOG":
                 try {
-                    DataProvider.post(url, 6000, (JSONObject) params[3]);
+                    DataProvider.post(url, (JSONObject) params[3]);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

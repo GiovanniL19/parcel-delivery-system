@@ -25,7 +25,7 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
             case "GET":
                 if(returnType.equals("ARRAY")){
                     try {
-                        String json = DataProvider.get(url, 6000);
+                        String json = DataProvider.get(url);
                         return Parser.parcelList(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -34,7 +34,7 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                 }
             case "POST":
                 try {
-                    String response = DataProvider.post(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                    String response = DataProvider.post(url, Parser.parcelToJSON((Parcel) params[4]));
                     if (response == null) {
                         return false;
                     }else{
@@ -49,7 +49,7 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                 }
             case "PUT":
                 try {
-                    String response = DataProvider.put(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                    String response = DataProvider.put(url, Parser.parcelToJSON((Parcel) params[4]));
                     if (response == null) {
                         return false;
                     }else{
@@ -63,7 +63,7 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                     return false;
                 }
             case "DELETE":
-                String response = DataProvider.delete(url, 6000);
+                String response = DataProvider.delete(url);
                 if (response == null) {
                     return false;
                 }else{

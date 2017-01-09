@@ -1,6 +1,7 @@
 package giovannilenguito.co.uk.parceldelivery.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,18 @@ public class ParcelAdapter extends ArrayAdapter<Parcel>{
         Parcel item = getItem(position);
         TextView title = (TextView) customView.findViewById(R.id.title);
         TextView status = (TextView) customView.findViewById(R.id.statusText);
+        TextView type = (TextView) customView.findViewById(R.id.type);
 
+        switch(item.getStatus()){
+            case "Delivered":
+                status.setTextColor(Color.parseColor("#009688"));
+                break;
+            case "Out For Delivery":
+                status.setTextColor(Color.parseColor("#D84315"));
+                break;
+        }
+
+        type.setText(item.getServiceType());
         title.setText(item.getTitle());
         status.setText(item.getStatus());
         return customView;

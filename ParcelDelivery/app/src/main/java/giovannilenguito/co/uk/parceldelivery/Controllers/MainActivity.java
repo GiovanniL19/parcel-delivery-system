@@ -2,6 +2,7 @@ package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private Switch isDriver;
 
     private UserHTTPManager UCP;
+
+    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,20 @@ public class MainActivity extends AppCompatActivity {
 
         isDriver = (Switch)findViewById(R.id.isDriver);
         getSupportActionBar().hide();
+
+        intent = new Intent(this, DashboardActivity.class);
+
+        //Check if user is logged in
+        if (database.getAllCustomers().size() > 0){
+            //User logged in
+            intent.putExtra("Customer", database.getAllCustomers().get(0));
+            startActivity(intent);
+        }else{
+            if(database.getAllDrivers().size() > 0){
+                intent.putExtra("Driver", database.getAllDrivers().get(0));
+                startActivity(intent);
+            }
+        }
     }
 
     public void goToRegister(View view){
@@ -69,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         if(!sUsername.matches("")){
             if(!sPassword.matches("")){
                 Snackbar.make(view, "Attempting login...", Snackbar.LENGTH_LONG).show();
-                intent = new Intent(this, DashboardActivity.class);
 
                 Object user = isAuthenticatedCustomer(sUsername);
                 UCP.cancel(true);
@@ -88,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                             String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + customer.getId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
                             UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+                            database.addCustomer(customer);
                             UCP.cancel(true);
                             startActivity(intent);
                         } else {
@@ -105,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                             String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
                             UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+                            database.addDriver(driver);
                             UCP.cancel(true);
                             startActivity(intent);
                         } else {
