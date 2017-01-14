@@ -2,11 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_add_parcel"
-        android:icon="@drawable/ic_add"
-        android:title="Add Parcel"
-        app:showAsAction="always"/>
-    <item
         android:id="@+id/action_account"
         android:icon="@drawable/ic_person_white_24dp"
         android:title="Show Account"

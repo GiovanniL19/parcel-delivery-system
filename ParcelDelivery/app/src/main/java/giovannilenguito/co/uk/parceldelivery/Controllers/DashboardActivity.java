@@ -75,21 +75,12 @@ public class DashboardActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //add the item to action bar
         getMenuInflater().inflate(R.menu.add_parcel_button, menu);
-        if(driver == null) {
-            MenuItem add = menu.findItem(R.id.action_add_parcel);
-            add.setVisible(false);
-        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add_parcel:
-                Intent intent = new Intent(this, AddParcelActivity.class);
-                intent.putExtra("Driver", driver);
-                startActivity(intent);
-                return true;
             case R.id.action_account:
                 Intent accountIntent = new Intent(this, AccountActivity.class);
                 accountIntent.putExtra("Driver", driver);

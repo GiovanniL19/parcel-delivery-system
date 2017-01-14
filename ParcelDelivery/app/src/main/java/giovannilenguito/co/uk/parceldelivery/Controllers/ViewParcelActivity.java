@@ -120,6 +120,11 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         if(driver != null) {
             MenuItem collectIcon = menu.findItem(R.id.action_collect_parcel);
             collectIcon.setVisible(false);
+        }else{
+            if(!parcel.isProcessing()) {
+                MenuItem collectIcon = menu.findItem(R.id.action_collect_parcel);
+                collectIcon.setVisible(false);
+            }
         }
         return true;
     }
@@ -238,22 +243,12 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
 
-                //Change status bar colour
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.orange));
-
             } else if (parcel.isProcessing()) {
                 buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
             } else if (parcel.isDelivered()) {
                 buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
-
-                //Change status bar colour
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.green));
             }
         }
 
@@ -298,35 +293,20 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         parcel.getLocation().setLatitude(lat);
         parcel.getLocation().setLongitude(lon);
 
+        FloatingActionButton cancelBtn = (FloatingActionButton)findViewById(R.id.cancelParcel);
+
         if(nameOfButton.toUpperCase().equals("DELIVERED")){
             parcel.setDelivered(true);
-            Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
-
-            //Change status bar colour
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.green));
             deliveryStatus.setText("Delivered");
         }else if(nameOfButton.toUpperCase().equals("ON ROUTE")){
             parcel.setOutForDelivery(true);
-            Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.GONE);
 
-            //Change status bar colour
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.orange));
             deliveryStatus.setText("On Route");
         }else  if(nameOfButton.toUpperCase().equals("PROCESSING")){
             parcel.setProcessing(true);
-            Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
             cancelBtn.setVisibility(View.VISIBLE);
-
-            //Change status bar colour
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
             deliveryStatus.setText("Processing");
         }
 
