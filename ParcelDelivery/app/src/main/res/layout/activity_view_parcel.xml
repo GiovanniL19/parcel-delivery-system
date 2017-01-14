@@ -208,41 +208,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textView24"
         app:layout_constraintHorizontal_bias="0.0" />
 
-    <Button
-        android:text="Cancel Parcel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/cancelParcel"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        android:textColor="@color/red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:onClick="cancelParcel"
-        android:background="@color/common_google_signin_btn_text_dark_default"
-        android:layout_marginBottom="8dp" />
-
-    <Button
-        android:text="Collect Parcel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/collectionBtn"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        android:textColor="@color/wallet_bright_foreground_holo_dark"
-        android:onClick="setCollection"
-        android:background="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/cancelParcel"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintHorizontal_bias="0.43" />
-
     <TextView
         android:text="Delivery Type:"
         android:layout_width="wrap_content"
@@ -300,4 +265,18 @@
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="16dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/cancelParcel"
+        android:src="@drawable/ic_clear_white_24dp"
+        app:fabSize="normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="cancelParcel"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
 </android.support.constraint.ConstraintLayout>

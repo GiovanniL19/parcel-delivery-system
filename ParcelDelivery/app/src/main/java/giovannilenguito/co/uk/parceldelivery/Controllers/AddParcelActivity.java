@@ -15,6 +15,7 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
@@ -70,6 +71,8 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_parcel);
+        //Hide keyboard on transition, use has to focus on element to bring up keyboard
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setTitle("New Parcel");
         //Get customer
         intent = getIntent();
@@ -202,9 +205,9 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
-                String date = day + "-" + (month + 1) + "-" + year;
+                String date = day + "/" + (month + 1) + "/" + year;
                 deliveryDate = date;
-                dateTitle.setText("Prefered Delivery Date ("+date+")");
+                dateTitle.setText("Estimated Delivery Date: "+ date);
             }
         }, cYear, cMonth, cDay);
         datePickerDialog.show();
@@ -214,73 +217,76 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         Parcel parcel = new Parcel();
 
         if(deliveryDate != null && !deliveryDate.isEmpty()) {
+            if(!contents.getText().toString().isEmpty()) {
+                int selectedCustomerPosition = spinner.getSelectedItemPosition();
 
-            int selectedCustomerPosition = spinner.getSelectedItemPosition();
+                Customer customer = customers.get(selectedCustomerPosition);
+                String recipientName = customer.getFullName();
 
-            Customer customer = customers.get(selectedCustomerPosition);
-            String recipientName = customer.getFullName();
-
-            String spinnerChoice = deliveryType.getSelectedItem().toString();
-            String recipientN = recipientName;
-            String cont = contents.getText().toString();
-            String deliveryD = deliveryDate;
-
-
-            parcel.setServiceType(spinnerChoice);
-            parcel.setRecipientName(recipientN);
-            parcel.setContents(cont);
-            parcel.setDeliveryDate(deliveryD);
+                String spinnerChoice = deliveryType.getSelectedItem().toString();
+                String recipientN = recipientName;
+                String cont = contents.getText().toString();
+                String deliveryD = deliveryDate;
 
 
-            parcel.setCustomerID(customer.getId());
-            parcel.setAddressLineOne(customer.getAddressLineOne());
-            parcel.setAddressLineTwo(customer.getAddressLineTwo());
-            parcel.setCity(customer.getCity());
-            parcel.setCountry(customer.getCountry());
-            parcel.setPostcode(customer.getPostcode());
-
-            parcel.setCreatedByID(driver.getId());
-
-            Date dateBooked = new Date();
-            parcel.setDateBooked(dateBooked.toString());
-
-            //Set status
-            parcel.setProcessing(true);
-            parcel.setOutForDelivery(false);
-            parcel.setDelivered(false);
+                parcel.setServiceType(spinnerChoice);
+                parcel.setRecipientName(recipientN);
+                parcel.setContents(cont);
+                parcel.setDeliveryDate(deliveryD);
 
 
-            //Set image
-            parcel.setImage(encImage);
+                parcel.setCustomerID(customer.getId());
+                parcel.setAddressLineOne(customer.getAddressLineOne());
+                parcel.setAddressLineTwo(customer.getAddressLineTwo());
+                parcel.setCity(customer.getCity());
+                parcel.setCountry(customer.getCountry());
+                parcel.setPostcode(customer.getPostcode());
 
-            //Set location
-            if (locationReady) {
-                Location location = new Location(parcel.getId(), lon, lat);
-                parcel.setLocation(location);
+                parcel.setCreatedByID(driver.getId());
 
-                //POST REQUEST TO WEB SERVICE
-                PCP = new ParcelHTTPManager();
-                try {
-                    boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
-                    PCP.cancel(true);
-                    if (response) {
-                        intent = new Intent(this, DashboardActivity.class);
-                        intent.putExtra("Driver", driver);
-                        System.out.println(parcel.getLocation().getLongitude());
-                        System.out.println(parcel.getLocation().getLatitude());
-                        startActivity(intent);
-                    } else {
-                        Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+                Date dateBooked = new Date();
+                parcel.setDateBooked(dateBooked.toString());
+
+                //Set status
+                parcel.setProcessing(true);
+                parcel.setOutForDelivery(false);
+                parcel.setDelivered(false);
+
+
+                //Set image
+                parcel.setImage(encImage);
+
+                //Set location
+                if (locationReady) {
+                    Location location = new Location(parcel.getId(), lon, lat);
+                    parcel.setLocation(location);
+
+                    //POST REQUEST TO WEB SERVICE
+                    PCP = new ParcelHTTPManager();
+                    try {
+                        boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
+                        PCP.cancel(true);
+                        if (response) {
+                            intent = new Intent(this, DashboardActivity.class);
+                            intent.putExtra("Driver", driver);
+                            System.out.println(parcel.getLocation().getLongitude());
+                            System.out.println(parcel.getLocation().getLatitude());
+                            startActivity(intent);
+                        } else {
+                            Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
                     }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    Snackbar.make(view, "Connection request issue", Snackbar.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(view, "Could not get location", Snackbar.LENGTH_LONG).show();
                 }
-                Snackbar.make(view, "Connection request issue", Snackbar.LENGTH_LONG).show();
-            } else {
-                Snackbar.make(view, "Could not get location", Snackbar.LENGTH_LONG).show();
+            }else{
+                Snackbar.make(view, "Please tell us what the package is", Snackbar.LENGTH_LONG).show();
             }
         }else{
             Snackbar.make(view, "Please select delivery date", Snackbar.LENGTH_LONG).show();

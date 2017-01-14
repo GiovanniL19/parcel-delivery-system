@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/statusText"
         android:layout_weight="1"
-        android:paddingTop="30dp"
+        android:paddingTop="50dp"
         android:paddingBottom="15dp"
         android:textAlignment="textEnd"
         android:textAllCaps="true"

@@ -149,4 +149,19 @@
         android:background="@color/cast_expanded_controller_text_color"
         app:layout_constraintHorizontal_bias="0.66" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newFAB"
+        android:src="@drawable/ic_add"
+        app:fabSize="normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/dashboardList"
+        app:layout_constraintRight_toRightOf="@+id/dashboardList"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:onClick="newParcel" />
+
 </android.support.constraint.ConstraintLayout>

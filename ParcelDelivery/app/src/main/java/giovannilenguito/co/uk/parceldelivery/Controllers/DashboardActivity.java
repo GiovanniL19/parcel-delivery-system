@@ -1,12 +1,17 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.WindowCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -29,6 +34,7 @@ public class DashboardActivity extends AppCompatActivity {
     private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
 
     private ParcelHTTPManager contentProvider;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +43,10 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(intent.getSerializableExtra("Customer") != null){
             customer = (Customer) intent.getSerializableExtra("Customer");
+            findViewById(R.id.newFAB).setVisibility(View.INVISIBLE);
         }else if(intent.getSerializableExtra("Driver") != null){
             driver = (Driver) intent.getSerializableExtra("Driver");
+            findViewById(R.id.newFAB).setVisibility(View.VISIBLE);
         }else{
             database.dropUsers();
             //Go to login
@@ -92,6 +100,12 @@ public class DashboardActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    public void newParcel(View view){
+        Intent intent = new Intent(this, AddParcelActivity.class);
+        intent.putExtra("Driver", driver);
+        startActivity(intent);
     }
 
     public <T> T getContent() throws MalformedURLException {

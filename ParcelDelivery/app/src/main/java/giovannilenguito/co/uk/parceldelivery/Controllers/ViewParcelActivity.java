@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +58,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
     private android.location.Location mLastLocation;
     private boolean locationReady = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +117,10 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
     public boolean onCreateOptionsMenu(Menu menu) {
         //add the item to action bar
         getMenuInflater().inflate(R.menu.view_map_parcel_button, menu);
+        if(driver != null) {
+            MenuItem collectIcon = menu.findItem(R.id.action_collect_parcel);
+            collectIcon.setVisible(false);
+        }
         return true;
     }
 
@@ -130,6 +136,34 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
                 startActivity(mapIntent);
                 return true;
+            case R.id.action_collect_parcel:
+                parcel.setCollecting(true);
+
+                //Set all buttons to hidden
+                Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
+                Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
+                Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
+                FloatingActionButton cancelButton = (FloatingActionButton) findViewById(R.id.cancelParcel);
+
+                buttonProcessing.setVisibility(View.INVISIBLE);
+                buttonOnRoute.setVisibility(View.INVISIBLE);
+                buttonDelivered.setVisibility(View.INVISIBLE);
+                cancelButton.setVisibility(View.INVISIBLE);
+
+                try {
+                    contentProvider = new ParcelHTTPManager();
+                    boolean didUpdate = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
+                    contentProvider.cancel(true);
+                    if (didUpdate) {
+                        deliveryStatus.setText("Collection");
+                        Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                    Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();
+                }
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -146,8 +180,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
     @RequiresApi(api = android.os.Build.VERSION_CODES.LOLLIPOP)
     public void setUpView(){
-        Button collectionBtn = (Button) findViewById(R.id.collectionBtn);
-
         deliveryStatus = (TextView) findViewById(R.id.deliveryStatus);
         lineOne = (TextView) findViewById(R.id.lineOne);
         lineTwo = (TextView) findViewById(R.id.lineTwo);
@@ -173,7 +205,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
         Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
         Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
-        Button cancelBtn = (Button) findViewById(R.id.cancelParcel);
+        FloatingActionButton cancelBtn = (FloatingActionButton) findViewById(R.id.cancelParcel);
         TextView txt = (TextView) findViewById(R.id.txt);
 
         ImageView image = (ImageView) findViewById(R.id.image);
@@ -197,7 +229,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 cancelBtn.setVisibility(View.VISIBLE);
             }
         }else {
-            collectionBtn.setVisibility(View.INVISIBLE);
             buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
@@ -234,7 +265,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             buttonDelivered.setVisibility(View.INVISIBLE);
             cancelButton.setVisibility(View.INVISIBLE);
 
-            collectionBtn.setText("Awaiting Collection");
+            deliveryStatus.setText("Collection");
         }
     }
 
@@ -276,6 +307,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.green));
+            deliveryStatus.setText("Delivered");
         }else if(nameOfButton.toUpperCase().equals("ON ROUTE")){
             parcel.setOutForDelivery(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
@@ -285,7 +317,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.orange));
-
+            deliveryStatus.setText("On Route");
         }else  if(nameOfButton.toUpperCase().equals("PROCESSING")){
             parcel.setProcessing(true);
             Button cancelBtn = (Button)findViewById(R.id.cancelParcel);
@@ -295,6 +327,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            deliveryStatus.setText("Processing");
         }
 
         try {
@@ -314,38 +347,6 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 buttonPressed.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
 
-                Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-            Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();
-        }
-    }
-
-    public void setCollection(View view){
-        parcel.setCollecting(true);
-
-        //Set all buttons to hidden
-        Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
-        Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
-        Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
-        Button cancelButton = (Button) findViewById(R.id.cancelParcel);
-        Button collectionBtn = (Button) findViewById(R.id.collectionBtn);
-
-        buttonProcessing.setVisibility(View.INVISIBLE);
-        buttonOnRoute.setVisibility(View.INVISIBLE);
-        buttonDelivered.setVisibility(View.INVISIBLE);
-        cancelButton.setVisibility(View.INVISIBLE);
-
-        collectionBtn.setText("Awaiting Collection");
-
-        try {
-            contentProvider = new ParcelHTTPManager();
-            boolean didUpdate = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
-            contentProvider.cancel(true);
-            if (didUpdate) {
                 Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
             } else {
                 Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();

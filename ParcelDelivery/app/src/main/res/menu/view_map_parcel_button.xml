@@ -6,4 +6,10 @@
         android:icon="@drawable/ic_map_24dp"
         android:title="View Parcel Location"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_collect_parcel"
+        android:icon="@drawable/ic_directions_walk_white_24dp"
+        android:title="Collect Parcel"
+        app:showAsAction="always"/>
 </menu>
