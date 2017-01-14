@@ -1,21 +1,16 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
-import android.content.ContentValues;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import giovannilenguito.co.uk.parceldelivery.DataProvider;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.ParcelDeliveryContentProvider;
 import giovannilenguito.co.uk.parceldelivery.Parser;
 
 /**
@@ -40,10 +35,6 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
                     return Parser.JSONtoUser(DataProvider.get(url), userType);
                 }
             case "POST":
-                //ContentValues values = (ContentValues) params[3];
-                //ParcelDeliveryContentProvider contentProvider = new ParcelDeliveryContentProvider();
-                //contentProvider.insert(Uri.parse(url), values);
-
                 if(userType.equals("customer")){
                     try {
                         return DataProvider.post(url, Parser.customerToJSON((Customer) params[3]));

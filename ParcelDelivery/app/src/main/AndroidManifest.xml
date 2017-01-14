@@ -47,12 +47,6 @@
                 android:value=".Controllers.DashboardActivity" />
         </activity>
 
-        <provider
-            android:name=".ParcelDeliveryContentProvider"
-            android:authorities="giovannilenguito.co.uk.parceldelivery"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity android:name=".Controllers.AccountActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

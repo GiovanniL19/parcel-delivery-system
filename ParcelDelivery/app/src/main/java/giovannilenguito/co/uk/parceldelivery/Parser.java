@@ -254,22 +254,4 @@ public class Parser {
 
         return json;
     }
-
-    public static JSONObject contentValuesToJSON(ContentValues values) throws JSONException {
-        JSONObject json = new JSONObject();
-        JSONObject address = new JSONObject();
-
-        for (Map.Entry<String, Object> entry : values.valueSet()) {
-            if(entry.getKey().indexOf("ADDRESS") != -1){
-                address.put(entry.getKey(), entry.getValue());
-            }else{
-                json.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        json.put("address", address);
-
-
-        return json;
-    }
 }
