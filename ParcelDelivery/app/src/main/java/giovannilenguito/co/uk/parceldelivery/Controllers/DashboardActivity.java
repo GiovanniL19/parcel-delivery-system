@@ -1,17 +1,14 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.WindowCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -33,7 +30,8 @@ public class DashboardActivity extends AppCompatActivity {
     private Driver driver = null;
     private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
 
-    private ParcelHTTPManager contentProvider;
+    private ParcelHTTPManager parcelHTTPManager;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +41,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(intent.getSerializableExtra("Customer") != null){
             customer = (Customer) intent.getSerializableExtra("Customer");
-            findViewById(R.id.newFAB).setVisibility(View.INVISIBLE);
         }else if(intent.getSerializableExtra("Driver") != null){
             driver = (Driver) intent.getSerializableExtra("Driver");
-            findViewById(R.id.newFAB).setVisibility(View.VISIBLE);
         }else{
             database.dropUsers();
             //Go to login
@@ -59,8 +55,10 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(driver != null){
             welcome.setText("Hello driver!");
+            findViewById(R.id.newFAB).setVisibility(View.INVISIBLE);
         }else{
             welcome.setText("Hello " + customer.getFullName());
+            findViewById(R.id.newFAB).setVisibility(View.VISIBLE);
         }
 
         //Get parcels
@@ -95,7 +93,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void newParcel(View view){
         Intent intent = new Intent(this, AddParcelActivity.class);
-        intent.putExtra("Driver", driver);
+        intent.putExtra("Customer", customer);
         startActivity(intent);
     }
 
@@ -110,7 +108,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
 
             //GET CONTENT
-            return (T) contentProvider.execute(url, "GET", null, "ARRAY").get();
+            return (T) parcelHTTPManager.execute(url, "GET", null, "ARRAY").get();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -119,13 +117,13 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void generateTable() {
         List<Parcel> parcelList;
-        contentProvider = new ParcelHTTPManager();
+        parcelHTTPManager = new ParcelHTTPManager();
 
         try {
             Object parcels = getContent();
             if(parcels instanceof List) {
                 parcelList = (List) parcels;
-                contentProvider.cancel(true);
+                parcelHTTPManager.cancel(true);
 
                 TextView processing = (TextView) findViewById(R.id.numberOfProcessing);
                 TextView onWay = (TextView) findViewById(R.id.numberOfOnWay);

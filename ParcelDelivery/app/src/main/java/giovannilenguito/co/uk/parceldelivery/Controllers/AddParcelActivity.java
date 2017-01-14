@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,16 +43,16 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class AddParcelActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private Driver driver;
+    private Customer customer;
     private Spinner deliveryType;
-    private EditText contents;
+    private EditText contents, recipient, lineOne, lineTwo, city, postcode, country;
     private String deliveryDate;
     private Intent intent;
     private List<Customer> customers;
     private Spinner spinner;
     private ImageView previewImage;
-    private UserHTTPManager UCP;
-    private ParcelHTTPManager PCP;
+    private UserHTTPManager userHTTPManager;
+    private ParcelHTTPManager parcelHTTPManager;
     private final int REQUEST_IMAGE_CAPTURE = 1;
     private String encImage;
     private TextView dateTitle;
@@ -76,7 +75,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         setTitle("New Parcel");
         //Get customer
         intent = getIntent();
-        driver = (Driver) intent.getSerializableExtra("Driver");
+        customer = (Customer) intent.getSerializableExtra("Customer");
 
         deliveryType = (Spinner) findViewById(R.id.deliveryType);
         contents = (EditText) findViewById(R.id.contents);
@@ -84,11 +83,18 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
 
         dateTitle = (TextView) findViewById(R.id.dateTitle);
 
-        UCP = new UserHTTPManager();
+        recipient = (EditText) findViewById(R.id.recipientName);
+        lineOne = (EditText) findViewById(R.id.lineOne);
+        lineTwo = (EditText) findViewById(R.id.lineTwo);
+        city = (EditText) findViewById(R.id.city);
+        postcode = (EditText) findViewById(R.id.postcode);
+        country = (EditText) findViewById(R.id.country);
+
+        userHTTPManager = new UserHTTPManager();
 
         try {
-            customers = (List<Customer>) UCP.execute(new URL(getString(R.string.WS_IP) + "/customers/all"), "GET", "customers", null).get();
-            UCP.cancel(true);
+            customers = (List<Customer>) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customers/all"), "GET", "customers", null).get();
+            userHTTPManager.cancel(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -191,7 +197,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     public Intent getParentActivityIntent() {
         intent = new Intent(this, DashboardActivity.class);
-        intent.putExtra("Driver", driver);
+        intent.putExtra("Customer", customer);
         return intent;
     }
 
@@ -218,42 +224,65 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
 
         if(deliveryDate != null && !deliveryDate.isEmpty()) {
             if(!contents.getText().toString().isEmpty()) {
+
                 int selectedCustomerPosition = spinner.getSelectedItemPosition();
 
-                Customer customer = customers.get(selectedCustomerPosition);
-                String recipientName = customer.getFullName();
+                Customer selectedRecipient = customers.get(selectedCustomerPosition);
 
                 String spinnerChoice = deliveryType.getSelectedItem().toString();
-                String recipientN = recipientName;
+                String recipientN = recipient.getText().toString();
                 String cont = contents.getText().toString();
                 String deliveryD = deliveryDate;
 
-
+                //Package information
                 parcel.setServiceType(spinnerChoice);
                 parcel.setRecipientName(recipientN);
                 parcel.setContents(cont);
                 parcel.setDeliveryDate(deliveryD);
 
+                if(recipient.getText().toString().isEmpty()){
+                    //Recipient
+                    parcel.setAddressLineOne(selectedRecipient.getAddressLineOne());
+                    parcel.setAddressLineTwo(selectedRecipient.getAddressLineTwo());
+                    parcel.setCity(selectedRecipient.getCity());
+                    parcel.setCountry(selectedRecipient.getCountry());
+                    parcel.setPostcode(selectedRecipient.getPostcode());
+                }else{
+                    //Recipient
+                    parcel.setAddressLineOne(lineOne.getText().toString());
+                    parcel.setAddressLineTwo(lineTwo.getText().toString());
+                    parcel.setCity(city.getText().toString());
+                    parcel.setCountry(country.getText().toString());
+                    parcel.setPostcode(postcode.getText().toString());
+                }
 
+                //Customer information (collection information)
                 parcel.setCustomerID(customer.getId());
-                parcel.setAddressLineOne(customer.getAddressLineOne());
-                parcel.setAddressLineTwo(customer.getAddressLineTwo());
-                parcel.setCity(customer.getCity());
-                parcel.setCountry(customer.getCountry());
-                parcel.setPostcode(customer.getPostcode());
+                parcel.setCollectionLineOne(customer.getAddressLineOne());
+                parcel.setCollectionPostCode(customer.getPostcode());
 
-                parcel.setCreatedByID(driver.getId());
+                try {
+                    userHTTPManager = new UserHTTPManager();
+                    Driver driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/drivers/random"), "GET", "driver").get();
+                    userHTTPManager.cancel(true);
+                    //set random driver
+                    parcel.setDriverID(driver.getId());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
 
                 Date dateBooked = new Date();
                 parcel.setDateBooked(dateBooked.toString());
 
-                //Set status
+                //Set default status
                 parcel.setProcessing(true);
                 parcel.setOutForDelivery(false);
                 parcel.setDelivered(false);
 
 
-                //Set image
+                //Set image if one has been taken
                 parcel.setImage(encImage);
 
                 //Set location
@@ -262,13 +291,13 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                     parcel.setLocation(location);
 
                     //POST REQUEST TO WEB SERVICE
-                    PCP = new ParcelHTTPManager();
+                    parcelHTTPManager = new ParcelHTTPManager();
                     try {
-                        boolean response = (boolean) PCP.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
-                        PCP.cancel(true);
+                        boolean response = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
+                        parcelHTTPManager.cancel(true);
                         if (response) {
                             intent = new Intent(this, DashboardActivity.class);
-                            intent.putExtra("Driver", driver);
+                            intent.putExtra("Customer", customer);
                             System.out.println(parcel.getLocation().getLongitude());
                             System.out.println(parcel.getLocation().getLatitude());
                             startActivity(intent);

@@ -18,7 +18,7 @@ public class Parcel extends Address implements Serializable {
     private String dateBooked;
     private String deliveryDate;
 
-    private String createdByID; //drive id
+    private String driverID;
 
     private boolean isDelivered;
     private boolean isOutForDelivery;
@@ -26,6 +26,9 @@ public class Parcel extends Address implements Serializable {
     private boolean isCollecting;
 
     private String image;
+
+    private String collectionLineOne;
+    private String collectionPostCode;
 
     private Location location;
 
@@ -44,7 +47,7 @@ public class Parcel extends Address implements Serializable {
     public Parcel() {
     }
 
-    public Parcel(String id, String customerID, String recipientName, String serviceType, String contents, String dateBooked, String deliveryDate, String createdByID, boolean isDelivered, boolean isOutForDelivery, boolean isProcessing) {
+    public Parcel(String id, String customerID, String recipientName, String serviceType, String contents, String dateBooked, String deliveryDate, String driverID, boolean isDelivered, boolean isOutForDelivery, boolean isProcessing) {
         this.id = id;
         this.customerID = customerID;
         this.recipientName = recipientName;
@@ -52,10 +55,34 @@ public class Parcel extends Address implements Serializable {
         this.contents = contents;
         this.dateBooked = dateBooked;
         this.deliveryDate = deliveryDate;
-        this.createdByID = createdByID;
+        this.driverID = driverID;
         this.isDelivered = isDelivered;
         this.isOutForDelivery = isOutForDelivery;
         this.isProcessing = isProcessing;
+    }
+
+    public String getDriverID() {
+        return driverID;
+    }
+
+    public void setDriverID(String driverID) {
+        this.driverID = driverID;
+    }
+
+    public String getCollectionLineOne() {
+        return collectionLineOne;
+    }
+
+    public void setCollectionLineOne(String collectionLineOne) {
+        this.collectionLineOne = collectionLineOne;
+    }
+
+    public String getCollectionPostCode() {
+        return collectionPostCode;
+    }
+
+    public void setCollectionPostCode(String collectionPostCode) {
+        this.collectionPostCode = collectionPostCode;
     }
 
     public String getCustomerID() {
@@ -86,13 +113,6 @@ public class Parcel extends Address implements Serializable {
         this.recipientName = recipientName;
     }
 
-    public String getCreatedByID() {
-        return createdByID;
-    }
-
-    public void setCreatedByID(String createdByID) {
-        this.createdByID = createdByID;
-    }
 
     public String getServiceType() {
         return serviceType;

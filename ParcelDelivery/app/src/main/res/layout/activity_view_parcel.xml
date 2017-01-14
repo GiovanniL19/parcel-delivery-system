@@ -12,9 +12,9 @@
         android:layout_width="0dp"
         app:srcCompat="@color/colorAccent"
         android:id="@+id/imageView6"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         android:layout_height="135dp" />
 
@@ -29,7 +29,7 @@
         android:layout_marginRight="16dp"
         tools:layout_constraintRight_creator="1"
         android:onClick="changeStatus"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@+id/txt"
         android:layout_width="109dp"
         android:layout_marginStart="8dp"
@@ -44,7 +44,7 @@
         android:background="@color/colorPrimary"
         android:textColor="@android:color/background_light"
         android:onClick="changeStatus"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@+id/txt"
         android:layout_marginEnd="8dp"
         app:layout_constraintRight_toRightOf="parent"
@@ -64,7 +64,7 @@
         app:layout_constraintRight_toLeftOf="@+id/onRouteBtn"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@+id/txt"
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -75,11 +75,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView15"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/onRouteBtn"
         android:layout_marginStart="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="24dp" />
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/collectionLocationTxt" />
 
     <TextView
         android:text="Processing"
@@ -87,15 +87,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/deliveryStatus"
         android:textStyle="normal|bold"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/onRouteBtn"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toRightOf="@+id/textView15"
-        android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
-        app:layout_constraintHorizontal_bias="0.0" />
+        android:layout_marginStart="22dp"
+        app:layout_constraintLeft_toRightOf="@+id/textView15"
+        android:layout_marginLeft="22dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/collectionLocationTxt" />
 
     <TextView
         android:text="Delivery Address:"
@@ -194,7 +194,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView24"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/country"
         android:layout_marginStart="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -241,13 +241,13 @@
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toRightOf="@+id/textView18"
         android:layout_marginLeft="16dp"
-        app:layout_constraintHorizontal_bias="0.06"
-        android:layout_marginTop="8dp"
+        app:layout_constraintHorizontal_bias="0.11"
         android:textStyle="normal|bold"
-        android:layout_width="120dp" />
+        android:layout_width="120dp"
+        android:layout_marginTop="8dp" />
 
     <ImageView
-        android:layout_width="200dp"
+        android:layout_width="192dp"
         app:srcCompat="@color/fontColour"
         android:id="@+id/image"
         android:layout_marginStart="16dp"
@@ -257,8 +257,10 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/contents"
-        android:layout_height="200dp"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_height="93dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:text="Parcel"
@@ -268,7 +270,7 @@
         android:textStyle="normal|bold"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
@@ -291,5 +293,20 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp" />
+
+    <TextView
+        android:text="Collection Address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/collectionLocationTxt"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        android:layout_marginStart="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        app:layout_constraintHorizontal_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

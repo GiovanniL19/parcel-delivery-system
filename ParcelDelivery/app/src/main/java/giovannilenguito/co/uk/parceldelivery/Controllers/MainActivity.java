@@ -2,13 +2,13 @@ package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 
 import org.json.JSONException;
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText username, password;
     private Switch isDriver;
 
-    private UserHTTPManager UCP;
+    private UserHTTPManager userHTTPManager;
 
     private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
 
@@ -67,11 +67,11 @@ public class MainActivity extends AppCompatActivity {
     public <T> T isAuthenticatedCustomer(String username) throws MalformedURLException {
         try {
             //JSON
-            UCP = new UserHTTPManager();
+            userHTTPManager = new UserHTTPManager();
             if(isDriver.isChecked()){
-                return (T) UCP.execute(new URL(getString(R.string.WS_IP) +  "/drivers/byUsername/"+ username), "GET", "driver").get();
+                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/drivers/byUsername/"+ username), "GET", "driver").get();
             }else{
-                return (T) UCP.execute(new URL(getString(R.string.WS_IP) + "/customers/byUsername/"+ username), "GET", "customer").get();
+                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customers/byUsername/"+ username), "GET", "customer").get();
             }
 
         }catch(Exception e){
@@ -87,9 +87,11 @@ public class MainActivity extends AppCompatActivity {
         if(!sUsername.matches("")){
             if(!sPassword.matches("")){
                 Snackbar.make(view, "Attempting login...", Snackbar.LENGTH_LONG).show();
+                ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.VISIBLE);
 
                 Object user = isAuthenticatedCustomer(sUsername);
-                UCP.cancel(true);
+                userHTTPManager.cancel(true);
                 if(user == null){
                     hideSoftKeyboard();
                     Snackbar.make(view, "Incorrect login details", Snackbar.LENGTH_LONG).show();
@@ -98,36 +100,38 @@ public class MainActivity extends AppCompatActivity {
                         Customer customer = (Customer) user;
                         if (customer.getPassword().equals(sPassword)) {
                             intent.putExtra("Customer", (Customer) user);
-                            UCP.cancel(true);
+                            userHTTPManager.cancel(true);
 
-                            UCP = new UserHTTPManager();
+                            userHTTPManager = new UserHTTPManager();
                             //LOG USER LOGIN
                             String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + customer.getId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
-                            UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
                             database.addCustomer(customer);
-                            UCP.cancel(true);
+                            userHTTPManager.cancel(true);
                             startActivity(intent);
                         } else {
                             hideSoftKeyboard();
+                            progressBar.setVisibility(View.INVISIBLE);
                             Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();
                         }
                     } else if (user instanceof Driver) {
                         Driver driver = (Driver) user;
                         if (driver.getPassword().equals(sPassword)) {
                             intent.putExtra("Driver", (Driver) user);
-                            UCP.cancel(true);
+                            userHTTPManager.cancel(true);
 
-                            UCP = new UserHTTPManager();
+                            userHTTPManager = new UserHTTPManager();
                             //LOG USER LOGIN
                             String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
-                            UCP.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
                             database.addDriver(driver);
-                            UCP.cancel(true);
+                            userHTTPManager.cancel(true);
                             startActivity(intent);
                         } else {
                             hideSoftKeyboard();
+                            progressBar.setVisibility(View.INVISIBLE);
                             Snackbar.make(view, "Incorrect password", Snackbar.LENGTH_LONG).show();
                         }
                     }

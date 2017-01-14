@@ -1,26 +1,16 @@
 package giovannilenguito.co.uk.parceldelivery;
 
-import android.content.ContentValues;
-
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
@@ -61,9 +51,12 @@ public class Parser {
                 String serviceType = jsonMap.get("serviceType").toString();
                 String contents = jsonMap.get("contents").toString();
 
+                String collectionPostcode = jsonMap.get("collectionPostcode").toString();
+                String collectionLineOne = jsonMap.get("collectionLineOne").toString();
+
                 String dateBooked = jsonMap.get("dateBooked").toString();
                 String deliveryDate = jsonMap.get("deliveryDate").toString();
-                String createdByID = jsonMap.get("createdByID").toString();
+                String driverID = jsonMap.get("driverID").toString();
 
                 boolean isDelivered = Boolean.parseBoolean(jsonMap.get("isDelivered").toString());
                 boolean isOutForDelivery = Boolean.parseBoolean(jsonMap.get("isOutForDelivery").toString());
@@ -89,7 +82,7 @@ public class Parser {
                 Location loc = new Location(parcelID, longitude, latitude);
                 loc.setLocationID(location.get("locationID").toString());
 
-                Parcel parcel = new Parcel(id, customerID, recipientName, serviceType, contents, dateBooked, deliveryDate, createdByID, isDelivered, isOutForDelivery, isProcessing);
+                Parcel parcel = new Parcel(id, customerID, recipientName, serviceType, contents, dateBooked, deliveryDate, driverID, isDelivered, isOutForDelivery, isProcessing);
                 parcel.setAddressLineOne(lineOne);
                 parcel.setAddressLineTwo(lineTwo);
                 parcel.setCity(city);
@@ -97,6 +90,9 @@ public class Parser {
                 parcel.setCountry(country);
                 parcel.setImage(image);
                 parcel.setLocation(loc);
+
+                parcel.setCollectionLineOne(collectionLineOne);
+                parcel.setCollectionPostCode(collectionPostcode);
 
                 listOfParcels.add(parcel);
             }
@@ -224,7 +220,7 @@ public class Parser {
     public static JSONObject parcelToJSON(Parcel parcel) throws JSONException {
 
         JSONObject address = new JSONObject();
-        address.put("lineOne", parcel.getAddressLineTwo());
+        address.put("lineOne", parcel.getAddressLineOne());
         address.put("lineTwo", parcel.getAddressLineTwo());
         address.put("city", parcel.getCity());
         address.put("postcode", parcel.getPostcode());
@@ -244,13 +240,15 @@ public class Parser {
         json.put("contents", parcel.getContents());
         json.put("dateBooked", parcel.getDateBooked());
         json.put("deliveryDate", parcel.getDeliveryDate());
-        json.put("createdByID", parcel.getCreatedByID());
+        json.put("driverID", parcel.getDriverID());
         json.put("isDelivered", parcel.isDelivered());
         json.put("isOutForDelivery", parcel.isOutForDelivery());
         json.put("isProcessing", parcel.isProcessing());
         json.put("image", parcel.getImage());
         json.put("address", address);
         json.put("location", location);
+        json.put("collectionLineOne", parcel.getCollectionLineOne());
+        json.put("collectionPostcode", parcel.getCollectionPostCode());
 
         return json;
     }

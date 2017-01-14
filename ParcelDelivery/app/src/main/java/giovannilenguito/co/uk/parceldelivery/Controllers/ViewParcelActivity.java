@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -20,8 +18,6 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +25,8 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
+import org.w3c.dom.Text;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,11 +43,11 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
     private Parcel parcel;
     private Intent intent;
 
-    private TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents, deliveryType;
+    private TextView deliveryStatus, lineOne, lineTwo, city, postcode, country, contents, deliveryType, collectionLocationTxt;
 
     private View thisA;
 
-    private ParcelHTTPManager contentProvider;
+    private ParcelHTTPManager parcelHTTPManager;
 
     //LOCATION
     private double lat;
@@ -156,11 +154,11 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 cancelButton.setVisibility(View.INVISIBLE);
 
                 try {
-                    contentProvider = new ParcelHTTPManager();
-                    boolean didUpdate = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
-                    contentProvider.cancel(true);
+                    parcelHTTPManager = new ParcelHTTPManager();
+                    boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
+                    parcelHTTPManager.cancel(true);
                     if (didUpdate) {
-                        deliveryStatus.setText("Collection");
+                        deliveryStatus.setText("Recipient is Collecting Parcel");
                         Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();
@@ -194,6 +192,8 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         contents = (TextView) findViewById(R.id.contents);
         deliveryType = (TextView) findViewById(R.id.deliveryType);
 
+        collectionLocationTxt = (TextView) findViewById(R.id.collectionLocationTxt);
+
         deliveryStatus.setText(parcel.getStatus());
         lineOne.setText(parcel.getAddressLineOne());
         if(parcel.getAddressLineTwo() == null || parcel.getAddressLineTwo().isEmpty()){
@@ -205,6 +205,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         country.setText(parcel.getCountry());
         contents.setText(parcel.getContents());
         deliveryType.setText(parcel.getServiceType());
+        collectionLocationTxt.setText("Parcel to be collected at: " + parcel.getCollectionLineOne() + ", " + parcel.getCollectionPostCode());
 
         //Set all buttons to unselected colour
         Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
@@ -225,9 +226,9 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         }
 
         if(customer != null){
-            buttonProcessing.setVisibility(View.GONE);
-            buttonOnRoute.setVisibility(View.GONE);
-            buttonDelivered.setVisibility(View.GONE);
+            buttonProcessing.setEnabled(false);
+            buttonOnRoute.setEnabled(false);
+            buttonDelivered.setEnabled(false);
             cancelBtn.setVisibility(View.GONE);
 
             if (parcel.isProcessing()) {
@@ -241,11 +242,8 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             //Set appropriate button
             if (parcel.isOutForDelivery()) {
                 buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                cancelBtn.setVisibility(View.GONE);
-
             } else if (parcel.isProcessing()) {
                 buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
             } else if (parcel.isDelivered()) {
                 buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 cancelBtn.setVisibility(View.GONE);
@@ -253,20 +251,20 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         }
 
         if(parcel.isCollecting()) {
-            Button cancelButton = (Button) findViewById(R.id.cancelParcel);
+            FloatingActionButton cancelButton = (FloatingActionButton) findViewById(R.id.cancelParcel);
 
             buttonProcessing.setVisibility(View.INVISIBLE);
             buttonOnRoute.setVisibility(View.INVISIBLE);
             buttonDelivered.setVisibility(View.INVISIBLE);
             cancelButton.setVisibility(View.INVISIBLE);
 
-            deliveryStatus.setText("Collection");
+            deliveryStatus.setText("Recipient is Collecting Parcel");
         }
     }
 
     public void cancelParcel(View view) throws MalformedURLException, ExecutionException, InterruptedException {
-        contentProvider = new ParcelHTTPManager();
-        boolean didDelete = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/delete/" + parcel.getId()), "DELETE", null, null).get();
+        parcelHTTPManager = new ParcelHTTPManager();
+        boolean didDelete = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/delete/" + parcel.getId()), "DELETE", null, null).get();
         if (didDelete) {
             Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
             Intent dashboard = new Intent(this, DashboardActivity.class);
@@ -276,7 +274,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         }else{
             Snackbar.make(thisA, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
         }
-        contentProvider.cancel(true);
+        parcelHTTPManager.cancel(true);
     }
 
     @RequiresApi(api = android.os.Build.VERSION_CODES.LOLLIPOP)
@@ -311,9 +309,9 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         }
 
         try {
-            contentProvider = new ParcelHTTPManager();
-            boolean didUpdate = (boolean) contentProvider.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
-            contentProvider.cancel(true);
+            parcelHTTPManager = new ParcelHTTPManager();
+            boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
+            parcelHTTPManager.cancel(true);
             if (didUpdate) {
                 //Set all buttons to unselected colour
                 Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
