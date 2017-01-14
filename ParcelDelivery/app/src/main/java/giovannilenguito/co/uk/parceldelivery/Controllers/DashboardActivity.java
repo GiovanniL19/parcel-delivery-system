@@ -20,11 +20,13 @@ import giovannilenguito.co.uk.parceldelivery.Adapters.ParcelAdapter;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
+    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
 
     private ParcelHTTPManager contentProvider;
     @Override
@@ -35,8 +37,13 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(intent.getSerializableExtra("Customer") != null){
             customer = (Customer) intent.getSerializableExtra("Customer");
-        }else{
+        }else if(intent.getSerializableExtra("Driver") != null){
             driver = (Driver) intent.getSerializableExtra("Driver");
+        }else{
+            database.dropUsers();
+            //Go to login
+            Intent login = new Intent(this, MainActivity.class);
+            startActivity(login);
         }
 
         setTitle("Your Parcels");
@@ -47,6 +54,7 @@ public class DashboardActivity extends AppCompatActivity {
         }else{
             welcome.setText("Hello " + customer.getFullName());
         }
+
         //Get parcels
         generateTable();
     }

@@ -21,7 +21,7 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 //to call - = new SQLiteDatabaseController(this, null, null, 0);
 
 public class SQLiteDatabaseController extends SQLiteOpenHelper {
-    private static final int Database_VERSION = 9;
+    private static final int Database_VERSION = 11;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
     private static final String TABLE_USERS = "users"; //table name
@@ -47,7 +47,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String customerQuery = "CREATE TABLE " + TABLE_USERS + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_TYPE + " TEXT, " +
                 COLUMN_EMAIL + " TEXT, " +
                 COLUMN_USERNAME + " TEXT, " +
@@ -77,6 +77,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     public int addCustomer(Customer customer){
         //Create list of values
         ContentValues values = new ContentValues();
+        values.put(COLUMN_ID, customer.getId());
         values.put(COLUMN_EMAIL, customer.getEmail());
         values.put(COLUMN_USERNAME, customer.getUsername());
         values.put(COLUMN_PASSWORD, customer.getPassword());
@@ -107,6 +108,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     public int addDriver(Driver driver){
         //Create list of values
         ContentValues values = new ContentValues();
+        values.put(COLUMN_ID, driver.getId());
         values.put(COLUMN_EMAIL, driver.getEmail());
         values.put(COLUMN_USERNAME, driver.getUsername());
         values.put(COLUMN_PASSWORD, driver.getPassword());
