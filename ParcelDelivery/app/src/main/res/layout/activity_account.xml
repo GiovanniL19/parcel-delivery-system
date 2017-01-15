@@ -103,7 +103,7 @@
         android:layout_marginTop="32dp" />
 
     <TextView
-        android:text="Get current geo location, Use of Camera to take and store image of parcels, View Location via Google Maps, SQLite Storage"
+        android:text="Get current geo location, Use of Camera to take and store image of parcels, View Location via Google Maps, SQLite Storage, Notification when creating parcel"
         android:layout_width="339dp"
         android:layout_height="86dp"
         android:id="@+id/textView28"
@@ -114,7 +114,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/textView29" />
+        app:layout_constraintTop_toBottomOf="@+id/textView29"
+        app:layout_constraintHorizontal_bias="0.55" />
 
     <TextView
         android:text="Extra Features Include:"

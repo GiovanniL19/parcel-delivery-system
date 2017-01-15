@@ -223,6 +223,8 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                 dateTitle.setText("Estimated Delivery Date: "+ date);
             }
         }, cYear, cMonth, cDay);
+        //Prevent previous dates to be selected for delivery
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
 
