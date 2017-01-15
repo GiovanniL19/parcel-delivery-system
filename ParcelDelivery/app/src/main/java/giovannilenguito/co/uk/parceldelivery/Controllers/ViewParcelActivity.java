@@ -140,7 +140,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 startActivity(mapIntent);
                 return true;
             case R.id.action_collect_parcel:
-                parcel.setCollecting(true);
+                parcel.setCollecting(!parcel.isCollecting());
 
                 //Set all buttons to hidden
                 Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
@@ -148,17 +148,30 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
                 FloatingActionButton cancelButton = (FloatingActionButton) findViewById(R.id.cancelParcel);
 
-                buttonProcessing.setVisibility(View.INVISIBLE);
-                buttonOnRoute.setVisibility(View.INVISIBLE);
-                buttonDelivered.setVisibility(View.INVISIBLE);
-                cancelButton.setVisibility(View.INVISIBLE);
+                if(parcel.isCollecting()){
+                    buttonProcessing.setVisibility(View.INVISIBLE);
+                    buttonOnRoute.setVisibility(View.INVISIBLE);
+                    buttonDelivered.setVisibility(View.INVISIBLE);
+                    cancelButton.setVisibility(View.INVISIBLE);
+                }else{
+
+                    buttonProcessing.setVisibility(View.VISIBLE);
+                    buttonOnRoute.setVisibility(View.VISIBLE);
+                    buttonDelivered.setVisibility(View.VISIBLE);
+                    cancelButton.setVisibility(View.VISIBLE);
+                }
+
 
                 try {
                     parcelHTTPManager = new ParcelHTTPManager();
                     boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
                     parcelHTTPManager.cancel(true);
                     if (didUpdate) {
-                        deliveryStatus.setText("Recipient is Collecting Parcel");
+                        if(parcel.isCollecting()) {
+                            deliveryStatus.setText("Recipient is Collecting Parcel");
+                        }else{
+                            deliveryStatus.setText(parcel.getStatus());
+                        }
                         Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();

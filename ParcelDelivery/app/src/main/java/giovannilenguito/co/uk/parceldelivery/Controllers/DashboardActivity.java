@@ -52,6 +52,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             //Start notification service and check for notifications
             notificationIntent = new Intent(this, NotificationService.class);
+
             startService(notificationIntent);
         }else{
             database.dropUsers();

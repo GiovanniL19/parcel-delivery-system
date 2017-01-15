@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
         String postC = String.valueOf(postcode.getText());
         String crty = String.valueOf(country.getText());
 
-        if(!usN.isEmpty() || !pass.isEmpty() || !eM.isEmpty() || !fullN.isEmpty() || !lineOne.isEmpty() || !cit.isEmpty() || !postC.isEmpty() || !crty.isEmpty()){
+        if(!usN.equals("") && !pass.equals("") && !eM.equals("") && !fullN.equals("") && !lineOne.equals("") && !cit.equals("") && !postC.equals("") && !crty.equals("")){
             Switch driverSwitch = (Switch)findViewById(R.id.userType);
             if(driverSwitch.isChecked()){
                 Driver driver = new Driver(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty);

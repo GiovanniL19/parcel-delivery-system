@@ -1,16 +1,16 @@
 package giovannilenguito.co.uk.parceldelivery;
 
-import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-
-import com.google.android.gms.common.data.DataHolder;
 
 import org.json.JSONException;
 
@@ -18,35 +18,35 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import giovannilenguito.co.uk.parceldelivery.Controllers.DashboardActivity;
-import giovannilenguito.co.uk.parceldelivery.Controllers.MainActivity;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- */
-public class NotificationService extends IntentService {
-    private static final String TAG = "giovannilenguito.co.uk.parceldelivery.action.notifications";
+public class NotificationService extends Service {
     private Boolean loop = true;
 
     private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
-    private Runnable runnable;
 
-    public NotificationService() {
-        super("NotificationService");
-    }
+    private Looper serviceLooper;
+    private HandleService handlerService;
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        //Check for changes in number of parcels
 
-        final Context context = this;
-        runnable = new Runnable() {
-            @Override
-            public void run() {
+    private final class HandleService extends Handler {
+        public HandleService(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            System.out.println("Here");
+            System.out.println(msg);
+            Context context = getApplicationContext();
+            while(loop){
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("Service checking for changes in number of parcel");
                 //Get local data and compare to database
                 if(database.getAllDrivers().size() > 0) {
@@ -99,17 +99,27 @@ public class NotificationService extends IntentService {
                     stopSelf();
                 }
             }
-        };
-
-        while(loop){
-            try {
-                Thread.sleep(5000);
-                runnable.run();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
+    }
 
+    @Override
+    public void onCreate() {
+        HandlerThread thread = new HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+
+        serviceLooper = thread.getLooper();
+        handlerService = new HandleService(serviceLooper);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        System.out.println("Starting service");
+
+        Message msg = handlerService.obtainMessage();
+        msg.arg1 = startId;
+        handlerService.sendMessage(msg);
+
+        return START_STICKY;
     }
 
     @Override
@@ -117,6 +127,12 @@ public class NotificationService extends IntentService {
         loop = false;
         stopSelf();
         System.out.println("Service complete");
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
 }

@@ -54,7 +54,7 @@
 
         <service
             android:name=".NotificationService"
-            android:exported="false"></service>
+            android:exported="false" />
     </application>
 
 </manifest>
