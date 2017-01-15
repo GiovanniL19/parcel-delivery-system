@@ -12,7 +12,6 @@ import java.net.URL;
 /**
  * Created by giovannilenguito on 22/11/2016.
  * Class controls of operations including GET, POST, PUT, AND DELETE
- * DataProvider contains operations for PARCEL, CUSTOMER, AND DRIVER
  */
 
 public class DataProvider {

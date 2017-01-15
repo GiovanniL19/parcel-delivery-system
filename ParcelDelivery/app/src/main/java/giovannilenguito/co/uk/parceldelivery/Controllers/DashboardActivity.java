@@ -104,7 +104,7 @@ public class DashboardActivity extends AppCompatActivity {
             if(customer != null){
                 url = new URL(getString(R.string.WS_IP) + "/parcels/byCustomer/"+ customer.getId());
             }else if(driver != null){
-                url = new URL(getString(R.string.WS_IP) + "/parcels/byCreatedId/"+ driver.getId());
+                url = new URL(getString(R.string.WS_IP) + "/parcels/byDriver/"+ driver.getId());
             }
 
             //GET CONTENT

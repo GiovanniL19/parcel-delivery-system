@@ -2,13 +2,20 @@ package giovannilenguito.co.uk.parceldelivery.Controllers;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.NotificationManager;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -224,6 +231,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
 
         if(deliveryDate != null && !deliveryDate.isEmpty()) {
             if(!contents.getText().toString().isEmpty()) {
+                Driver driver = null;
 
                 int selectedCustomerPosition = spinner.getSelectedItemPosition();
 
@@ -263,7 +271,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
 
                 try {
                     userHTTPManager = new UserHTTPManager();
-                    Driver driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/drivers/random"), "GET", "driver").get();
+                    driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/drivers/random"), "GET", "driver").get();
                     userHTTPManager.cancel(true);
                     //set random driver
                     parcel.setDriverID(driver.getId());
@@ -296,10 +304,26 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                         boolean response = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
                         parcelHTTPManager.cancel(true);
                         if (response) {
+
+                            Handler handler = new Handler();
+                            final Driver finalDriver = driver;
+                            final Context context = this;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    //Create notification
+                                    Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+                                    notificationBuilder.setSmallIcon(R.drawable.app_icon);
+                                    notificationBuilder.setContentTitle("Parcel Confirmation");
+                                    notificationBuilder.setContentText(finalDriver.getFullName() + " will be collecting your parcel.");
+                                    notificationBuilder.setSound(sound);
+                                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                                    notificationManager.notify(001, notificationBuilder.build());
+                                }
+                            }, 5000);
                             intent = new Intent(this, DashboardActivity.class);
                             intent.putExtra("Customer", customer);
-                            System.out.println(parcel.getLocation().getLongitude());
-                            System.out.println(parcel.getLocation().getLatitude());
                             startActivity(intent);
                         } else {
                             Snackbar.make(view, "There was an error", Snackbar.LENGTH_LONG).show();
