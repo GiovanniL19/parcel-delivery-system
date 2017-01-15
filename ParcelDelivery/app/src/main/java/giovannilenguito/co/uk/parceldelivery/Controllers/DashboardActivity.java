@@ -10,11 +10,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -63,12 +63,15 @@ public class DashboardActivity extends AppCompatActivity {
         setTitle("Your Parcels");
         TextView welcome = (TextView) findViewById(R.id.welcomeMsg);
 
+        ImageView backImage = (ImageView) findViewById(R.id.backImage);
         if(driver != null){
             welcome.setText("Hello driver!");
             findViewById(R.id.newFAB).setVisibility(View.INVISIBLE);
+            backImage.setImageResource(R.drawable.box);
         }else{
             welcome.setText("Hello " + customer.getFullName());
             findViewById(R.id.newFAB).setVisibility(View.VISIBLE);
+            backImage.setImageResource(R.drawable.present);
         }
 
         //Get parcels

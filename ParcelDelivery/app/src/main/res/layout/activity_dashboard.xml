@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="214dp"
         app:srcCompat="@drawable/box"
-        android:id="@+id/imageView2"
+        android:id="@+id/backImage"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"

@@ -216,7 +216,11 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
         ImageView image = (ImageView) findViewById(R.id.image);
 
-        txt.setText("As requested, your parcel will be delivered via " + parcel.getServiceType() + " on " + parcel.getDeliveryDate() + " to " + parcel.getRecipientName());
+        if(customer != null){
+            txt.setText("As requested, your parcel will be delivered via " + parcel.getServiceType() + " on " + parcel.getDeliveryDate() + " to " + parcel.getRecipientName());
+        }else if(driver != null){
+            txt.setText("This parcel is to be delivered via " + parcel.getServiceType() + " on " + parcel.getDeliveryDate() + " to " + parcel.getRecipientName());
+        }
         try {
             byte[] decodedString = Base64.decode(parcel.getImage(), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -225,29 +229,24 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             e.printStackTrace();
         }
 
-        if(customer != null){
+        if(customer != null) {
             buttonProcessing.setEnabled(false);
             buttonOnRoute.setEnabled(false);
             buttonDelivered.setEnabled(false);
             cancelBtn.setVisibility(View.GONE);
+        }
+        buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
 
-            if (parcel.isProcessing()) {
-                cancelBtn.setVisibility(View.VISIBLE);
-            }
-        }else {
-            buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-            buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-            buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-
-            //Set appropriate button
-            if (parcel.isOutForDelivery()) {
-                buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-            } else if (parcel.isProcessing()) {
-                buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-            } else if (parcel.isDelivered()) {
-                buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                cancelBtn.setVisibility(View.GONE);
-            }
+        //Set appropriate button
+        if (parcel.isOutForDelivery()) {
+            buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        } else if (parcel.isProcessing()) {
+            buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        } else if (parcel.isDelivered()) {
+            buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            cancelBtn.setVisibility(View.GONE);
         }
 
         if(parcel.isCollecting()) {
