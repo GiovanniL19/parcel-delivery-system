@@ -1,11 +1,16 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,13 +28,14 @@ import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
+import giovannilenguito.co.uk.parceldelivery.NotificationService;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
     private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
-
+    public static Intent notificationIntent;
     private ParcelHTTPManager parcelHTTPManager;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -43,6 +49,10 @@ public class DashboardActivity extends AppCompatActivity {
             customer = (Customer) intent.getSerializableExtra("Customer");
         }else if(intent.getSerializableExtra("Driver") != null){
             driver = (Driver) intent.getSerializableExtra("Driver");
+
+            //Start notification service and check for notifications
+            notificationIntent = new Intent(this, NotificationService.class);
+            startService(notificationIntent);
         }else{
             database.dropUsers();
             //Go to login
@@ -169,4 +179,26 @@ public class DashboardActivity extends AppCompatActivity {
             Snackbar.make(findViewById(R.id.activity_dashboard), "There was an error", Snackbar.LENGTH_LONG).show();
         }
     }
+
+    //Update view if new parcels found from service via local broadcaster
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            generateTable();
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("updateUI"));
+        generateTable();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onPause();
+    }
+
 }

@@ -103,7 +103,7 @@
         android:layout_marginTop="32dp" />
 
     <TextView
-        android:text="Get current geo location, Use of Camera to take and store image of parcels, View Location via Google Maps, SQLite Storage, Notification when creating parcel"
+        android:text="Get current geo location, Use of Camera to take and store image of parcels, View Location via Google Maps, SQLite Storage, Notification when creating parcel, Driver gets notification if they have a new parcel, Use of local broadcasters"
         android:layout_width="339dp"
         android:layout_height="86dp"
         android:id="@+id/textView28"

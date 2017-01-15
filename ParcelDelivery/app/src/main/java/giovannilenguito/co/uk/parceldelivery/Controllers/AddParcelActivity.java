@@ -3,6 +3,7 @@ package giovannilenguito.co.uk.parceldelivery.Controllers;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Location;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.Notification;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class AddParcelActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -218,7 +220,16 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
-                String date = day + "/" + (month + 1) + "/" + year;
+                int theMonth = month + 1;
+                String finalMonth;
+
+                if(!(theMonth >= 10)){
+                    finalMonth = "0" + theMonth;
+                }else{
+                    finalMonth = String.valueOf(theMonth);
+                }
+
+                String date = day + "/" + finalMonth + "/" + year;
                 deliveryDate = date;
                 dateTitle.setText("Estimated Delivery Date: "+ date);
             }
@@ -312,16 +323,8 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                             final Context context = this;
                             handler.postDelayed(new Runnable() {
                                 public void run() {
-                                    //Create notification
-                                    Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-                                    notificationBuilder.setSmallIcon(R.drawable.app_icon);
-                                    notificationBuilder.setContentTitle("Parcel Confirmation");
-                                    notificationBuilder.setContentText(finalDriver.getFullName() + " will be collecting your parcel.");
-                                    notificationBuilder.setSound(sound);
-                                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                                    notificationManager.notify(001, notificationBuilder.build());
+                                    Notification notification = new Notification();
+                                    notification.create(context, finalDriver.getFullName() + " will be collecting your parcel.", "Parcel Confirmation");
                                 }
                             }, 5000);
                             intent = new Intent(this, DashboardActivity.class);

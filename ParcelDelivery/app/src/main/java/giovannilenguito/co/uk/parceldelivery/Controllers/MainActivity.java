@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 userHTTPManager.cancel(true);
                 if(user == null){
                     hideSoftKeyboard();
+                    progressBar.setVisibility(View.INVISIBLE);
                     Snackbar.make(view, "Incorrect login details", Snackbar.LENGTH_LONG).show();
                 }else {
                     if (user instanceof Customer) {
@@ -127,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonLog = new JSONObject(jsonString);
                             userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
                             database.addDriver(driver);
+                            database.addNumberOfParcels(0, driver.getId());
+
                             userHTTPManager.cancel(true);
                             startActivity(intent);
                         } else {

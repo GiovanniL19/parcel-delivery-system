@@ -21,12 +21,13 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 //to call - = new SQLiteDatabaseController(this, null, null, 0);
 
 public class SQLiteDatabaseController extends SQLiteOpenHelper {
-    private static final int Database_VERSION = 11;
+    private static final int Database_VERSION = 12;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
     private static final String TABLE_USERS = "users"; //table name
+    private static final String TABLE_GLOBAL = "driverGlobal"; //table name
 
-    //customer table columns
+    //user table columns
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PASSWORD = "password";
@@ -40,6 +41,10 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_POSTCODE = "postcode";
     private static final String COLUMN_COUNTRY = "country";
 
+
+    //driver global table columns
+    private static final String COLUMN_NUMBER_OF_PARCELS = "numberOfParcelsToCollect";
+    private static final String COLUMN_DRIVER_ID = "driverID";
     public SQLiteDatabaseController(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, Database_VERSION);
     }
@@ -62,15 +67,64 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
 
         //Execute queries
         db.execSQL(customerQuery);
+
+
+        String driverGlobal = "CREATE TABLE " + TABLE_GLOBAL + "(" +
+                COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                COLUMN_NUMBER_OF_PARCELS  + " INTEGER, " +
+                COLUMN_DRIVER_ID  + " TEXT);";
+
+        db.execSQL(driverGlobal);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Deletes table
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GLOBAL);
         //Create new one
         onCreate(db);
+    }
+
+    //Add new row to the database
+    public int addNumberOfParcels(int number, String driverId) {
+        //Create list of values
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_NUMBER_OF_PARCELS, number);
+        values.put(COLUMN_DRIVER_ID, driverId);
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        //Insert new row into users table
+        int id = (int) db.insert(TABLE_GLOBAL, null, values);
+
+        //Close db
+        db.close();
+
+        return id;
+    }
+
+    public void updateNumberOfParcels(int number, String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        //Delete row from table where id's match
+        db.execSQL("UPDATE " + TABLE_GLOBAL + " SET " + COLUMN_NUMBER_OF_PARCELS +"=\"" + number + "\" WHERE " + COLUMN_DRIVER_ID +"=\"" + id + "\";");
+
+        db.close();
+    }
+
+    public int getNumberOfParcels(String id) {
+        //Get reference to database
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_GLOBAL + " WHERE " + COLUMN_DRIVER_ID +"=\"" + id + "\";";
+        //Cursor point to a location in the results
+        Cursor cursor = db.rawQuery(query, null);
+        //Move to first row in result
+        cursor.moveToFirst();
+
+        //Close db
+        db.close();
+        return Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_NUMBER_OF_PARCELS)));
     }
 
     //Add new row to the database

@@ -51,6 +51,10 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     public void logout(View view) {
+        if(driver != null) {
+            stopService(DashboardActivity.notificationIntent);
+        }
+
         //Delete local users
         database.dropUsers();
         //Go to login
