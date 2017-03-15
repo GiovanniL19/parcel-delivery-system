@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Giovanni on 19/10/2016.
  */
 
-public class Parcel extends Address implements Serializable{
+public class Parcel extends Address implements Serializable {
     private String id;
 
     private String customerID;
@@ -18,27 +18,36 @@ public class Parcel extends Address implements Serializable{
     private String dateBooked;
     private String deliveryDate;
 
-    private String createdByID; //is also the drive id
+    private String driverID;
 
     private boolean isDelivered;
     private boolean isOutForDelivery;
     private boolean isProcessing;
+    private boolean isCollecting;
 
-    public String getStatus(){
-        if(isDelivered){
+    private String image;
+
+    private String collectionLineOne;
+    private String collectionPostCode;
+
+    private Location location;
+
+    public String getStatus() {
+        if (isDelivered) {
             return "Delivered";
-        }else if(isOutForDelivery){
+        } else if (isOutForDelivery) {
             return "Out For Delivery";
-        }else if(isProcessing){
+        } else if (isProcessing) {
             return "Processing";
-        }else{
+        } else {
             return "Pending";
         }
     }
 
-    public Parcel(){}
+    public Parcel() {
+    }
 
-    public Parcel(String id, String customerID, String recipientName, String serviceType, String contents, String dateBooked, String deliveryDate, String createdByID, boolean isDelivered, boolean isOutForDelivery, boolean isProcessing) {
+    public Parcel(String id, String customerID, String recipientName, String serviceType, String contents, String dateBooked, String deliveryDate, String driverID, boolean isDelivered, boolean isOutForDelivery, boolean isProcessing) {
         this.id = id;
         this.customerID = customerID;
         this.recipientName = recipientName;
@@ -46,10 +55,34 @@ public class Parcel extends Address implements Serializable{
         this.contents = contents;
         this.dateBooked = dateBooked;
         this.deliveryDate = deliveryDate;
-        this.createdByID = createdByID;
+        this.driverID = driverID;
         this.isDelivered = isDelivered;
         this.isOutForDelivery = isOutForDelivery;
         this.isProcessing = isProcessing;
+    }
+
+    public String getDriverID() {
+        return driverID;
+    }
+
+    public void setDriverID(String driverID) {
+        this.driverID = driverID;
+    }
+
+    public String getCollectionLineOne() {
+        return collectionLineOne;
+    }
+
+    public void setCollectionLineOne(String collectionLineOne) {
+        this.collectionLineOne = collectionLineOne;
+    }
+
+    public String getCollectionPostCode() {
+        return collectionPostCode;
+    }
+
+    public void setCollectionPostCode(String collectionPostCode) {
+        this.collectionPostCode = collectionPostCode;
     }
 
     public String getCustomerID() {
@@ -60,8 +93,8 @@ public class Parcel extends Address implements Serializable{
         this.customerID = customerID;
     }
 
-    public String getTitle(){
-        return this.id + " - " + this.recipientName;
+    public String getTitle() {
+        return this.getAddressLineOne() + " (" + this.id + ")";
     }
 
     public String getId() {
@@ -80,13 +113,6 @@ public class Parcel extends Address implements Serializable{
         this.recipientName = recipientName;
     }
 
-    public String getCreatedByID() {
-        return createdByID;
-    }
-
-    public void setCreatedByID(String createdByID) {
-        this.createdByID = createdByID;
-    }
 
     public String getServiceType() {
         return serviceType;
@@ -143,4 +169,29 @@ public class Parcel extends Address implements Serializable{
     public void setProcessing(boolean processing) {
         isProcessing = processing;
     }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public boolean isCollecting() {
+        return isCollecting;
+    }
+
+    public void setCollecting(boolean collecting) {
+        isCollecting = collecting;
+    }
+
 }

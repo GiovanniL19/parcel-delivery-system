@@ -7,7 +7,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;
 
-import giovannilenguito.co.uk.parceldelivery.ClientClass;
+import giovannilenguito.co.uk.parceldelivery.DataProvider;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.Parser;
 
@@ -15,7 +15,7 @@ import giovannilenguito.co.uk.parceldelivery.Parser;
  * Created by Giovanni on 11/11/2016.
  */
 
-public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
+public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
     protected Object doInBackground(Object... params) {
         URL url = (URL) params[0];
         String method = (String) params[1];
@@ -25,7 +25,7 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
             case "GET":
                 if(returnType.equals("ARRAY")){
                     try {
-                        String json = ClientClass.getJSONByURL(url, 6000);
+                        String json = DataProvider.get(url);
                         return Parser.parcelList(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -34,7 +34,7 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
                 }
             case "POST":
                 try {
-                    String response = ClientClass.post(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                    String response = DataProvider.post(url, Parser.parcelToJSON((Parcel) params[4]));
                     if (response == null) {
                         return false;
                     }else{
@@ -49,7 +49,7 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
                 }
             case "PUT":
                 try {
-                    String response = ClientClass.put(url, 6000, Parser.parcelToJSON((Parcel) params[4]));
+                    String response = DataProvider.put(url, Parser.parcelToJSON((Parcel) params[4]));
                     if (response == null) {
                         return false;
                     }else{
@@ -63,8 +63,12 @@ public class ParcelContentProvider extends AsyncTask<Object, Object, Object> {
                     return false;
                 }
             case "DELETE":
-
-                break;
+                String response = DataProvider.delete(url);
+                if (response == null) {
+                    return false;
+                }else{
+                    return true;
+                }
         }
         return null;
     }

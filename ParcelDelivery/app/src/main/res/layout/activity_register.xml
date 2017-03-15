@@ -23,7 +23,7 @@
 
 
             <TextView
-                android:text="Username"
+                android:text="Username*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView"/>
@@ -39,7 +39,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="Password"
+                android:text="Password*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView6" />
@@ -55,7 +55,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="Email"
+                android:text="Email*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView7" />
@@ -70,7 +70,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="Full Name"
+                android:text="Full Name*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView8" />
@@ -86,7 +86,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="Contact Number"
+                android:text="Contact Number*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView9" />
@@ -102,7 +102,7 @@
                 android:inputType="phone" />
 
             <TextView
-                android:text="Address Line One"
+                android:text="Address Line One*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView10" />
@@ -134,7 +134,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="City"
+                android:text="City*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView12" />
@@ -150,7 +150,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="Postcode"
+                android:text="Postcode*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView13" />
@@ -166,7 +166,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="Country"
+                android:text="Country*"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView14" />

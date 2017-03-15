@@ -1,5 +1,6 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
@@ -48,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         String pass = String.valueOf(password.getText());
         String eM = String.valueOf(email.getText());
         String fullN = String.valueOf(fullName.getText());
+
         int contact = 0;
 
         try {
@@ -61,41 +63,44 @@ public class RegisterActivity extends AppCompatActivity {
         String postC = String.valueOf(postcode.getText());
         String crty = String.valueOf(country.getText());
 
-        Switch driverSwitch = (Switch)findViewById(R.id.userType);
-        if(driverSwitch.isChecked()){
-            Driver driver = new Driver(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty);
-            driver.setContactNumber(contact);
+        if(!usN.equals("") && !pass.equals("") && !eM.equals("") && !fullN.equals("") && !lineOne.equals("") && !cit.equals("") && !postC.equals("") && !crty.equals("")){
+            Switch driverSwitch = (Switch)findViewById(R.id.userType);
+            if(driverSwitch.isChecked()){
+                Driver driver = new Driver(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty);
+                driver.setContactNumber(contact);
 
-            //RETURNS ID of new driver
-            String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) +  "/users/new"), "POST", "driver", driver).get();
-            if(id != null){
-                Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                //RETURNS ID of new driver
+                String id = (String) new UserHTTPManager().execute(new URL(getString(R.string.WS_IP) +  "/users/new"), "POST", "driver", driver).get();
+                if(id != null){
+                    Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                }else{
+                    Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
+                }
+
             }else{
-                Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
+                Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
+                customer.setContactNumber(contact);
+
+                //RETURNS ID of new customer
+                String id = (String) new UserHTTPManager().execute(new URL(getString(R.string.WS_IP) + "/users/new"), "POST", "customer", customer).get();
+                if(id != null){
+                    Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                }else{
+                    Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
+                }
             }
 
+            //Hide keyboard
+            if (view != null) {
+                InputMethodManager inputMethod = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethod.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }else{
-            Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
-            customer.setContactNumber(contact);
-
-            //RETURNS ID of new customer
-            String id = (String) new UserContentProvider().execute(new URL(getString(R.string.WS_IP) + "/users/new"), "POST", "customer", customer).get();
-            if(id != null){
-                Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-            }else{
-                Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
-            }
+            Snackbar.make(view, "Please fill in all required fields", Snackbar.LENGTH_SHORT).show();
         }
-
-        //Hide keyboard
-        if (view != null) {
-            InputMethodManager inputMethod = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethod.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-
     }
 }

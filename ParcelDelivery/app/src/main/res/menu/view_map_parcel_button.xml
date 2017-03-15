@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_view_map_parcel"
+        android:icon="@drawable/ic_map_24dp"
+        android:title="View Parcel Location"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_collect_parcel"
+        android:icon="@drawable/ic_directions_walk_white_24dp"
+        android:title="Collect Parcel"
+        app:showAsAction="always"/>
+</menu>

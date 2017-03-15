@@ -5,23 +5,16 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.Models.Location;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 
 /**
@@ -58,15 +51,21 @@ public class Parser {
                 String serviceType = jsonMap.get("serviceType").toString();
                 String contents = jsonMap.get("contents").toString();
 
+                String collectionPostcode = jsonMap.get("collectionPostcode").toString();
+                String collectionLineOne = jsonMap.get("collectionLineOne").toString();
+
                 String dateBooked = jsonMap.get("dateBooked").toString();
                 String deliveryDate = jsonMap.get("deliveryDate").toString();
-                String createdByID = jsonMap.get("createdByID").toString();
+                String driverID = jsonMap.get("driverID").toString();
 
                 boolean isDelivered = Boolean.parseBoolean(jsonMap.get("isDelivered").toString());
                 boolean isOutForDelivery = Boolean.parseBoolean(jsonMap.get("isOutForDelivery").toString());
                 boolean isProcessing = Boolean.parseBoolean(jsonMap.get("isProcessing").toString());
 
+                String image = jsonMap.get("image").toString();
+
                 Map address = (Map) jsonMap.get("address");
+
                 String lineOne = address.get("lineOne").toString();
                 String lineTwo = address.get("lineTwo").toString();
                 String city = address.get("city").toString();
@@ -74,12 +73,26 @@ public class Parser {
                 String country = address.get("country").toString();
 
 
-                Parcel parcel = new Parcel(id, customerID, recipientName, serviceType, contents, dateBooked, deliveryDate, createdByID, isDelivered, isOutForDelivery, isProcessing);
+                Map location = (Map) jsonMap.get("location");
+
+                String parcelID = location.get("parcelID").toString();
+                double longitude = Double.parseDouble(location.get("longitude").toString());
+                double latitude = Double.parseDouble(location.get("latitude").toString());
+
+                Location loc = new Location(parcelID, longitude, latitude);
+                loc.setLocationID(location.get("locationID").toString());
+
+                Parcel parcel = new Parcel(id, customerID, recipientName, serviceType, contents, dateBooked, deliveryDate, driverID, isDelivered, isOutForDelivery, isProcessing);
                 parcel.setAddressLineOne(lineOne);
                 parcel.setAddressLineTwo(lineTwo);
                 parcel.setCity(city);
                 parcel.setPostcode(postcode);
                 parcel.setCountry(country);
+                parcel.setImage(image);
+                parcel.setLocation(loc);
+
+                parcel.setCollectionLineOne(collectionLineOne);
+                parcel.setCollectionPostCode(collectionPostcode);
 
                 listOfParcels.add(parcel);
             }
@@ -158,66 +171,6 @@ public class Parser {
         return null;
     }
 
-    public static <T> T XMLtoUser(String body) {
-        try{
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
-            Document doc = builder.parse(new InputSource(new StringReader(body)));
-
-            if(doc != null) {
-                //get all user elements
-                NodeList nodes = doc.getElementsByTagName("user");
-
-                //loop over all nodes (users)
-                for(int i = 0; i < nodes.getLength(); i++ ){
-                    //get current user from iteration
-                    Element user = (Element) nodes.item(i);
-                    //Create the type of object
-                    String type = user.getElementsByTagName("type").item(0).getTextContent();
-                    String username = user.getElementsByTagName("username").item(0).getTextContent();
-                    String password = user.getElementsByTagName("password").item(0).getTextContent();
-
-                    String id, email, fullName, lineOne, lineTwo, city, postcode, country;
-                    int contactNumber;
-
-                    email = user.getElementsByTagName("email").item(0).getTextContent();
-                    fullName = user.getElementsByTagName("fullName").item(0).getTextContent();
-                    contactNumber = (Integer.parseInt(user.getElementsByTagName("contactNumber").item(0).getTextContent()));
-                    id = user.getElementsByTagName("id").item(0).getTextContent();
-
-                    Element address = (Element) user.getElementsByTagName("address").item(0);
-
-                    lineOne = address.getElementsByTagName("lineOne").item(0).getTextContent();
-                    lineTwo = address.getElementsByTagName("lineTwo").item(0).getTextContent();
-                    city = address.getElementsByTagName("city").item(0).getTextContent();
-                    postcode = address.getElementsByTagName("postcode").item(0).getTextContent();
-                    country = address.getElementsByTagName("country").item(0).getTextContent();
-
-
-                    if(type.equals("Customer")){
-                        Customer customer = new Customer(email, username, password, fullName, contactNumber, lineOne, lineTwo, city, postcode, country, null);
-                        customer.setId(id);
-
-                        return (T) customer;
-                    }else{
-                        Driver driver = new Driver(email, username, password, fullName, contactNumber, lineOne, lineTwo, city, postcode, country);
-                        driver.setId(id);
-
-                        return (T) driver;
-                    }
-                }
-                return null;
-            }else{
-                System.out.println("No Document");
-                return null;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public static JSONObject driverToJSON(Driver driver) throws JSONException {
 
         JSONObject address = new JSONObject();
@@ -267,11 +220,17 @@ public class Parser {
     public static JSONObject parcelToJSON(Parcel parcel) throws JSONException {
 
         JSONObject address = new JSONObject();
-        address.put("lineOne", parcel.getAddressLineTwo());
+        address.put("lineOne", parcel.getAddressLineOne());
         address.put("lineTwo", parcel.getAddressLineTwo());
         address.put("city", parcel.getCity());
         address.put("postcode", parcel.getPostcode());
         address.put("country", parcel.getCountry());
+
+        JSONObject location = new JSONObject();
+        location.put("longitude", parcel.getLocation().getLongitude());
+        location.put("latitude", parcel.getLocation().getLatitude());
+        location.put("parcelID", parcel.getId());
+        location.put("locationID", parcel.getLocation().getLocationID());
 
         JSONObject json = new JSONObject();
         json.put("id", parcel.getId());
@@ -281,10 +240,15 @@ public class Parser {
         json.put("contents", parcel.getContents());
         json.put("dateBooked", parcel.getDateBooked());
         json.put("deliveryDate", parcel.getDeliveryDate());
-        json.put("createdByID", parcel.getCreatedByID());
+        json.put("driverID", parcel.getDriverID());
         json.put("isDelivered", parcel.isDelivered());
         json.put("isOutForDelivery", parcel.isOutForDelivery());
         json.put("isProcessing", parcel.isProcessing());
+        json.put("image", parcel.getImage());
+        json.put("address", address);
+        json.put("location", location);
+        json.put("collectionLineOne", parcel.getCollectionLineOne());
+        json.put("collectionPostcode", parcel.getCollectionPostCode());
 
         return json;
     }

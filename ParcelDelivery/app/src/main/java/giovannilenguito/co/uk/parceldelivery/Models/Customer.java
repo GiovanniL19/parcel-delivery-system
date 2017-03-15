@@ -8,16 +8,14 @@ import java.io.Serializable;
 
 public class Customer extends User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private Parcel parcels;
+    private Parcel[] parcels;
     private String type = "Customer";
 
     public String getType() {
         return type;
     }
 
-    public Customer(String email, String username, String password, String fullName, int contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country, Parcel parcels) {
+    public Customer(String email, String username, String password, String fullName, int contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country, Parcel[] parcels) {
         super(email, username, password, fullName, contactNumber);
         this.setAddressLineOne(addressLineOne);
         this.setAddressLineTwo(addressLineTwo);
@@ -28,11 +26,11 @@ public class Customer extends User implements Serializable {
     }
 
 
-    public Parcel getParcels() {
+    public Parcel[] getParcels() {
         return parcels;
     }
 
-    public void setParcels(Parcel parcels) {
+    public void setParcels(Parcel[] parcels) {
         this.parcels = parcels;
     }
 
