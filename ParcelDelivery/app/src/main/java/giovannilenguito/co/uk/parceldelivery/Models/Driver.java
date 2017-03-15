@@ -13,13 +13,8 @@ public class Driver extends User {
         return type;
     }
 
-    public Driver(String email, String username, String password, String fullName, int contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country) {
+    public Driver(String email, String username, String password, String fullName, int contactNumber) {
         super(email, username, password, fullName, contactNumber);
-        this.setAddressLineOne(addressLineOne);
-        this.setAddressLineTwo(addressLineTwo);
-        this.setCity(city);
-        this.setPostcode(postcode);
-        this.setCountry(country);
     }
 
     public Parcel[] getParcels() {

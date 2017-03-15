@@ -284,13 +284,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
         String email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL));
         int contactNumber = cursor.getInt(cursor.getColumnIndex(COLUMN_CONTACTNUMBER));
 
-        String addressLineOne = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_ONE));
-        String addressLineTwo = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_TWO));
-        String city = cursor.getString(cursor.getColumnIndex(COLUMN_CITY));
-        String postcode = cursor.getString(cursor.getColumnIndex(COLUMN_POSTCODE));
-        String country = cursor.getString(cursor.getColumnIndex(COLUMN_COUNTRY));
-
-        Driver driver = new Driver(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country);
+        Driver driver = new Driver(email, username, password, fullName, contactNumber);
         driver.setId(rowId);
         return driver;
     }

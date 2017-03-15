@@ -109,7 +109,6 @@ public class DataProvider {
             connection.setConnectTimeout(60000);
             connection.setReadTimeout(60000);
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Content-Type", "text/plain");
             connection.connect();
 
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
