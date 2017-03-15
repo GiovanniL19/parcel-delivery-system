@@ -1,6 +1,5 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
@@ -11,6 +10,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,6 +23,7 @@ import giovannilenguito.co.uk.parceldelivery.R;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText username, password, email, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country;
+    private TextView textView10, textView11, textView12, textView13, textView14;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,47 @@ public class RegisterActivity extends AppCompatActivity {
         city = (EditText)findViewById(R.id.city);
         postcode = (EditText)findViewById(R.id.postcode);
         country = (EditText)findViewById(R.id.country);
+
+
+        textView10 = (TextView)findViewById(R.id.textView10);
+        textView11 = (TextView)findViewById(R.id.textView11);
+        textView12 = (TextView)findViewById(R.id.textView12);
+        textView13 = (TextView)findViewById(R.id.textView13);
+        textView14 = (TextView)findViewById(R.id.textView14);
+    }
+
+    public void toggleClicked(View view){
+        Switch driverSwitch = (Switch)findViewById(R.id.userType);
+
+        if(driverSwitch.isChecked()){
+
+            addressLineOne.setVisibility(View.GONE);
+            addressLineTwo.setVisibility(View.GONE);
+            city.setVisibility(View.GONE);
+            postcode.setVisibility(View.GONE);
+            country.setVisibility(View.GONE);
+
+            textView10.setVisibility(View.GONE);
+            textView11.setVisibility(View.GONE);
+            textView12.setVisibility(View.GONE);
+            textView13.setVisibility(View.GONE);
+            textView14.setVisibility(View.GONE);
+
+
+        }else{
+            addressLineOne.setVisibility(View.VISIBLE);
+            addressLineTwo.setVisibility(View.VISIBLE);
+            city.setVisibility(View.VISIBLE);
+            postcode.setVisibility(View.VISIBLE);
+            country.setVisibility(View.VISIBLE);
+
+            textView10.setVisibility(View.VISIBLE);
+            textView11.setVisibility(View.VISIBLE);
+            textView12.setVisibility(View.VISIBLE);
+            textView13.setVisibility(View.VISIBLE);
+            textView14.setVisibility(View.VISIBLE);
+        }
+
     }
 
     public void registerCustomer(View view) throws MalformedURLException, ExecutionException, InterruptedException {
@@ -63,36 +105,26 @@ public class RegisterActivity extends AppCompatActivity {
         String postC = String.valueOf(postcode.getText());
         String crty = String.valueOf(country.getText());
 
-        if(!usN.equals("") && !pass.equals("") && !eM.equals("") && !fullN.equals("") && !lineOne.equals("") && !cit.equals("") && !postC.equals("") && !crty.equals("")){
-            Switch driverSwitch = (Switch)findViewById(R.id.userType);
+        Switch driverSwitch = (Switch)findViewById(R.id.userType);
+
+        if(!usN.equals("") && !pass.equals("") && !eM.equals("") && !fullN.equals("") && !lineOne.equals("") && !cit.equals("") && !postC.equals("") && !crty.equals("") || driverSwitch.isChecked()){
+            UserHTTPManager userHTTPManager = new UserHTTPManager();
+
             if(driverSwitch.isChecked()){
-                Driver driver = new Driver(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty);
+                Driver driver = new Driver(eM, usN, pass, fullN, contact);
                 driver.setContactNumber(contact);
 
-                //RETURNS ID of new driver
-                String id = (String) new UserHTTPManager().execute(new URL(getString(R.string.WS_IP) +  "/users/new"), "POST", "driver", driver).get();
-                if(id != null){
-                    Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                }else{
-                    Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
-                }
-
+                userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/new"), "POST", "driver", driver).get();
             }else{
-                Customer customer = new Customer(eM, usN, pass, fullN, 0, lineOne, lineTwo, cit, postC, crty, null);
+                Customer customer = new Customer(eM, usN, pass, fullN, contact, lineOne, lineTwo, cit, postC, crty, null);
                 customer.setContactNumber(contact);
 
-                //RETURNS ID of new customer
-                String id = (String) new UserHTTPManager().execute(new URL(getString(R.string.WS_IP) + "/users/new"), "POST", "customer", customer).get();
-                if(id != null){
-                    Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                }else{
-                    Snackbar.make(view, "An Error Occurred", Snackbar.LENGTH_SHORT).show();
-                }
+                userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/customer/new"), "POST", "customer", customer).get();
             }
+
+            Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
 
             //Hide keyboard
             if (view != null) {

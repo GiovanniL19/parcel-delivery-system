@@ -157,7 +157,7 @@ public class Parser {
 
 
             if(type.equals("driver")){
-                Driver driver = new Driver(email, username, password, fullName, contactNumber, lineOne, lineTwo, city, postcode, country);
+                Driver driver = new Driver(email, username, password, fullName, contactNumber);
                 driver.setId(id);
 
                 return (T) driver;
@@ -172,24 +172,13 @@ public class Parser {
     }
 
     public static JSONObject driverToJSON(Driver driver) throws JSONException {
-
-        JSONObject address = new JSONObject();
-        address.put("lineOne", driver.getAddressLineTwo());
-        address.put("lineTwo", driver.getAddressLineTwo());
-        address.put("city", driver.getCity());
-        address.put("postcode", driver.getPostcode());
-        address.put("country", driver.getCountry());
-
         JSONObject user = new JSONObject();
-        user.put("id", driver.getId());
-        user.put("type", driver.getType());
+        user.put("driverId", driver.getId());
         user.put("username", driver.getUsername());
         user.put("password", driver.getPassword());
         user.put("email", driver.getEmail());
         user.put("fullName", driver.getFullName());
         user.put("contactNumber", driver.getContactNumber());
-        user.put("address", address);
-
 
         return user;
     }

@@ -22,6 +22,15 @@
             android:orientation="vertical" >
 
 
+            <Switch
+                android:id="@+id/userType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:onClick="toggleClicked"
+                android:text="Driver" />
+
             <TextView
                 android:text="Username*"
                 android:layout_width="match_parent"
@@ -166,10 +175,10 @@
                 android:singleLine="true" />
 
             <TextView
-                android:text="Country*"
+                android:id="@+id/textView14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView14" />
+                android:text="Country*" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -181,14 +190,6 @@
                 android:layout_marginBottom="20dp"
                 android:singleLine="true" />
 
-
-            <Switch
-                android:text="Driver"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/userType"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
 
             <Button
                 android:text="Register"
