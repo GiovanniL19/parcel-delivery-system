@@ -15,7 +15,7 @@ public class Customer extends User implements Serializable {
         return type;
     }
 
-    public Customer(String email, String username, String password, String fullName, int contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country, Parcel[] parcels) {
+    public Customer(String email, String username, String password, String fullName, Long contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country, Parcel[] parcels) {
         super(email, username, password, fullName, contactNumber);
         this.setAddressLineOne(addressLineOne);
         this.setAddressLineTwo(addressLineTwo);

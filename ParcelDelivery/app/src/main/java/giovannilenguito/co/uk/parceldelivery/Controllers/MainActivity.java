@@ -69,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
             //JSON
             userHTTPManager = new UserHTTPManager();
             if(isDriver.isChecked()){
-                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/drivers/byUsername/"+ username), "GET", "driver").get();
+                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/findByUsername/"+ username), "GET", "driver").get();
             }else{
-                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customers/byUsername/"+ username), "GET", "customer").get();
+                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/findByUsername/"+ username), "GET", "customer").get();
             }
 
         }catch(Exception e){

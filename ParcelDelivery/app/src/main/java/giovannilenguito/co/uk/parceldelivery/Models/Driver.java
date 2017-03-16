@@ -13,7 +13,7 @@ public class Driver extends User {
         return type;
     }
 
-    public Driver(String email, String username, String password, String fullName, int contactNumber) {
+    public Driver(String email, String username, String password, String fullName, Long contactNumber) {
         super(email, username, password, fullName, contactNumber);
     }
 

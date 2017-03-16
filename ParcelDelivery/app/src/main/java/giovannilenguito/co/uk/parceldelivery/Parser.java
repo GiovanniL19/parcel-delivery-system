@@ -117,7 +117,7 @@ public class Parser {
                 String password = jsonMap.get("password").toString();
                 String email = jsonMap.get("email").toString();
                 String fullName = jsonMap.get("fullName").toString();
-                int contactNumber = Integer.parseInt(jsonMap.get("contactNumber").toString());
+                Long contactNumber = Long.parseLong(jsonMap.get("contactNumber").toString());
 
 
                 Map address = (Map) jsonMap.get("address");
@@ -140,28 +140,37 @@ public class Parser {
         if(json != null) {
             Map jsonMap = new Gson().fromJson(json, Map.class);
 
-            String id = jsonMap.get("id").toString();
-            String username = jsonMap.get("username").toString();
-            String password = jsonMap.get("password").toString();
-            String email = jsonMap.get("email").toString();
-            String fullName = jsonMap.get("fullName").toString();
-            int contactNumber = Integer.parseInt(jsonMap.get("contactNumber").toString());
+            String id, username, password, email, fullName, lineOne, lineTwo, city, postcode, country;
+            Long contactNumber;
+            Map address;
 
 
-            Map address = (Map) jsonMap.get("address");
-            String lineOne = address.get("lineOne").toString();
-            String lineTwo = address.get("lineTwo").toString();
-            String city = address.get("city").toString();
-            String postcode = address.get("postcode").toString();
-            String country = address.get("country").toString();
+            username = jsonMap.get("username").toString();
+            password = jsonMap.get("password").toString();
+            email = jsonMap.get("email").toString();
+            fullName = jsonMap.get("fullName").toString();
 
+
+            contactNumber = Long.parseLong(jsonMap.get("contactNumber").toString());
 
             if(type.equals("driver")){
+                id = jsonMap.get("driverId").toString();
+
                 Driver driver = new Driver(email, username, password, fullName, contactNumber);
                 driver.setId(id);
 
                 return (T) driver;
             }else{
+                id = jsonMap.get("customerId").toString();
+
+
+                address = (Map) jsonMap.get("addressId");
+                lineOne = address.get("lineOne").toString();
+                lineTwo = address.get("lineTwo").toString();
+                city = address.get("city").toString();
+                postcode = address.get("postcode").toString();
+                country = address.get("country").toString();
+
                 Customer customer = new Customer(email, username, password, fullName, contactNumber, lineOne, lineTwo, city, postcode, country, null);
                 customer.setId(id);
 

@@ -92,10 +92,10 @@ public class RegisterActivity extends AppCompatActivity {
         String eM = String.valueOf(email.getText());
         String fullN = String.valueOf(fullName.getText());
 
-        int contact = 0;
+        Long contact = null;
 
         try {
-            contact = Integer.parseInt(contactNumber.getText().toString());
+            contact = Long.parseLong(contactNumber.getText().toString());
         }catch(Exception e){
             e.printStackTrace();
         }

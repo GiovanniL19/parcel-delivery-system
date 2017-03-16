@@ -13,9 +13,9 @@ public class User extends Address implements Serializable {
     private String username;
     private String password;
     private String fullName;
-    private int contactNumber;
+    private Long contactNumber;
 
-    public User(String email, String username, String password, String fullName, int contactNumber) {
+    public User(String email, String username, String password, String fullName, Long contactNumber) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -63,11 +63,11 @@ public class User extends Address implements Serializable {
         this.fullName = fullName;
     }
 
-    public int getContactNumber() {
+    public Long getContactNumber() {
         return contactNumber;
     }
 
-    public void setContactNumber(int contactNumber) {
+    public void setContactNumber(Long contactNumber) {
         this.contactNumber = contactNumber;
     }
 }

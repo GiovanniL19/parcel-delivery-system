@@ -262,7 +262,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
         String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
         String fullName = cursor.getString(cursor.getColumnIndex(COLUMN_FULLNAME));
         String email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL));
-        int contactNumber = cursor.getInt(cursor.getColumnIndex(COLUMN_CONTACTNUMBER));
+        Long contactNumber = cursor.getLong(cursor.getColumnIndex(COLUMN_CONTACTNUMBER));
 
         String addressLineOne = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_ONE));
         String addressLineTwo = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS_TWO));
@@ -282,7 +282,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
         String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
         String fullName = cursor.getString(cursor.getColumnIndex(COLUMN_FULLNAME));
         String email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL));
-        int contactNumber = cursor.getInt(cursor.getColumnIndex(COLUMN_CONTACTNUMBER));
+        Long contactNumber = cursor.getLong(cursor.getColumnIndex(COLUMN_CONTACTNUMBER));
 
         Driver driver = new Driver(email, username, password, fullName, contactNumber);
         driver.setId(rowId);
