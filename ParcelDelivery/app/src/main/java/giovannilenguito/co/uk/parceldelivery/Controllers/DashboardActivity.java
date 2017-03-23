@@ -27,12 +27,14 @@ import giovannilenguito.co.uk.parceldelivery.Adapters.ParcelAdapter;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
+import giovannilenguito.co.uk.parceldelivery.NotificationService;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
-    //private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
     public static Intent notificationIntent;
     private ParcelHTTPManager parcelHTTPManager;
 
@@ -49,11 +51,11 @@ public class DashboardActivity extends AppCompatActivity {
             driver = (Driver) intent.getSerializableExtra("Driver");
 
             //Start notification service and check for notifications
-            //notificationIntent = new Intent(this, NotificationService.class);
+            notificationIntent = new Intent(this, NotificationService.class);
 
-            //startService(notificationIntent);
+            startService(notificationIntent);
         }else{
-            //database.dropUsers();
+            database.dropUsers();
             //Go to login
             Intent login = new Intent(this, MainActivity.class);
             startActivity(login);

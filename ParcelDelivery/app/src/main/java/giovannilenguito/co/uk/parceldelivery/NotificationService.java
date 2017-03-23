@@ -19,8 +19,9 @@ import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 
-/*
+
 public class NotificationService extends Service {
     private Boolean loop = true;
 
@@ -51,11 +52,11 @@ public class NotificationService extends Service {
                 if(database.getAllDrivers().size() > 0) {
                     Driver driver = database.getAllDrivers().get(0);
 
-                    //int numberOfLocalParcles = database.getNumberOfParcels(driver.getId());
+                    int numberOfLocalParcles = database.getNumberOfParcels(driver.getDriverId());
 
                     URL url = null;
                     try {
-                        url = new URL(getString(R.string.WS_IP) + "/parcels/byDriver/" + driver.getId());
+                        url = new URL(getString(R.string.WS_IP) + "/parcel/findByDriver/" + driver.getDriverId());
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -76,7 +77,7 @@ public class NotificationService extends Service {
                             }
 
                             //Update local storage
-                            database.updateNumberOfParcels(numberOfActualParcels, driver.getId());
+                            database.updateNumberOfParcels(numberOfActualParcels, driver.getDriverId());
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -122,4 +123,3 @@ public class NotificationService extends Service {
     }
 
 }
-*/

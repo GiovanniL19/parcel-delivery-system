@@ -16,10 +16,12 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
+import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private UserHTTPManager userHTTPManager;
 
-    //private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(this, DashboardActivity.class);
 
         //Check if user is logged in
-        /*if (database.getAllCustomers().size() > 0){
+        if (database.getAllCustomers().size() > 0){
             //User logged in
             intent.putExtra("Customer", database.getAllCustomers().get(0));
             startActivity(intent);
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("Driver", database.getAllDrivers().get(0));
                 startActivity(intent);
             }
-        }*/
+        }
     }
 
     public void goToRegister(View view){
@@ -104,11 +106,14 @@ public class MainActivity extends AppCompatActivity {
                             userHTTPManager.cancel(true);
 
                             userHTTPManager = new UserHTTPManager();
+
                             //LOG USER LOGIN
-                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + customer.getCustomerId() + "\"}";
-                            JSONObject jsonLog = new JSONObject(jsonString);
+                            JSONObject jsonLog = new JSONObject();
+                            jsonLog.put("title", "Login");
+                            jsonLog.put("message", customer.getFullName() + " logged in at " + new Date().toString());
+
                             userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
-                            //database.addCustomer(customer);
+                            database.addCustomer(customer);
                             userHTTPManager.cancel(true);
                             startActivity(intent);
                         } else {
@@ -127,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                             String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getDriverId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
                             userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
-                            //database.addDriver(driver);
-                            //database.addNumberOfParcels(0, driver.getId());
+                            database.addDriver(driver);
+                            database.addNumberOfParcels(0, driver.getDriverId());
 
                             userHTTPManager.cancel(true);
                             startActivity(intent);
