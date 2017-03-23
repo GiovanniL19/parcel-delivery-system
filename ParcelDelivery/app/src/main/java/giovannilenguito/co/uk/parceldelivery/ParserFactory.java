@@ -51,15 +51,16 @@ public class ParserFactory {
 
                 Map jsonMap = new Gson().fromJson(object.toString(), Map.class);
 
-                String recipientName = jsonMap.get("recipientName").toString();
+                int parcelId = getId(jsonMap.get("parcelId").toString());
                 String serviceType = jsonMap.get("serviceType").toString();
                 String contents = jsonMap.get("contents").toString();
-                String collectionPostcode = jsonMap.get("collectionPostcode").toString();
-                String collectionLineOne = jsonMap.get("collectionLineOne").toString();
                 String dateBooked = jsonMap.get("dateBooked").toString();
                 String deliveryDate = jsonMap.get("deliveryDate").toString();
-                String image = jsonMap.get("image").toString();
 
+                String image = "";
+                try {
+                    image = jsonMap.get("image").toString();
+                }catch(Exception ignored){}
 
                 Map addressObject = (Map) jsonMap.get("addressId");
                 String lineOne = addressObject.get("lineOne").toString();
@@ -78,11 +79,17 @@ public class ParserFactory {
                 address.setAddressId(addressId);
 
 
+                String collectionPostcode = address.getPostcode();
+                String collectionLineOne = address.getAddressLineOne();
+
                 Map location = (Map) jsonMap.get("locationId");
                 int locationId = getId(location.get("locationId").toString());
-                int parcelId = getId(location.get("locationId").toString());
                 String dateTime = location.get("dateTime").toString();
-                String status = location.get("status").toString();
+                String status = "Processing";
+                try {
+                    status = location.get("status").toString();
+                }catch(Exception ignored){}
+
                 double longitude = Double.parseDouble(location.get("longitude").toString());
                 double latitude = Double.parseDouble(location.get("latitude").toString());
                 boolean isDelivered = Boolean.parseBoolean(location.get("isDelivered").toString());
@@ -94,12 +101,14 @@ public class ParserFactory {
                 locationObject.setLocationId(locationId);
 
                 Map customerObject = (Map) jsonMap.get("customerId");
-                int customerId = getId(customerObject.get("email").toString());
-                String customerEmail = customerObject.get("customerId").toString();
+                int customerId = getId(customerObject.get("customerId").toString());
+                String customerEmail = customerObject.get("email").toString();
                 Long customerContactNumber = Long.parseLong(customerObject.get("contactNumber").toString());
                 String customerUsername = customerObject.get("username").toString();
                 String customerPassword = customerObject.get("password").toString();
                 String customerFullName = customerObject.get("fullName").toString();
+
+                String recipientName = customerFullName;
 
                 Map customerAddressObject = (Map) customerObject.get("addressId");
                 String customerLineOne = customerAddressObject.get("lineOne").toString();
@@ -350,7 +359,6 @@ public class ParserFactory {
         json.put("locationId", location);
         json.put("driverId", driver);
 
-        json.put("recipientName", parcel.getRecipientName());
         json.put("serviceType", parcel.getServiceType());
         json.put("contents", parcel.getContents());
         json.put("dateBooked", parcel.getDateBooked());
@@ -359,8 +367,10 @@ public class ParserFactory {
         json.put("isOutForDelivery", parcel.getLocationId().isOutForDelivery());
         json.put("isProcessing", parcel.getLocationId().isProcessing());
         json.put("image", parcel.getImage());
-        json.put("collectionLineOne", parcel.getCollectionLineOne());
-        json.put("collectionPostcode", parcel.getCollectionPostCode());
+
+
+        json.put("collectionLineOne", parcel.getAddressId().getAddressLineOne());
+        json.put("collectionPostcode", parcel.getAddressId().getPostcode());
 
         return json;
     }

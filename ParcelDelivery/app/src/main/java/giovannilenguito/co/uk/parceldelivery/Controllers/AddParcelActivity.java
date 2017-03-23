@@ -284,8 +284,6 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
 
                 //Customer information (collection information)
                 parcel.setCustomerId(customer);
-                parcel.setCollectionLineOne(address.getAddressLineOne());
-                parcel.setCollectionPostCode(address.getPostcode());
 
                 try {
                     userHTTPManager = new UserHTTPManager();
