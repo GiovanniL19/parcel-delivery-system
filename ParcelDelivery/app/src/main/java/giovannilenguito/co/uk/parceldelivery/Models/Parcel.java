@@ -7,10 +7,13 @@ import java.util.Date;
  * Created by Giovanni on 19/10/2016.
  */
 
-public class Parcel extends Address implements Serializable {
-    private String id;
+public class Parcel implements Serializable {
+    private int parcelId;
+    private Customer customerId;
+    private Driver driverId;
+    private Address addressId;
+    private Location locationId;
 
-    private String customerID;
     private String recipientName;
     private String serviceType;
     private String contents;
@@ -18,91 +21,57 @@ public class Parcel extends Address implements Serializable {
     private String dateBooked;
     private String deliveryDate;
 
-    private String driverID;
-
-    private boolean isDelivered;
-    private boolean isOutForDelivery;
-    private boolean isProcessing;
-    private boolean isCollecting;
 
     private String image;
 
     private String collectionLineOne;
     private String collectionPostCode;
 
-    private Location location;
-
-    public String getStatus() {
-        if (isDelivered) {
-            return "Delivered";
-        } else if (isOutForDelivery) {
-            return "Out For Delivery";
-        } else if (isProcessing) {
-            return "Processing";
-        } else {
-            return "Pending";
-        }
-    }
-
     public Parcel() {
     }
 
-    public Parcel(String id, String customerID, String recipientName, String serviceType, String contents, String dateBooked, String deliveryDate, String driverID, boolean isDelivered, boolean isOutForDelivery, boolean isProcessing) {
-        this.id = id;
-        this.customerID = customerID;
-        this.recipientName = recipientName;
-        this.serviceType = serviceType;
-        this.contents = contents;
-        this.dateBooked = dateBooked;
-        this.deliveryDate = deliveryDate;
-        this.driverID = driverID;
-        this.isDelivered = isDelivered;
-        this.isOutForDelivery = isOutForDelivery;
-        this.isProcessing = isProcessing;
+    public String getTitle(){
+        return this.addressId.getAddressLineOne() + " (" + this.parcelId + ")";
     }
 
-    public String getDriverID() {
-        return driverID;
+    public int getParcelId() {
+        return parcelId;
     }
 
-    public void setDriverID(String driverID) {
-        this.driverID = driverID;
+    public void setParcelId(int parcelId) {
+        this.parcelId = parcelId;
     }
 
-    public String getCollectionLineOne() {
-        return collectionLineOne;
+    public Customer getCustomerId() {
+        return customerId;
     }
 
-    public void setCollectionLineOne(String collectionLineOne) {
-        this.collectionLineOne = collectionLineOne;
+    public void setCustomerId(Customer customerId) {
+        this.customerId = customerId;
     }
 
-    public String getCollectionPostCode() {
-        return collectionPostCode;
+    public Driver getDriverId() {
+        return driverId;
     }
 
-    public void setCollectionPostCode(String collectionPostCode) {
-        this.collectionPostCode = collectionPostCode;
+    public void setDriverId(Driver driverId) {
+        this.driverId = driverId;
     }
 
-    public String getCustomerID() {
-        return customerID;
+    public Address getAddressId() {
+        return addressId;
     }
 
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
+    public void setAddressId(Address addressId) {
+        this.addressId = addressId;
     }
 
-    public String getTitle() {
-        return this.getAddressLineOne() + " (" + this.id + ")";
+    public Location getLocationId() {
+        return locationId;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setLocationId(Location locationId) {
+        this.locationId = locationId;
     }
 
     public String getRecipientName() {
@@ -112,7 +81,6 @@ public class Parcel extends Address implements Serializable {
     public void setRecipientName(String recipientName) {
         this.recipientName = recipientName;
     }
-
 
     public String getServiceType() {
         return serviceType;
@@ -130,14 +98,6 @@ public class Parcel extends Address implements Serializable {
         this.contents = contents;
     }
 
-    public String getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(String deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
     public String getDateBooked() {
         return dateBooked;
     }
@@ -146,28 +106,12 @@ public class Parcel extends Address implements Serializable {
         this.dateBooked = dateBooked;
     }
 
-    public boolean isDelivered() {
-        return isDelivered;
+    public String getDeliveryDate() {
+        return deliveryDate;
     }
 
-    public void setDelivered(boolean delivered) {
-        isDelivered = delivered;
-    }
-
-    public boolean isOutForDelivery() {
-        return isOutForDelivery;
-    }
-
-    public void setOutForDelivery(boolean outForDelivery) {
-        isOutForDelivery = outForDelivery;
-    }
-
-    public boolean isProcessing() {
-        return isProcessing;
-    }
-
-    public void setProcessing(boolean processing) {
-        isProcessing = processing;
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     public String getImage() {
@@ -178,20 +122,19 @@ public class Parcel extends Address implements Serializable {
         this.image = image;
     }
 
-    public Location getLocation() {
-        return location;
+    public String getCollectionLineOne() {
+        return collectionLineOne;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setCollectionLineOne(String collectionLineOne) {
+        this.collectionLineOne = collectionLineOne;
     }
 
-    public boolean isCollecting() {
-        return isCollecting;
+    public String getCollectionPostCode() {
+        return collectionPostCode;
     }
 
-    public void setCollecting(boolean collecting) {
-        isCollecting = collecting;
+    public void setCollectionPostCode(String collectionPostCode) {
+        this.collectionPostCode = collectionPostCode;
     }
-
 }

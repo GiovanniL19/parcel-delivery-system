@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private UserHTTPManager userHTTPManager;
 
-    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    //private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(this, DashboardActivity.class);
 
         //Check if user is logged in
-        if (database.getAllCustomers().size() > 0){
+        /*if (database.getAllCustomers().size() > 0){
             //User logged in
             intent.putExtra("Customer", database.getAllCustomers().get(0));
             startActivity(intent);
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("Driver", database.getAllDrivers().get(0));
                 startActivity(intent);
             }
-        }
+        }*/
     }
 
     public void goToRegister(View view){
@@ -84,11 +83,12 @@ public class MainActivity extends AppCompatActivity {
         String sUsername = username.getText().toString();
         String sPassword = password.getText().toString();
 
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
         if(!sUsername.matches("")){
             if(!sPassword.matches("")){
                 Snackbar.make(view, "Attempting login...", Snackbar.LENGTH_LONG).show();
-                ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
-                progressBar.setVisibility(View.VISIBLE);
 
                 Object user = isAuthenticatedCustomer(sUsername);
                 userHTTPManager.cancel(true);
@@ -105,10 +105,10 @@ public class MainActivity extends AppCompatActivity {
 
                             userHTTPManager = new UserHTTPManager();
                             //LOG USER LOGIN
-                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + customer.getId() + "\"}";
+                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + customer.getCustomerId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
                             userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
-                            database.addCustomer(customer);
+                            //database.addCustomer(customer);
                             userHTTPManager.cancel(true);
                             startActivity(intent);
                         } else {
@@ -124,11 +124,11 @@ public class MainActivity extends AppCompatActivity {
 
                             userHTTPManager = new UserHTTPManager();
                             //LOG USER LOGIN
-                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getId() + "\"}";
+                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getDriverId() + "\"}";
                             JSONObject jsonLog = new JSONObject(jsonString);
                             userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
-                            database.addDriver(driver);
-                            database.addNumberOfParcels(0, driver.getId());
+                            //database.addDriver(driver);
+                            //database.addNumberOfParcels(0, driver.getId());
 
                             userHTTPManager.cancel(true);
                             startActivity(intent);
@@ -140,10 +140,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }else {
+                progressBar.setVisibility(View.INVISIBLE);
                 hideSoftKeyboard();
                 Snackbar.make(view, "Please enter your password", Snackbar.LENGTH_LONG).show();
             }
         }else{
+            progressBar.setVisibility(View.INVISIBLE);
             hideSoftKeyboard();
             Snackbar.make(view, "Please enter your username", Snackbar.LENGTH_LONG).show();
         }

@@ -39,7 +39,7 @@ public class DataProvider {
                     System.out.println("All okay");
                 case 201:
                     BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    return Parser.buildString(buffRead);
+                    return ParserFactory.buildString(buffRead);
             }
 
         } catch (Exception e) {
@@ -79,10 +79,10 @@ public class DataProvider {
             switch (statusCode) {
                 case 200:
                     System.out.println("All okay");
-                    return Parser.buildString(buffRead);
+                    return ParserFactory.buildString(buffRead);
                 case 201:
                     System.out.println("Created");
-                    return Parser.buildString(buffRead);
+                    return ParserFactory.buildString(buffRead);
             }
 
         } catch (Exception e) {
@@ -121,10 +121,13 @@ public class DataProvider {
             switch (statusCode) {
                 case 200:
                     System.out.println("All okay");
-                    return Parser.buildString(buffRead);
+                    return ParserFactory.buildString(buffRead);
                 case 201:
                     System.out.println("Created");
-                    return Parser.buildString(buffRead);
+                    return ParserFactory.buildString(buffRead);
+                case 204:
+                    System.out.println("Success");
+                    return ParserFactory.buildString(buffRead);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,7 +165,7 @@ public class DataProvider {
                     System.out.println("All okay");
                 case 201:
                     BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    return Parser.buildString(buffRead);
+                    return ParserFactory.buildString(buffRead);
             }
 
         } catch (Exception e) {

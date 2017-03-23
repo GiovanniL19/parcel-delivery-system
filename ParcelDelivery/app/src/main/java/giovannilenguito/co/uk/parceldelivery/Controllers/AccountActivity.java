@@ -4,19 +4,17 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class AccountActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
     private TextView username, userType;
-    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    //private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
     private Intent intent;
 
     @Override
@@ -52,11 +50,11 @@ public class AccountActivity extends AppCompatActivity {
 
     public void logout(View view) {
         if(driver != null) {
-            stopService(DashboardActivity.notificationIntent);
+            //stopService(DashboardActivity.notificationIntent);
         }
 
         //Delete local users
-        database.dropUsers();
+        //database.dropUsers();
         //Go to login
         Intent login = new Intent(this, MainActivity.class);
         startActivity(login);

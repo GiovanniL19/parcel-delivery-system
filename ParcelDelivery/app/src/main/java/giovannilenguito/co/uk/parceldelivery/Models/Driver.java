@@ -5,28 +5,11 @@ package giovannilenguito.co.uk.parceldelivery.Models;
  */
 
 public class Driver extends User {
-    private Parcel[] parcels;
+    private int driverId;
     private Customer[] recipients;
-    private String type = "Driver";
-
-    public String getType() {
-        return type;
-    }
 
     public Driver(String email, String username, String password, String fullName, Long contactNumber) {
         super(email, username, password, fullName, contactNumber);
-    }
-
-    public Parcel[] getParcels() {
-        return parcels;
-    }
-
-    public void setParcels(Parcel[] parcels) {
-        this.parcels = parcels;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Customer[] getRecipients() {
@@ -37,4 +20,11 @@ public class Driver extends User {
         this.recipients = recipients;
     }
 
+    public int getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(int driverId) {
+        this.driverId = driverId;
+    }
 }

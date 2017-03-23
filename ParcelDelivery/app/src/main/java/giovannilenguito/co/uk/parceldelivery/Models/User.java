@@ -6,9 +6,7 @@ import java.io.Serializable;
  * Created by Giovanni on 19/10/2016.
  */
 
-public class User extends Address implements Serializable {
-    private String id;
-
+public class User implements Serializable {
     private String email;
     private String username;
     private String password;
@@ -21,14 +19,6 @@ public class User extends Address implements Serializable {
         this.password = password;
         this.fullName = fullName;
         this.contactNumber = contactNumber;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getEmail() {

@@ -12,6 +12,7 @@ public class Address implements Serializable {
     private String city;
     private String postcode;
     private String country;
+    private int addressId;
 
     public String getAddressLineOne() {
         return addressLineOne;
@@ -51,5 +52,13 @@ public class Address implements Serializable {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
     }
 }

@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 
 import org.json.JSONException;
 
@@ -20,8 +19,8 @@ import java.util.List;
 
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
 
+/*
 public class NotificationService extends Service {
     private Boolean loop = true;
 
@@ -52,7 +51,7 @@ public class NotificationService extends Service {
                 if(database.getAllDrivers().size() > 0) {
                     Driver driver = database.getAllDrivers().get(0);
 
-                    int numberOfLocalParcles = database.getNumberOfParcels(driver.getId());
+                    //int numberOfLocalParcles = database.getNumberOfParcels(driver.getId());
 
                     URL url = null;
                     try {
@@ -64,33 +63,20 @@ public class NotificationService extends Service {
                     String json = DataProvider.get(url);
 
                     try {
-                        List<Parcel> parcelList = (List) Parser.parcelList(json);
+                        List<Parcel> parcelList = (List) ParserFactory.parcelList(json);
                         int numberOfActualParcels = 0;
 
                         if (parcelList != null) {
                             for (Parcel parcel : parcelList) {
-                                if (parcel.isOutForDelivery()) {
+                                if (parcel.getLocationId().isOutForDelivery()) {
                                     numberOfActualParcels++;
-                                } else if (parcel.isProcessing()) {
+                                } else if (parcel.getLocationId().isProcessing()) {
                                     numberOfActualParcels++;
                                 }
                             }
 
                             //Update local storage
                             database.updateNumberOfParcels(numberOfActualParcels, driver.getId());
-                        }
-
-                        if (numberOfLocalParcles != numberOfActualParcels) {
-                            //Update view via local broadcaster
-                            Intent intent = new Intent("updateUI");
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                        }
-
-                        if (numberOfLocalParcles < numberOfActualParcels) {
-                            //Send notification
-                            System.out.println("Sending notification");
-                            Notification notification = new Notification();
-                            notification.create(context, "You have new parcels awaiting collection", "New Parcels");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -136,3 +122,4 @@ public class NotificationService extends Service {
     }
 
 }
+*/

@@ -11,7 +11,7 @@ import java.net.URL;
 import giovannilenguito.co.uk.parceldelivery.DataProvider;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Parser;
+import giovannilenguito.co.uk.parceldelivery.ParserFactory;
 
 /**
  * Created by Giovanni on 11/11/2016.
@@ -27,17 +27,18 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
             case "GET":
                 if(userType.equals("customers")) {
                     try {
-                        return Parser.customerList(DataProvider.get(url));
+                        return ParserFactory.customerList(DataProvider.get(url));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }else{
-                    return Parser.JSONtoUser(DataProvider.get(url), userType);
+                    return ParserFactory.JSONtoUser(DataProvider.get(url), userType);
                 }
             case "POST":
+                //TODO: May need to save the address first
                 if(userType.equals("customer")){
                     try {
-                        return DataProvider.post(url, Parser.customerToJSON((Customer) params[3]));
+                        return DataProvider.post(url, ParserFactory.customerToJSON((Customer) params[3]));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -45,7 +46,7 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
                     }
                 }else{
                     try {
-                        return DataProvider.post(url, Parser.driverToJSON((Driver) params[3]));
+                        return DataProvider.post(url, ParserFactory.driverToJSON((Driver) params[3]));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {

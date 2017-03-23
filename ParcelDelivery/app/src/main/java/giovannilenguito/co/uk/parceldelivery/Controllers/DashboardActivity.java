@@ -27,14 +27,12 @@ import giovannilenguito.co.uk.parceldelivery.Adapters.ParcelAdapter;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
-import giovannilenguito.co.uk.parceldelivery.NotificationService;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
-    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    //private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
     public static Intent notificationIntent;
     private ParcelHTTPManager parcelHTTPManager;
 
@@ -51,11 +49,11 @@ public class DashboardActivity extends AppCompatActivity {
             driver = (Driver) intent.getSerializableExtra("Driver");
 
             //Start notification service and check for notifications
-            notificationIntent = new Intent(this, NotificationService.class);
+            //notificationIntent = new Intent(this, NotificationService.class);
 
-            startService(notificationIntent);
+            //startService(notificationIntent);
         }else{
-            database.dropUsers();
+            //database.dropUsers();
             //Go to login
             Intent login = new Intent(this, MainActivity.class);
             startActivity(login);
@@ -116,9 +114,9 @@ public class DashboardActivity extends AppCompatActivity {
             URL url = null;
             //MAKE URL
             if(customer != null){
-                url = new URL(getString(R.string.WS_IP) + "/parcels/byCustomer/"+ customer.getId());
+                url = new URL(getString(R.string.WS_IP) + "/parcel/findByCustomer/"+ customer.getCustomerId());
             }else if(driver != null){
-                url = new URL(getString(R.string.WS_IP) + "/parcels/byDriver/"+ driver.getId());
+                url = new URL(getString(R.string.WS_IP) + "/parcel/findByDriver/"+ driver.getDriverId());
             }
 
             //GET CONTENT
@@ -148,9 +146,9 @@ public class DashboardActivity extends AppCompatActivity {
                 int processingCount = 0;
                 int onWayCount = 0;
                 for(int i = 0; i < parcelList.size(); i++){
-                    if(parcelList.get(i).isOutForDelivery()){
+                    if(parcelList.get(i).getLocationId().isOutForDelivery()){
                         onWayCount++;
-                    }else if(parcelList.get(i).isProcessing()){
+                    }else if(parcelList.get(i).getLocationId().isProcessing()){
                         processingCount++;
                     }
                 }

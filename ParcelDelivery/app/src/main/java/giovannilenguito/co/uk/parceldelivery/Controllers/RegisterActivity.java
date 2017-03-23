@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
+import giovannilenguito.co.uk.parceldelivery.Models.Address;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.R;
@@ -112,12 +113,18 @@ public class RegisterActivity extends AppCompatActivity {
 
             if(driverSwitch.isChecked()){
                 Driver driver = new Driver(eM, usN, pass, fullN, contact);
+
                 driver.setContactNumber(contact);
 
                 userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/new"), "POST", "driver", driver).get();
             }else{
-                Customer customer = new Customer(eM, usN, pass, fullN, contact, lineOne, lineTwo, cit, postC, crty, null);
-                customer.setContactNumber(contact);
+                Address address = new Address();
+                address.setAddressLineOne(lineOne);
+                address.setAddressLineTwo(lineTwo);
+                address.setCity(cit);
+                address.setPostcode(postC);
+                address.setCountry(crty);
+                Customer customer = new Customer(eM, usN, pass, fullN, contact, address);
 
                 userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/customer/new"), "POST", "customer", customer).get();
             }

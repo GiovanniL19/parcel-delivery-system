@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import giovannilenguito.co.uk.parceldelivery.Models.Address;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.Models.Location;
@@ -102,7 +103,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         userHTTPManager = new UserHTTPManager();
 
         try {
-            customers = (List<Customer>) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customers/all"), "GET", "customers", null).get();
+            customers = (List<Customer>) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/find/all"), "GET", "customers", null).get();
             userHTTPManager.cancel(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -116,7 +117,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         ArrayList<String> spinnerArray = new ArrayList<>();
 
         for (Customer customer : customers) {
-            spinnerArray.add(customer.getFullName() + " (" + customer.getId() + ")");
+            spinnerArray.add(customer.getFullName() + " (" + customer.getCustomerId() + ")");
         }
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
@@ -251,43 +252,47 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                 Customer selectedRecipient = customers.get(selectedCustomerPosition);
 
                 String spinnerChoice = deliveryType.getSelectedItem().toString();
-                String recipientN = recipient.getText().toString();
                 String cont = contents.getText().toString();
                 String deliveryD = deliveryDate;
 
                 //Package information
                 parcel.setServiceType(spinnerChoice);
-                parcel.setRecipientName(recipientN);
+                parcel.setRecipientName(selectedRecipient.getFullName());
                 parcel.setContents(cont);
                 parcel.setDeliveryDate(deliveryD);
 
+                Address address = new Address();
+
                 if(recipient.getText().toString().isEmpty()){
                     //Recipient
-                    parcel.setAddressLineOne(selectedRecipient.getAddressLineOne());
-                    parcel.setAddressLineTwo(selectedRecipient.getAddressLineTwo());
-                    parcel.setCity(selectedRecipient.getCity());
-                    parcel.setCountry(selectedRecipient.getCountry());
-                    parcel.setPostcode(selectedRecipient.getPostcode());
+                    address.setAddressId(selectedRecipient.getAddressId().getAddressId());
+                    address.setAddressLineOne(selectedRecipient.getAddressId().getAddressLineOne());
+                    address.setAddressLineTwo(selectedRecipient.getAddressId().getAddressLineTwo());
+                    address.setCity(selectedRecipient.getAddressId().getCity());
+                    address.setCountry(selectedRecipient.getAddressId().getCountry());
+                    address.setPostcode(selectedRecipient.getAddressId().getPostcode());
+                    parcel.setAddressId(address);
                 }else{
                     //Recipient
-                    parcel.setAddressLineOne(lineOne.getText().toString());
-                    parcel.setAddressLineTwo(lineTwo.getText().toString());
-                    parcel.setCity(city.getText().toString());
-                    parcel.setCountry(country.getText().toString());
-                    parcel.setPostcode(postcode.getText().toString());
+                    address.setAddressLineOne(lineOne.getText().toString());
+                    address.setAddressLineTwo(lineTwo.getText().toString());
+                    address.setCity(city.getText().toString());
+                    address.setCountry(country.getText().toString());
+                    address.setPostcode(postcode.getText().toString());
+                    parcel.setAddressId(address);
                 }
 
                 //Customer information (collection information)
-                parcel.setCustomerID(customer.getId());
-                parcel.setCollectionLineOne(customer.getAddressLineOne());
-                parcel.setCollectionPostCode(customer.getPostcode());
+                parcel.setCustomerId(customer);
+                parcel.setCollectionLineOne(address.getAddressLineOne());
+                parcel.setCollectionPostCode(address.getPostcode());
 
                 try {
                     userHTTPManager = new UserHTTPManager();
-                    driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/drivers/random"), "GET", "driver").get();
+                    driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/random"), "GET", "driver").get();
                     userHTTPManager.cancel(true);
                     //set random driver
-                    parcel.setDriverID(driver.getId());
+                    parcel.setDriverId(driver);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -297,24 +302,18 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                 Date dateBooked = new Date();
                 parcel.setDateBooked(dateBooked.toString());
 
-                //Set default status
-                parcel.setProcessing(true);
-                parcel.setOutForDelivery(false);
-                parcel.setDelivered(false);
-
-
                 //Set image if one has been taken
                 parcel.setImage(encImage);
 
                 //Set location
-                if (locationReady) {
-                    Location location = new Location(parcel.getId(), lon, lat);
-                    parcel.setLocation(location);
+                //if (locationReady) {
+                    Location location = new Location(new Date().toString(), "Processing", lon, lat, false, false, true, false);
+                    parcel.setLocationId(location);
 
                     //POST REQUEST TO WEB SERVICE
                     parcelHTTPManager = new ParcelHTTPManager();
                     try {
-                        boolean response = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/new"), "POST", null, null, parcel).get();
+                        boolean response = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/new"), "POST", null, null, parcel).get();
                         parcelHTTPManager.cancel(true);
                         if (response) {
 
@@ -340,9 +339,9 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                         e.printStackTrace();
                     }
                     Snackbar.make(view, "Connection request issue", Snackbar.LENGTH_LONG).show();
-                } else {
-                    Snackbar.make(view, "Could not get location", Snackbar.LENGTH_LONG).show();
-                }
+                //} else {
+                //    Snackbar.make(view, "Could not get location", Snackbar.LENGTH_LONG).show();
+                //}
             }else{
                 Snackbar.make(view, "Please tell us what the package is", Snackbar.LENGTH_LONG).show();
             }

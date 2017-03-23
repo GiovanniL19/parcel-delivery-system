@@ -7,34 +7,27 @@ import java.io.Serializable;
  */
 
 public class Customer extends User implements Serializable {
+    private int customerId;
+    private Address addressId;
 
-    private Parcel[] parcels;
-    private String type = "Customer";
-
-    public String getType() {
-        return type;
-    }
-
-    public Customer(String email, String username, String password, String fullName, Long contactNumber, String addressLineOne, String addressLineTwo, String city, String postcode, String country, Parcel[] parcels) {
+    public Customer(String email, String username, String password, String fullName, Long contactNumber, Address addressId) {
         super(email, username, password, fullName, contactNumber);
-        this.setAddressLineOne(addressLineOne);
-        this.setAddressLineTwo(addressLineTwo);
-        this.setCity(city);
-        this.setPostcode(postcode);
-        this.setCountry(country);
-        this.parcels = parcels;
+        this.addressId = addressId;
     }
 
-
-    public Parcel[] getParcels() {
-        return parcels;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setParcels(Parcel[] parcels) {
-        this.parcels = parcels;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public Address getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Address addressId) {
+        this.addressId = addressId;
     }
 }

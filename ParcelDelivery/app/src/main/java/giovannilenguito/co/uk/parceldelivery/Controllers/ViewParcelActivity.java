@@ -119,7 +119,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             MenuItem collectIcon = menu.findItem(R.id.action_collect_parcel);
             collectIcon.setVisible(false);
         }else{
-            if(!parcel.isProcessing()) {
+            if(!parcel.getLocationId().isProcessing()) {
                 MenuItem collectIcon = menu.findItem(R.id.action_collect_parcel);
                 collectIcon.setVisible(false);
             }
@@ -133,14 +133,14 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         switch (item.getItemId()) {
             case R.id.action_view_map_parcel:
                 //go to google maps with parcel longitude and latitude
-                Uri gmmIntentUri = Uri.parse("geo:" + parcel.getLocation().getLatitude() +"," + parcel.getLocation().getLongitude() + "?q=" + parcel.getLocation().getLatitude() +"," + parcel.getLocation().getLongitude() + "(" + parcel.getTitle() + ")");
+                Uri gmmIntentUri = Uri.parse("geo:" + parcel.getLocationId().getLatitude() +"," + parcel.getLocationId().getLongitude() + "?q=" + parcel.getLocationId().getLatitude() +"," + parcel.getLocationId().getLongitude() + "(" + parcel.getTitle() + ")");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
 
                 startActivity(mapIntent);
                 return true;
             case R.id.action_collect_parcel:
-                parcel.setCollecting(!parcel.isCollecting());
+                parcel.getLocationId().setCollecting(!parcel.getLocationId().isCollecting());
 
                 //Set all buttons to hidden
                 Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
@@ -148,7 +148,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
                 FloatingActionButton cancelButton = (FloatingActionButton) findViewById(R.id.cancelParcel);
 
-                if(parcel.isCollecting()){
+                if(parcel.getLocationId().isCollecting()){
                     buttonProcessing.setVisibility(View.INVISIBLE);
                     buttonOnRoute.setVisibility(View.INVISIBLE);
                     buttonDelivered.setVisibility(View.INVISIBLE);
@@ -167,10 +167,10 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                     boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
                     parcelHTTPManager.cancel(true);
                     if (didUpdate) {
-                        if(parcel.isCollecting()) {
+                        if(parcel.getLocationId().isCollecting()) {
                             deliveryStatus.setText("Recipient is Collecting Parcel");
                         }else{
-                            deliveryStatus.setText(parcel.getStatus());
+                            deliveryStatus.setText(parcel.getLocationId().getStatus());
                         }
                         Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -207,15 +207,15 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
         collectionLocationTxt = (TextView) findViewById(R.id.collectionLocationTxt);
 
-        deliveryStatus.setText(parcel.getStatus());
-        lineOne.setText(parcel.getAddressLineOne());
-        if(parcel.getAddressLineTwo() == null || parcel.getAddressLineTwo().isEmpty()){
+        deliveryStatus.setText(parcel.getLocationId().getStatus());
+        lineOne.setText(parcel.getAddressId().getAddressLineOne());
+        if(parcel.getAddressId().getAddressLineTwo() == null || parcel.getAddressId().getAddressLineTwo().isEmpty()){
             lineTwo.setVisibility(View.GONE);
         }
-        lineTwo.setText(parcel.getAddressLineTwo());
-        city.setText(parcel.getCity());
-        postcode.setText(parcel.getPostcode());
-        country.setText(parcel.getCountry());
+        lineTwo.setText(parcel.getAddressId().getAddressLineTwo());
+        city.setText(parcel.getAddressId().getCity());
+        postcode.setText(parcel.getAddressId().getPostcode());
+        country.setText(parcel.getAddressId().getCountry());
         contents.setText(parcel.getContents());
         deliveryType.setText(parcel.getServiceType());
         collectionLocationTxt.setText("Parcel to be collected at: " + parcel.getCollectionLineOne() + ", " + parcel.getCollectionPostCode());
@@ -253,16 +253,16 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
 
         //Set appropriate button
-        if (parcel.isOutForDelivery()) {
+        if (parcel.getLocationId().isOutForDelivery()) {
             buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        } else if (parcel.isProcessing()) {
+        } else if (parcel.getLocationId().isProcessing()) {
             buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        } else if (parcel.isDelivered()) {
+        } else if (parcel.getLocationId().isDelivered()) {
             buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             cancelBtn.setVisibility(View.GONE);
         }
 
-        if(parcel.isCollecting()) {
+        if(parcel.getLocationId().isCollecting()) {
             FloatingActionButton cancelButton = (FloatingActionButton) findViewById(R.id.cancelParcel);
 
             buttonProcessing.setVisibility(View.INVISIBLE);
@@ -276,7 +276,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
     public void cancelParcel(View view) throws MalformedURLException, ExecutionException, InterruptedException {
         parcelHTTPManager = new ParcelHTTPManager();
-        boolean didDelete = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/delete/" + parcel.getId()), "DELETE", null, null).get();
+        boolean didDelete = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/delete/" + parcel.getParcelId()), "DELETE", null, null).get();
         if (didDelete) {
             Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
             Intent dashboard = new Intent(this, DashboardActivity.class);
@@ -297,32 +297,32 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
         Button buttonPressed = (Button) view;
         String nameOfButton = String.valueOf(buttonPressed.getText());
         
-        parcel.setDelivered(false);
-        parcel.setProcessing(false);
-        parcel.setOutForDelivery(false);
-        parcel.getLocation().setLatitude(lat);
-        parcel.getLocation().setLongitude(lon);
+        parcel.getLocationId().setDelivered(false);
+        parcel.getLocationId().setProcessing(false);
+        parcel.getLocationId().setOutForDelivery(false);
+        parcel.getLocationId().setLatitude(lat);
+        parcel.getLocationId().setLongitude(lon);
 
         FloatingActionButton cancelBtn = (FloatingActionButton)findViewById(R.id.cancelParcel);
 
         if(nameOfButton.toUpperCase().equals("DELIVERED")){
-            parcel.setDelivered(true);
+            parcel.getLocationId().setDelivered(true);
             cancelBtn.setVisibility(View.GONE);
             deliveryStatus.setText("Delivered");
         }else if(nameOfButton.toUpperCase().equals("ON ROUTE")){
-            parcel.setOutForDelivery(true);
+            parcel.getLocationId().setOutForDelivery(true);
             cancelBtn.setVisibility(View.GONE);
 
             deliveryStatus.setText("On Route");
         }else  if(nameOfButton.toUpperCase().equals("PROCESSING")){
-            parcel.setProcessing(true);
+            parcel.getLocationId().setProcessing(true);
             cancelBtn.setVisibility(View.VISIBLE);
             deliveryStatus.setText("Processing");
         }
 
         try {
             parcelHTTPManager = new ParcelHTTPManager();
-            boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcels/update"), "PUT", null, null, parcel).get();
+            boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/update"), "PUT", null, null, parcel).get();
             parcelHTTPManager.cancel(true);
             if (didUpdate) {
                 //Set all buttons to unselected colour

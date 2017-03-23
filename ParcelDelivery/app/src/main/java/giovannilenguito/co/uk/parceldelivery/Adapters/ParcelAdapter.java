@@ -36,7 +36,7 @@ public class ParcelAdapter extends ArrayAdapter<Parcel>{
         TextView status = (TextView) customView.findViewById(R.id.statusText);
         TextView type = (TextView) customView.findViewById(R.id.type);
 
-        switch(item.getStatus()){
+        switch(item.getLocationId().getStatus()){
             case "Delivered":
                 status.setTextColor(Color.parseColor("#009688"));
                 break;
@@ -47,7 +47,7 @@ public class ParcelAdapter extends ArrayAdapter<Parcel>{
 
         type.setText("As requested, your parcel will be delivered via " + item.getServiceType() + " on " + item.getDeliveryDate() + " to " + item.getRecipientName());
         title.setText(item.getTitle());
-        status.setText(item.getStatus());
+        status.setText(item.getLocationId().getStatus());
         return customView;
     }
 }

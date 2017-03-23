@@ -19,7 +19,7 @@ import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
  */
 
 //to call - = new SQLiteDatabaseController(this, null, null, 0);
-
+/*
 public class SQLiteDatabaseController extends SQLiteOpenHelper {
     private static final int Database_VERSION = 12;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
@@ -131,7 +131,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     public int addCustomer(Customer customer){
         //Create list of values
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, customer.getId());
+        values.put(COLUMN_ID, customer.getCustomerId());
         values.put(COLUMN_EMAIL, customer.getEmail());
         values.put(COLUMN_USERNAME, customer.getUsername());
         values.put(COLUMN_PASSWORD, customer.getPassword());
@@ -139,12 +139,11 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
         values.put(COLUMN_CONTACTNUMBER, customer.getContactNumber());
 
 
-        values.put(COLUMN_ADDRESS_ONE, customer.getAddressLineOne());
-        values.put(COLUMN_ADDRESS_TWO, customer.getAddressLineTwo());
-        values.put(COLUMN_CITY, customer.getCity());
-        values.put(COLUMN_POSTCODE, customer.getPostcode());
-        values.put(COLUMN_COUNTRY, customer.getCountry());
-        values.put(COLUMN_TYPE, customer.getType());
+        values.put(COLUMN_ADDRESS_ONE, customer.getAddressId().getAddressLineOne());
+        values.put(COLUMN_ADDRESS_TWO, customer.getAddressId().getAddressLineTwo());
+        values.put(COLUMN_CITY, customer.getAddressId().getCity());
+        values.put(COLUMN_POSTCODE, customer.getAddressId().getPostcode());
+        values.put(COLUMN_COUNTRY, customer.getAddressId().getCountry());
 
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
@@ -162,20 +161,12 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     public int addDriver(Driver driver){
         //Create list of values
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, driver.getId());
+        values.put(COLUMN_ID, driver.getDriverId());
         values.put(COLUMN_EMAIL, driver.getEmail());
         values.put(COLUMN_USERNAME, driver.getUsername());
         values.put(COLUMN_PASSWORD, driver.getPassword());
         values.put(COLUMN_FULLNAME, driver.getFullName());
         values.put(COLUMN_CONTACTNUMBER, driver.getContactNumber());
-
-
-        values.put(COLUMN_ADDRESS_ONE, driver.getAddressLineOne());
-        values.put(COLUMN_ADDRESS_TWO, driver.getAddressLineTwo());
-        values.put(COLUMN_CITY, driver.getCity());
-        values.put(COLUMN_POSTCODE, driver.getPostcode());
-        values.put(COLUMN_COUNTRY, driver.getCountry());
-        values.put(COLUMN_TYPE, driver.getType());
 
         //Get reference to database
         SQLiteDatabase db = getWritableDatabase();
@@ -270,7 +261,9 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
         String postcode = cursor.getString(cursor.getColumnIndex(COLUMN_POSTCODE));
         String country = cursor.getString(cursor.getColumnIndex(COLUMN_COUNTRY));
 
-        Customer customer = new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null);
+        Address address = new Address();
+
+        Customer customer = new Customer(email, username, password, fullName, contactNumber, addressLineOne, addressLineTwo, city, postcode, country, null, null);
         customer.setId(rowId);
         return customer;
     }
@@ -296,4 +289,6 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
 
         db.close();
     }
+
 }
+*/
