@@ -1,5 +1,6 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
@@ -11,6 +12,7 @@ import java.net.URL;
 import giovannilenguito.co.uk.parceldelivery.DataProvider;
 import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
 import giovannilenguito.co.uk.parceldelivery.ParserFactory;
+import giovannilenguito.co.uk.parceldelivery.R;
 
 /**
  * Created by Giovanni on 11/11/2016.
@@ -21,6 +23,7 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
         URL url = (URL) params[0];
         String method = (String) params[1];
         String returnType = (String) params[3];
+        String mainUrl = Resources.getSystem().getString(R.string.WS_IP);
 
         switch(method){
             case "GET":
@@ -37,9 +40,14 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                 try {
                     //Save location, get the id and set it to location object
                     Parcel parcel = (Parcel) params[4];
-                    String locationResponse = DataProvider.post(new URL("http://10.205.205.236:8080/ParcelEnterpriceApplication-war/location/new"), ParserFactory.locationToJSON(parcel.getLocationId()));
+                    String locationResponse = DataProvider.post(new URL(mainUrl + "/location/new"), ParserFactory.locationToJSON(parcel.getLocationId()));
+                    String addressResponse = DataProvider.post(new URL(mainUrl + "/address/new"), ParserFactory.addressToJSON(parcel.getAddressId()));
+
                     int locationId = Integer.parseInt(locationResponse.trim().replaceAll("\n ", ""));
+                    int addressId = Integer.parseInt(addressResponse.trim().replaceAll("\n ", ""));
+
                     parcel.getLocationId().setLocationId(locationId);
+                    parcel.getAddressId().setAddressId(addressId);
 
 
                     String response = DataProvider.post(url, ParserFactory.parcelToJSON(parcel));

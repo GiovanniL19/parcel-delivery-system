@@ -279,13 +279,6 @@ public class ParserFactory {
 
     public static JSONObject customerToJSON(Customer customer) throws JSONException {
 
-        JSONObject address = new JSONObject();
-        address.put("lineOne", customer.getAddressId().getAddressLineOne());
-        address.put("lineTwo", customer.getAddressId().getAddressLineTwo());
-        address.put("city", customer.getAddressId().getCity());
-        address.put("postcode", customer.getAddressId().getPostcode());
-        address.put("country", customer.getAddressId().getCountry());
-
         JSONObject user = new JSONObject();
         user.put("customerId", customer.getCustomerId());
         user.put("username", customer.getUsername());
@@ -293,71 +286,19 @@ public class ParserFactory {
         user.put("email", customer.getEmail());
         user.put("fullName", customer.getFullName());
         user.put("contactNumber", customer.getContactNumber());
-        user.put("addressId", address);
+        user.put("addressId", customer.getAddressId().getAddressId());
 
         return user;
     }
 
     public static JSONObject parcelToJSON(Parcel parcel) throws JSONException {
-
-        //Create address object
-        JSONObject address = new JSONObject();
-        address.put("lineOne", parcel.getAddressId().getAddressLineOne());
-        address.put("lineTwo", parcel.getAddressId().getAddressLineTwo());
-        address.put("city", parcel.getAddressId().getCity());
-        address.put("postcode", parcel.getAddressId().getPostcode());
-        address.put("country", parcel.getAddressId().getCountry());
-        address.put("addressId", parcel.getAddressId().getAddressId());
-
-
-        //Create location object
-        JSONObject location = new JSONObject();
-        location.put("longitude", parcel.getLocationId().getLongitude());
-        location.put("latitude", parcel.getLocationId().getLatitude());
-        location.put("isDelivered", parcel.getLocationId().isDelivered());
-        location.put("isOutForDelivery", parcel.getLocationId().isOutForDelivery());
-        location.put("isCollecting", parcel.getLocationId().isCollecting());
-        location.put("isProcessing", parcel.getLocationId().isProcessing());
-        location.put("parcelId", parcel.getParcelId());
-        location.put("locationId", parcel.getLocationId().getLocationId());
-
-        //Create customer object
-        JSONObject customer = new JSONObject();
-        customer.put("customerId", parcel.getCustomerId().getCustomerId());
-        customer.put("email", parcel.getCustomerId().getEmail());
-        customer.put("contactNumber", parcel.getCustomerId().getContactNumber());
-        customer.put("username", parcel.getCustomerId().getUsername());
-        customer.put("password", parcel.getCustomerId().getPassword());
-        customer.put("fullName", parcel.getCustomerId().getFullName());
-
-        //Create customer address
-        JSONObject customerAddress = new JSONObject();
-        customerAddress.put("lineOne", parcel.getCustomerId().getAddressId().getAddressLineOne());
-        customerAddress.put("lineTwo", parcel.getCustomerId().getAddressId().getAddressLineTwo());
-        customerAddress.put("city", parcel.getCustomerId().getAddressId().getCity());
-        customerAddress.put("postcode", parcel.getCustomerId().getAddressId().getPostcode());
-        customerAddress.put("country", parcel.getCustomerId().getAddressId().getCountry());
-        customerAddress.put("addressId", parcel.getCustomerId().getAddressId().getAddressId());
-
-        customer.put("addressId", customerAddress);
-
-
-        //Create customer object
-        JSONObject driver = new JSONObject();
-        driver.put("driverId", parcel.getDriverId().getDriverId());
-        driver.put("email", parcel.getDriverId().getEmail());
-        driver.put("contactNumber", parcel.getDriverId().getContactNumber());
-        driver.put("username", parcel.getDriverId().getUsername());
-        driver.put("password", parcel.getDriverId().getPassword());
-        driver.put("fullName", parcel.getDriverId().getFullName());
-
         //Create JSON to send to web service
         JSONObject json = new JSONObject();
         json.put("parcelId", parcel.getParcelId());
-        json.put("customerId", customer);
-        json.put("addressId", address);
-        json.put("locationId", location);
-        json.put("driverId", driver);
+        json.put("customerId", parcel.getCustomerId().getCustomerId());
+        json.put("addressId", parcel.getAddressId().getAddressId());
+        json.put("locationId", parcel.getLocationId().getLocationId());
+        json.put("driverId", parcel.getDriverId());
 
         json.put("serviceType", parcel.getServiceType());
         json.put("contents", parcel.getContents());
@@ -388,5 +329,18 @@ public class ParserFactory {
         locationObject.put("isCollecting", location.isCollecting());
 
         return locationObject;
+    }
+
+    public static JSONObject addressToJSON(Address address) throws JSONException{
+
+        JSONObject addressObject = new JSONObject();
+        addressObject.put("lineOne", address.getAddressLineOne());
+        addressObject.put("lineTwo", address.getAddressLineTwo());
+        addressObject.put("city", address.getCity());
+        addressObject.put("postcode", address.getPostcode());
+        addressObject.put("country", address.getCountry());
+        addressObject.put("addressId", address.getAddressId());
+
+        return addressObject;
     }
 }

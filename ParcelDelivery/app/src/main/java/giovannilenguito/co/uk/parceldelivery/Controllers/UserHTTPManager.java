@@ -1,5 +1,6 @@
 package giovannilenguito.co.uk.parceldelivery.Controllers;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import giovannilenguito.co.uk.parceldelivery.DataProvider;
 import giovannilenguito.co.uk.parceldelivery.Models.Customer;
 import giovannilenguito.co.uk.parceldelivery.Models.Driver;
 import giovannilenguito.co.uk.parceldelivery.ParserFactory;
+import giovannilenguito.co.uk.parceldelivery.R;
 
 /**
  * Created by Giovanni on 11/11/2016.
@@ -22,6 +24,7 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
         URL url = (URL) params[0];
         String method = (String) params[1];
         String userType = (String) params[2];
+        String mainUrl = Resources.getSystem().getString(R.string.WS_IP);
 
         switch(method){
             case "GET":
@@ -35,10 +38,15 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
                     return ParserFactory.JSONtoUser(DataProvider.get(url), userType);
                 }
             case "POST":
-                //TODO: May need to save the address first
                 if(userType.equals("customer")){
                     try {
-                        return DataProvider.post(url, ParserFactory.customerToJSON((Customer) params[3]));
+                        Customer customer = (Customer) params[3];
+                        String addressResponse = DataProvider.post(new URL(mainUrl + "/address/new"), ParserFactory.addressToJSON(customer.getAddressId()));
+
+                        int addressId = Integer.parseInt(addressResponse.trim().replaceAll("\n ", ""));
+                        customer.getAddressId().setAddressId(addressId);
+
+                        return DataProvider.post(url, ParserFactory.customerToJSON(customer));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
