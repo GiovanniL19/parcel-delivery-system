@@ -24,7 +24,7 @@ public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
         URL url = (URL) params[0];
         String method = (String) params[1];
         String userType = (String) params[2];
-        String mainUrl = Resources.getSystem().getString(R.string.WS_IP);
+        String mainUrl = (String) params[4];
 
         switch(method){
             case "GET":

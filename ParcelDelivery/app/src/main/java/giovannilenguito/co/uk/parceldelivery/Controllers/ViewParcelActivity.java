@@ -164,7 +164,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
                 try {
                     parcelHTTPManager = new ParcelHTTPManager();
-                    boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/update/" + parcel.getParcelId()), "PUT", null, null, parcel).get();
+                    boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/update/" + parcel.getParcelId()), "PUT", null, null, parcel, getString(R.string.WS_IP)).get();
                     parcelHTTPManager.cancel(true);
                     if (didUpdate) {
                         if(parcel.getLocationId().isCollecting()) {
@@ -276,16 +276,13 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
     public void cancelParcel(View view) throws MalformedURLException, ExecutionException, InterruptedException {
         parcelHTTPManager = new ParcelHTTPManager();
-        boolean didDelete = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/delete/" + parcel.getParcelId()), "DELETE", null, null).get();
-        if (didDelete) {
-            Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
-            Intent dashboard = new Intent(this, DashboardActivity.class);
-            dashboard.putExtra("Customer", customer);
-            dashboard.putExtra("Driver", driver);
-            startActivity(dashboard);
-        }else{
-            Snackbar.make(thisA, "There was a problem, please try again", Snackbar.LENGTH_LONG).show();
-        }
+        parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/delete/" + parcel.getParcelId()), "DELETE", null, null, parcel, getString(R.string.WS_IP)).get();
+
+        Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
+        Intent dashboard = new Intent(this, DashboardActivity.class);
+        dashboard.putExtra("Customer", customer);
+        dashboard.putExtra("Driver", driver);
+        startActivity(dashboard);
         parcelHTTPManager.cancel(true);
     }
 
@@ -322,7 +319,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
         try {
             parcelHTTPManager = new ParcelHTTPManager();
-            boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/update/" + parcel.getParcelId()), "PUT", null, null, parcel).get();
+            boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/update/" + parcel.getParcelId()), "PUT", null, null, parcel, getString(R.string.WS_IP)).get();
             parcelHTTPManager.cancel(true);
             if (didUpdate) {
                 //Set all buttons to unselected colour

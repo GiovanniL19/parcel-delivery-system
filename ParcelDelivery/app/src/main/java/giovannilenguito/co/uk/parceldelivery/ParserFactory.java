@@ -298,7 +298,7 @@ public class ParserFactory {
         json.put("customerId", parcel.getCustomerId().getCustomerId());
         json.put("addressId", parcel.getAddressId().getAddressId());
         json.put("locationId", parcel.getLocationId().getLocationId());
-        json.put("driverId", parcel.getDriverId());
+        json.put("driverId", parcel.getDriverId().getDriverId());
 
         json.put("serviceType", parcel.getServiceType());
         json.put("contents", parcel.getContents());

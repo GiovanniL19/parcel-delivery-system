@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
             //JSON
             userHTTPManager = new UserHTTPManager();
             if(isDriver.isChecked()){
-                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/findByUsername/"+ username), "GET", "driver").get();
+                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/findByUsername/"+ username), "GET", "driver", null, getString(R.string.WS_IP)).get();
             }else{
-                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/findByUsername/"+ username), "GET", "customer").get();
+                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/findByUsername/"+ username), "GET", "customer", null, getString(R.string.WS_IP)).get();
             }
 
         }catch(Exception e){
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                             jsonLog.put("title", "Login");
                             jsonLog.put("message", customer.getFullName() + " logged in at " + new Date().toString());
 
-                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog, getString(R.string.WS_IP)).get();
                             database.addCustomer(customer);
                             userHTTPManager.cancel(true);
                             startActivity(intent);
@@ -129,9 +129,10 @@ public class MainActivity extends AppCompatActivity {
 
                             userHTTPManager = new UserHTTPManager();
                             //LOG USER LOGIN
-                            String jsonString = "{\"type\": \"Login\", \"date\": " + System.currentTimeMillis() + ", \"status\": \"success\", \"userID\": \"" + driver.getDriverId() + "\"}";
-                            JSONObject jsonLog = new JSONObject(jsonString);
-                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog).get();
+                            JSONObject jsonLog = new JSONObject();
+                            jsonLog.put("title", "Login");
+                            jsonLog.put("message", driver.getFullName() + " logged in at " + new Date().toString());
+                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog, getString(R.string.WS_IP)).get();
                             database.addDriver(driver);
                             database.addNumberOfParcels(0, driver.getDriverId());
 

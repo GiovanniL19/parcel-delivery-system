@@ -116,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 driver.setContactNumber(contact);
 
-                userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/new"), "POST", "driver", driver).get();
+                userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/new"), "POST", "driver", driver, getString(R.string.WS_IP)).get();
             }else{
                 Address address = new Address();
                 address.setAddressLineOne(lineOne);
@@ -126,7 +126,7 @@ public class RegisterActivity extends AppCompatActivity {
                 address.setCountry(crty);
                 Customer customer = new Customer(eM, usN, pass, fullN, contact, address);
 
-                userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/customer/new"), "POST", "customer", customer).get();
+                userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/customer/new"), "POST", "customer", customer, getString(R.string.WS_IP)).get();
             }
 
             Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();

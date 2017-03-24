@@ -23,8 +23,7 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
         URL url = (URL) params[0];
         String method = (String) params[1];
         String returnType = (String) params[3];
-        String mainUrl = Resources.getSystem().getString(R.string.WS_IP);
-
+        String mainUrl = (String) params[5];
         switch(method){
             case "GET":
                 if(returnType.equals("ARRAY")){
@@ -79,13 +78,22 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                     return false;
                 }
             case "DELETE":
-                String response = null;
-                response = DataProvider.delete(url);
-                if (response == null) {
+                Parcel parcel = (Parcel) params[4];
+                try {
+                    String parcelResponse = DataProvider.delete(url);
+                    String locationResponse = DataProvider.delete(new URL(mainUrl + "/location/delete/" + parcel.getLocationId().getLocationId()));
+                    String addressResponse = DataProvider.delete(new URL(mainUrl + "/address/delete/" + parcel.getAddressId().getAddressId()));
+
+                    if (parcelResponse == null && locationResponse == null && addressResponse == null) {
+                        return false;
+                    }else{
+                        return true;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                     return false;
-                }else{
-                    return true;
                 }
+
         }
         return null;
     }

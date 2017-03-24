@@ -122,7 +122,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
 
             //GET CONTENT
-            return (T) parcelHTTPManager.execute(url, "GET", null, "ARRAY").get();
+            return (T) parcelHTTPManager.execute(url, "GET", null, "ARRAY", null, getString(R.string.WS_IP)).get();
         }catch(Exception e){
             e.printStackTrace();
         }

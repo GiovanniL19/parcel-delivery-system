@@ -103,7 +103,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         userHTTPManager = new UserHTTPManager();
 
         try {
-            customers = (List<Customer>) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/find/all"), "GET", "customers", null).get();
+            customers = (List<Customer>) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/find/all"), "GET", "customers", null, getString(R.string.WS_IP)).get();
             userHTTPManager.cancel(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -287,31 +287,26 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
 
                 try {
                     userHTTPManager = new UserHTTPManager();
-                    driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/random"), "GET", "driver").get();
+                    driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/random"), "GET", "driver", null, getString(R.string.WS_IP)).get();
                     userHTTPManager.cancel(true);
                     //set random driver
                     parcel.setDriverId(driver);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
 
-                Date dateBooked = new Date();
-                parcel.setDateBooked(dateBooked.toString());
+                    Date dateBooked = new Date();
+                    parcel.setDateBooked(dateBooked.toString());
 
-                //Set image if one has been taken
-                parcel.setImage(encImage);
+                    //Set image if one has been taken
+                    parcel.setImage(encImage);
 
-                //Set location
-                //if (locationReady) {
+                    //Set location
+                    //if (locationReady) {
                     Location location = new Location(new Date().toString(), "Processing", lon, lat, false, false, true, false);
                     parcel.setLocationId(location);
 
                     //POST REQUEST TO WEB SERVICE
                     parcelHTTPManager = new ParcelHTTPManager();
                     try {
-                        boolean response = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/new"), "POST", null, null, parcel).get();
+                        boolean response = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/new"), "POST", null, null, parcel, getString(R.string.WS_IP)).get();
                         parcelHTTPManager.cancel(true);
                         if (response) {
 
@@ -337,9 +332,13 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                         e.printStackTrace();
                     }
                     Snackbar.make(view, "Connection request issue", Snackbar.LENGTH_LONG).show();
-                //} else {
-                //    Snackbar.make(view, "Could not get location", Snackbar.LENGTH_LONG).show();
-                //}
+                    //} else {
+                    //    Snackbar.make(view, "Could not get location", Snackbar.LENGTH_LONG).show();
+                    //}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Snackbar.make(view, "Could not get a driver", Snackbar.LENGTH_LONG).show();
+                }
             }else{
                 Snackbar.make(view, "Please tell us what the package is", Snackbar.LENGTH_LONG).show();
             }
