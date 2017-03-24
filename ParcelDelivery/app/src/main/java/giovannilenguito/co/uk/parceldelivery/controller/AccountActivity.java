@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery.Controllers;
+package giovannilenguito.co.uk.parceldelivery.controller;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,16 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.handler.SQLiteDatabaseHandler;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class AccountActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
     private TextView username, userType;
-    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    private SQLiteDatabaseHandler database = new SQLiteDatabaseHandler(this, null, null, 0);
     private Intent intent;
 
     @Override

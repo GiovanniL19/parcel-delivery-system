@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery.Controllers;
+package giovannilenguito.co.uk.parceldelivery.controller;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,20 +23,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import giovannilenguito.co.uk.parceldelivery.Adapters.ParcelAdapter;
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
-import giovannilenguito.co.uk.parceldelivery.NotificationService;
+import giovannilenguito.co.uk.parceldelivery.adapter.ParcelAdapter;
+import giovannilenguito.co.uk.parceldelivery.handler.ParcelHTTPHandler;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.model.Parcel;
+import giovannilenguito.co.uk.parceldelivery.handler.SQLiteDatabaseHandler;
+import giovannilenguito.co.uk.parceldelivery.service.NotificationService;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class DashboardActivity extends AppCompatActivity {
     private Customer customer = null;
     private Driver driver = null;
-    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    private SQLiteDatabaseHandler database = new SQLiteDatabaseHandler(this, null, null, 0);
     public static Intent notificationIntent;
-    private ParcelHTTPManager parcelHTTPManager;
+    private ParcelHTTPHandler parcelHTTPHandler;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -122,7 +123,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
 
             //GET CONTENT
-            return (T) parcelHTTPManager.execute(url, "GET", null, "ARRAY", null, getString(R.string.WS_IP)).get();
+            return (T) parcelHTTPHandler.execute(url, "GET", null, "ARRAY", null, getString(R.string.WS_IP)).get();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -131,13 +132,13 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void generateTable() {
         List<Parcel> parcelList;
-        parcelHTTPManager = new ParcelHTTPManager();
+        parcelHTTPHandler = new ParcelHTTPHandler();
 
         try {
             Object parcels = getContent();
             if(parcels instanceof List) {
                 parcelList = (List) parcels;
-                parcelHTTPManager.cancel(true);
+                parcelHTTPHandler.cancel(true);
 
                 TextView processing = (TextView) findViewById(R.id.numberOfProcessing);
                 TextView onWay = (TextView) findViewById(R.id.numberOfOnWay);

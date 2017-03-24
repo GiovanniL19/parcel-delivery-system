@@ -1,6 +1,5 @@
-package giovannilenguito.co.uk.parceldelivery.Controllers;
+package giovannilenguito.co.uk.parceldelivery.handler;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
@@ -9,17 +8,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 
-import giovannilenguito.co.uk.parceldelivery.DataProvider;
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.ParserFactory;
-import giovannilenguito.co.uk.parceldelivery.R;
+import giovannilenguito.co.uk.parceldelivery.provider.DataProvider;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.factory.ParserFactory;
 
 /**
  * Created by Giovanni on 11/11/2016.
  */
 
-public class UserHTTPManager extends AsyncTask<Object, Object, Object> {
+public class UserHTTPHandler extends AsyncTask<Object, Object, Object> {
     protected Object doInBackground(Object... params) {
         URL url = (URL) params[0];
         String method = (String) params[1];

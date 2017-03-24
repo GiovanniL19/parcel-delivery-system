@@ -1,24 +1,22 @@
-package giovannilenguito.co.uk.parceldelivery.Controllers;
+package giovannilenguito.co.uk.parceldelivery.handler;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
-import giovannilenguito.co.uk.parceldelivery.DataProvider;
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
-import giovannilenguito.co.uk.parceldelivery.ParserFactory;
-import giovannilenguito.co.uk.parceldelivery.R;
+import giovannilenguito.co.uk.parceldelivery.model.Location;
+import giovannilenguito.co.uk.parceldelivery.provider.DataProvider;
+import giovannilenguito.co.uk.parceldelivery.model.Parcel;
+import giovannilenguito.co.uk.parceldelivery.factory.ParserFactory;
 
 /**
  * Created by Giovanni on 11/11/2016.
  */
 
-public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
+public class ParcelHTTPHandler extends AsyncTask<Object, Object, Object> {
     protected Object doInBackground(Object... params) {
         URL url = (URL) params[0];
         String method = (String) params[1];
@@ -40,14 +38,19 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                     //Save location, get the id and set it to location object
                     Parcel parcel = (Parcel) params[4];
                     String locationResponse = DataProvider.post(new URL(mainUrl + "/location/new"), ParserFactory.locationToJSON(parcel.getLocationId()));
-                    String addressResponse = DataProvider.post(new URL(mainUrl + "/address/new"), ParserFactory.addressToJSON(parcel.getAddressId()));
+
+                    int addressId;
+                    if(parcel.getAddressId().getAddressId() == 0){
+                        String addressResponse = DataProvider.post(new URL(mainUrl + "/address/new"), ParserFactory.addressToJSON(parcel.getAddressId()));
+                        addressId = Integer.parseInt(addressResponse.trim().replaceAll("\n ", ""));
+                    }else{
+                        addressId = parcel.getAddressId().getAddressId();
+                    }
 
                     int locationId = Integer.parseInt(locationResponse.trim().replaceAll("\n ", ""));
-                    int addressId = Integer.parseInt(addressResponse.trim().replaceAll("\n ", ""));
 
                     parcel.getLocationId().setLocationId(locationId);
                     parcel.getAddressId().setAddressId(addressId);
-
 
                     String response = DataProvider.post(url, ParserFactory.parcelToJSON(parcel));
                     if (response == null) {
@@ -64,7 +67,7 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                 }
             case "PUT":
                 try {
-                    String response = DataProvider.put(url, ParserFactory.parcelToJSON((Parcel) params[4]));
+                    String response = DataProvider.put(url, ParserFactory.locationToJSON((Location) params[4]));
                     if (response == null) {
                         return false;
                     }else{
@@ -82,9 +85,8 @@ public class ParcelHTTPManager extends AsyncTask<Object, Object, Object> {
                 try {
                     String parcelResponse = DataProvider.delete(url);
                     String locationResponse = DataProvider.delete(new URL(mainUrl + "/location/delete/" + parcel.getLocationId().getLocationId()));
-                    String addressResponse = DataProvider.delete(new URL(mainUrl + "/address/delete/" + parcel.getAddressId().getAddressId()));
 
-                    if (parcelResponse == null && locationResponse == null && addressResponse == null) {
+                    if (parcelResponse == null && locationResponse == null) {
                         return false;
                     }else{
                         return true;

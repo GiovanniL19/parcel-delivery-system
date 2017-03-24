@@ -1,22 +1,16 @@
-package giovannilenguito.co.uk.parceldelivery.Controllers;
+package giovannilenguito.co.uk.parceldelivery.controller;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -44,12 +38,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import giovannilenguito.co.uk.parceldelivery.Models.Address;
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.Location;
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
-import giovannilenguito.co.uk.parceldelivery.Notification;
+import giovannilenguito.co.uk.parceldelivery.handler.ParcelHTTPHandler;
+import giovannilenguito.co.uk.parceldelivery.handler.UserHTTPHandler;
+import giovannilenguito.co.uk.parceldelivery.model.Address;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.model.Location;
+import giovannilenguito.co.uk.parceldelivery.model.Parcel;
+import giovannilenguito.co.uk.parceldelivery.helper.NotificationHelper;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class AddParcelActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -61,8 +57,8 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
     private List<Customer> customers;
     private Spinner spinner;
     private ImageView previewImage;
-    private UserHTTPManager userHTTPManager;
-    private ParcelHTTPManager parcelHTTPManager;
+    private UserHTTPHandler userHTTPHandler;
+    private ParcelHTTPHandler parcelHTTPHandler;
     private final int REQUEST_IMAGE_CAPTURE = 1;
     private String encImage;
     private TextView dateTitle;
@@ -100,11 +96,11 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
         postcode = (EditText) findViewById(R.id.postcode);
         country = (EditText) findViewById(R.id.country);
 
-        userHTTPManager = new UserHTTPManager();
+        userHTTPHandler = new UserHTTPHandler();
 
         try {
-            customers = (List<Customer>) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/find/all"), "GET", "customers", null, getString(R.string.WS_IP)).get();
-            userHTTPManager.cancel(true);
+            customers = (List<Customer>) userHTTPHandler.execute(new URL(getString(R.string.WS_IP) + "/customer/find/all"), "GET", "customers", null, getString(R.string.WS_IP)).get();
+            userHTTPHandler.cancel(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -271,6 +267,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                     address.setCity(selectedRecipient.getAddressId().getCity());
                     address.setCountry(selectedRecipient.getAddressId().getCountry());
                     address.setPostcode(selectedRecipient.getAddressId().getPostcode());
+                    address.setAddressId(selectedRecipient.getAddressId().getAddressId());
                     parcel.setAddressId(address);
                 }else{
                     //Recipient
@@ -279,6 +276,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                     address.setCity(city.getText().toString());
                     address.setCountry(country.getText().toString());
                     address.setPostcode(postcode.getText().toString());
+                    address.setAddressId(0);
                     parcel.setAddressId(address);
                 }
 
@@ -286,9 +284,9 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                 parcel.setCustomerId(customer);
 
                 try {
-                    userHTTPManager = new UserHTTPManager();
-                    driver = (Driver) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/random"), "GET", "driver", null, getString(R.string.WS_IP)).get();
-                    userHTTPManager.cancel(true);
+                    userHTTPHandler = new UserHTTPHandler();
+                    driver = (Driver) userHTTPHandler.execute(new URL(getString(R.string.WS_IP) +  "/driver/random"), "GET", "driver", null, getString(R.string.WS_IP)).get();
+                    userHTTPHandler.cancel(true);
                     //set random driver
                     parcel.setDriverId(driver);
 
@@ -304,10 +302,10 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                     parcel.setLocationId(location);
 
                     //POST REQUEST TO WEB SERVICE
-                    parcelHTTPManager = new ParcelHTTPManager();
+                    parcelHTTPHandler = new ParcelHTTPHandler();
                     try {
-                        boolean response = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/new"), "POST", null, null, parcel, getString(R.string.WS_IP)).get();
-                        parcelHTTPManager.cancel(true);
+                        boolean response = (boolean) parcelHTTPHandler.execute(new URL(getString(R.string.WS_IP) + "/parcel/new"), "POST", null, null, parcel, getString(R.string.WS_IP)).get();
+                        parcelHTTPHandler.cancel(true);
                         if (response) {
 
                             Handler handler = new Handler();
@@ -315,7 +313,7 @@ public class AddParcelActivity extends AppCompatActivity implements GoogleApiCli
                             final Context context = this;
                             handler.postDelayed(new Runnable() {
                                 public void run() {
-                                    Notification notification = new Notification();
+                                    NotificationHelper notification = new NotificationHelper();
                                     notification.create(context, finalDriver.getFullName() + " will be collecting your parcel.", "Parcel Confirmation");
                                 }
                             }, 5000);

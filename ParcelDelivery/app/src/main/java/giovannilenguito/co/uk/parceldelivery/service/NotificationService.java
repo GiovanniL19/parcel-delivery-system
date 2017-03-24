@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery;
+package giovannilenguito.co.uk.parceldelivery.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -17,15 +17,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
+import giovannilenguito.co.uk.parceldelivery.handler.SQLiteDatabaseHandler;
+import giovannilenguito.co.uk.parceldelivery.provider.DataProvider;
+import giovannilenguito.co.uk.parceldelivery.factory.ParserFactory;
+import giovannilenguito.co.uk.parceldelivery.R;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.model.Parcel;
 
 
 public class NotificationService extends Service {
     private Boolean loop = true;
 
-    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    private SQLiteDatabaseHandler database = new SQLiteDatabaseHandler(this, null, null, 0);
 
     private Looper serviceLooper;
     private HandleService handlerService;

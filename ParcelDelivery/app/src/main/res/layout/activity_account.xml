@@ -5,7 +5,7 @@
     android:id="@+id/activity_account"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="giovannilenguito.co.uk.parceldelivery.Controllers.AccountActivity">
+    tools:context="giovannilenguito.co.uk.parceldelivery.controller.AccountActivity">
 
     <Button
         android:text="Logout"

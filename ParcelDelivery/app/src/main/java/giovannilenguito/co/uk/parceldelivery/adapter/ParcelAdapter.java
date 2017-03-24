@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery.Adapters;
+package giovannilenguito.co.uk.parceldelivery.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.model.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 

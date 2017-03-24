@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery.Models;
+package giovannilenguito.co.uk.parceldelivery.handler;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,17 +9,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.model.Address;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
 
 
 /**
  * Created by giovannilenguito on 08/11/2016.
  */
 
-//to call - = new SQLiteDatabaseController(this, null, null, 0);
-public class SQLiteDatabaseController extends SQLiteOpenHelper {
+//to call - = new SQLiteDatabaseHandler(this, null, null, 0);
+public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 15;
     private static final String DATABASE_NAME = "parcel_system.db"; //name of the database (file)
 
@@ -46,7 +46,7 @@ public class SQLiteDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NUMBER_OF_PARCELS = "numberOfParcelsToCollect";
     private static final String COLUMN_DRIVER_ID = "driverID";
 
-    public SQLiteDatabaseController(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public SQLiteDatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 

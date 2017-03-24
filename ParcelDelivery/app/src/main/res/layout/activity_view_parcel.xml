@@ -5,7 +5,7 @@
     android:id="@+id/activity_view_parcel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="giovannilenguito.co.uk.parceldelivery.Controllers.ViewParcelActivity"
+    tools:context="giovannilenguito.co.uk.parceldelivery.controller.ViewParcelActivity"
     android:background="@android:color/white">
 
     <ImageView

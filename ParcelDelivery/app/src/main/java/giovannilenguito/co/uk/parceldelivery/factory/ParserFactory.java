@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery;
+package giovannilenguito.co.uk.parceldelivery.factory;
 
 import com.google.gson.Gson;
 
@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 
-import giovannilenguito.co.uk.parceldelivery.Models.Address;
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.Location;
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.model.Address;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.model.Location;
+import giovannilenguito.co.uk.parceldelivery.model.Parcel;
 
 /**
  * Created by giovannilenguito on 22/11/2016.
@@ -327,6 +327,7 @@ public class ParserFactory {
         locationObject.put("isOutForDelivery", location.isOutForDelivery());
         locationObject.put("isProcessing", location.isProcessing());
         locationObject.put("isCollecting", location.isCollecting());
+        locationObject.put("locationId", location.getLocationId());
 
         return locationObject;
     }

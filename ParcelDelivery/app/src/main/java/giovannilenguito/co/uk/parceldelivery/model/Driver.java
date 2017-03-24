@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery.Models;
+package giovannilenguito.co.uk.parceldelivery.model;
 
 /**
  * Created by Giovanni on 19/10/2016.

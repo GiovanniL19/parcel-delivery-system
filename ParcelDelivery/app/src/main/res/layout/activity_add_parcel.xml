@@ -5,7 +5,7 @@
     android:id="@+id/activity_dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="giovannilenguito.co.uk.parceldelivery.Controllers.AddParcelActivity"
+    tools:context="giovannilenguito.co.uk.parceldelivery.controller.AddParcelActivity"
     android:background="@color/backColour">
 
     <android.support.design.widget.FloatingActionButton

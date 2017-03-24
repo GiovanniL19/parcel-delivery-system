@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery;
+package giovannilenguito.co.uk.parceldelivery.provider;
 
 import org.json.JSONObject;
 
@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import giovannilenguito.co.uk.parceldelivery.factory.ParserFactory;
 
 /**
  * Created by giovannilenguito on 22/11/2016.
@@ -34,11 +36,15 @@ public class DataProvider {
             //get status code
             int statusCode = connection.getResponseCode();
 
+            BufferedReader buffRead;
             switch (statusCode) {
                 case 200:
                     System.out.println("All okay");
                 case 201:
-                    BufferedReader buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    return ParserFactory.buildString(buffRead);
+                case 204:
+                    buffRead = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     return ParserFactory.buildString(buffRead);
             }
 
@@ -59,14 +65,12 @@ public class DataProvider {
     public static String put(URL url, JSONObject json) throws IOException {
         try{
             connection = (HttpURLConnection) url.openConnection();
-
             connection.setDoOutput(true);
             connection.setRequestMethod("PUT");
             connection.setUseCaches(false);
             connection.setConnectTimeout(60000);
             connection.setReadTimeout(60000);
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Content-Type", "text/plain");
             connection.connect();
 
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
@@ -82,6 +86,9 @@ public class DataProvider {
                     return ParserFactory.buildString(buffRead);
                 case 201:
                     System.out.println("Created");
+                    return ParserFactory.buildString(buffRead);
+                case 204:
+                    System.out.println("Okay");
                     return ParserFactory.buildString(buffRead);
             }
 

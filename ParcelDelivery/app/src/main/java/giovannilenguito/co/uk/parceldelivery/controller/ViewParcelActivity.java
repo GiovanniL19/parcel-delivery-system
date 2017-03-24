@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery.Controllers;
+package giovannilenguito.co.uk.parceldelivery.controller;
 
 import android.Manifest;
 import android.content.Intent;
@@ -26,15 +26,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.w3c.dom.Text;
-
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.Parcel;
+import giovannilenguito.co.uk.parceldelivery.handler.ParcelHTTPHandler;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.model.Parcel;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class ViewParcelActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -47,7 +47,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
     private View thisA;
 
-    private ParcelHTTPManager parcelHTTPManager;
+    private ParcelHTTPHandler parcelHTTPHandler;
 
     //LOCATION
     private double lat;
@@ -105,11 +105,12 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             }
         }
     }
+
     @Override
     public void onConnectionSuspended(int i) {locationReady = false;}
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {locationReady = false;}
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -141,7 +142,7 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
                 return true;
             case R.id.action_collect_parcel:
                 parcel.getLocationId().setCollecting(!parcel.getLocationId().isCollecting());
-
+                parcel.getLocationId().setStatus("IS COLLECTING");
                 //Set all buttons to hidden
                 Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
                 Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
@@ -163,19 +164,16 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
 
 
                 try {
-                    parcelHTTPManager = new ParcelHTTPManager();
-                    boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/update/" + parcel.getParcelId()), "PUT", null, null, parcel, getString(R.string.WS_IP)).get();
-                    parcelHTTPManager.cancel(true);
-                    if (didUpdate) {
-                        if(parcel.getLocationId().isCollecting()) {
-                            deliveryStatus.setText("Recipient is Collecting Parcel");
-                        }else{
-                            deliveryStatus.setText(parcel.getLocationId().getStatus());
-                        }
-                        Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();
+                    parcelHTTPHandler = new ParcelHTTPHandler();
+                    parcelHTTPHandler.execute(new URL(getString(R.string.WS_IP) + "/location/update/" + parcel.getLocationId().getLocationId()), "PUT", null, null, parcel.getLocationId(), getString(R.string.WS_IP)).get();
+                    parcelHTTPHandler.cancel(true);
+
+                    if(parcel.getLocationId().isCollecting()) {
+                        deliveryStatus.setText("Recipient is Collecting Parcel");
+                    }else{
+                        deliveryStatus.setText(parcel.getLocationId().getStatus());
                     }
+                    Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
                 }catch(Exception e){
                     e.printStackTrace();
                     Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();
@@ -275,15 +273,15 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
     }
 
     public void cancelParcel(View view) throws MalformedURLException, ExecutionException, InterruptedException {
-        parcelHTTPManager = new ParcelHTTPManager();
-        parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/delete/" + parcel.getParcelId()), "DELETE", null, null, parcel, getString(R.string.WS_IP)).get();
+        parcelHTTPHandler = new ParcelHTTPHandler();
+        parcelHTTPHandler.execute(new URL(getString(R.string.WS_IP) + "/parcel/delete/" + parcel.getParcelId()), "DELETE", null, null, parcel, getString(R.string.WS_IP)).get();
 
         Snackbar.make(thisA, "Parcel Canceled (Deleted)", Snackbar.LENGTH_LONG).show();
         Intent dashboard = new Intent(this, DashboardActivity.class);
         dashboard.putExtra("Customer", customer);
         dashboard.putExtra("Driver", driver);
         startActivity(dashboard);
-        parcelHTTPManager.cancel(true);
+        parcelHTTPHandler.cancel(true);
     }
 
     @RequiresApi(api = android.os.Build.VERSION_CODES.LOLLIPOP)
@@ -306,38 +304,37 @@ public class ViewParcelActivity extends AppCompatActivity implements GoogleApiCl
             parcel.getLocationId().setDelivered(true);
             cancelBtn.setVisibility(View.GONE);
             deliveryStatus.setText("Delivered");
+            parcel.getLocationId().setStatus("DELIVERED");
         }else if(nameOfButton.toUpperCase().equals("ON ROUTE")){
             parcel.getLocationId().setOutForDelivery(true);
             cancelBtn.setVisibility(View.GONE);
-
             deliveryStatus.setText("On Route");
-        }else  if(nameOfButton.toUpperCase().equals("PROCESSING")){
+            parcel.getLocationId().setStatus("ON ROUTE");
+        }else if(nameOfButton.toUpperCase().equals("PROCESSING")){
             parcel.getLocationId().setProcessing(true);
             cancelBtn.setVisibility(View.VISIBLE);
             deliveryStatus.setText("Processing");
+            parcel.getLocationId().setStatus("PROCESSING");
         }
 
+        parcel.getLocationId().setDateTime(new Date().toString());
         try {
-            parcelHTTPManager = new ParcelHTTPManager();
-            boolean didUpdate = (boolean) parcelHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/parcel/update/" + parcel.getParcelId()), "PUT", null, null, parcel, getString(R.string.WS_IP)).get();
-            parcelHTTPManager.cancel(true);
-            if (didUpdate) {
-                //Set all buttons to unselected colour
-                Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
-                Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
-                Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
+            parcelHTTPHandler = new ParcelHTTPHandler();
+            parcelHTTPHandler.execute(new URL(getString(R.string.WS_IP) + "/location/update/" + parcel.getLocationId().getLocationId()), "PUT", null, null, parcel.getLocationId(), getString(R.string.WS_IP)).get();
+            parcelHTTPHandler.cancel(true);
+            //Set all buttons to unselected colour
+            Button buttonProcessing = (Button) findViewById(R.id.processingBtn);
+            Button buttonOnRoute = (Button) findViewById(R.id.onRouteBtn);
+            Button buttonDelivered = (Button) findViewById(R.id.deliveredBtn);
 
-                buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            buttonProcessing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            buttonOnRoute.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            buttonDelivered.setBackgroundColor(getResources().getColor(R.color.colorAccent));
 
-                buttonPressed.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            buttonPressed.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
 
-                Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(thisA, "Did not update", Snackbar.LENGTH_SHORT).show();
-            }
+            Snackbar.make(thisA, "Updated Parcel", Snackbar.LENGTH_SHORT).show();
         }catch(Exception e){
             e.printStackTrace();
             Snackbar.make(thisA, "Error updating parcel", Snackbar.LENGTH_SHORT).show();

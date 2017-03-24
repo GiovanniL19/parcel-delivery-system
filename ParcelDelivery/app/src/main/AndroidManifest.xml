@@ -23,37 +23,37 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Controllers.MainActivity">
+        <activity android:name=".controller.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.RegisterActivity">
+        <activity android:name=".controller.RegisterActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Controllers.MainActivity" />
+                android:value=".controller.MainActivity" />
         </activity>
-        <activity android:name=".Controllers.DashboardActivity" />
-        <activity android:name=".Controllers.AddParcelActivity">
+        <activity android:name=".controller.DashboardActivity" />
+        <activity android:name=".controller.AddParcelActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Controllers.DashboardActivity" />
+                android:value=".controller.DashboardActivity" />
         </activity>
-        <activity android:name=".Controllers.ViewParcelActivity">
+        <activity android:name=".controller.ViewParcelActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Controllers.DashboardActivity" />
+                android:value=".controller.DashboardActivity" />
         </activity>
-        <activity android:name=".Controllers.AccountActivity">
+        <activity android:name=".controller.AccountActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Controllers.DashboardActivity" />
+                android:value=".controller.DashboardActivity" />
         </activity>
 
         <service
-            android:name=".NotificationService"
+            android:name=".service.NotificationService"
             android:exported="false" />
     </application>
 

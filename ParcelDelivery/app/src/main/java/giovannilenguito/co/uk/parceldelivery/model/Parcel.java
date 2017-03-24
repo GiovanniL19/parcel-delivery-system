@@ -1,7 +1,6 @@
-package giovannilenguito.co.uk.parceldelivery.Models;
+package giovannilenguito.co.uk.parceldelivery.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by Giovanni on 19/10/2016.

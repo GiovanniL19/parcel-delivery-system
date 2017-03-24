@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery;
+package giovannilenguito.co.uk.parceldelivery.helper;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,12 +10,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
-import giovannilenguito.co.uk.parceldelivery.Controllers.MainActivity;
+import giovannilenguito.co.uk.parceldelivery.R;
+import giovannilenguito.co.uk.parceldelivery.controller.MainActivity;
 /**
  * Created by giovannilenguito on 15/01/2017.
  */
 
-public class Notification {
+public class NotificationHelper {
     public void create(Context context, String message, String title){
         //Create notification
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

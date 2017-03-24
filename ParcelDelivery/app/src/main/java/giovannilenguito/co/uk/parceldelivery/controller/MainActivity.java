@@ -1,4 +1,4 @@
-package giovannilenguito.co.uk.parceldelivery.Controllers;
+package giovannilenguito.co.uk.parceldelivery.controller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +19,10 @@ import java.net.URL;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
-import giovannilenguito.co.uk.parceldelivery.Models.Customer;
-import giovannilenguito.co.uk.parceldelivery.Models.Driver;
-import giovannilenguito.co.uk.parceldelivery.Models.SQLiteDatabaseController;
+import giovannilenguito.co.uk.parceldelivery.handler.UserHTTPHandler;
+import giovannilenguito.co.uk.parceldelivery.model.Customer;
+import giovannilenguito.co.uk.parceldelivery.model.Driver;
+import giovannilenguito.co.uk.parceldelivery.handler.SQLiteDatabaseHandler;
 import giovannilenguito.co.uk.parceldelivery.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText username, password;
     private Switch isDriver;
 
-    private UserHTTPManager userHTTPManager;
+    private UserHTTPHandler userHTTPHandler;
 
-    private SQLiteDatabaseController database = new SQLiteDatabaseController(this, null, null, 0);
+    private SQLiteDatabaseHandler database = new SQLiteDatabaseHandler(this, null, null, 0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
     public <T> T isAuthenticatedCustomer(String username) throws MalformedURLException {
         try {
             //JSON
-            userHTTPManager = new UserHTTPManager();
+            userHTTPHandler = new UserHTTPHandler();
             if(isDriver.isChecked()){
-                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/driver/findByUsername/"+ username), "GET", "driver", null, getString(R.string.WS_IP)).get();
+                return (T) userHTTPHandler.execute(new URL(getString(R.string.WS_IP) +  "/driver/findByUsername/"+ username), "GET", "driver", null, getString(R.string.WS_IP)).get();
             }else{
-                return (T) userHTTPManager.execute(new URL(getString(R.string.WS_IP) + "/customer/findByUsername/"+ username), "GET", "customer", null, getString(R.string.WS_IP)).get();
+                return (T) userHTTPHandler.execute(new URL(getString(R.string.WS_IP) + "/customer/findByUsername/"+ username), "GET", "customer", null, getString(R.string.WS_IP)).get();
             }
 
         }catch(Exception e){
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(view, "Attempting login...", Snackbar.LENGTH_LONG).show();
 
                 Object user = isAuthenticatedCustomer(sUsername);
-                userHTTPManager.cancel(true);
+                userHTTPHandler.cancel(true);
                 if(user == null){
                     hideSoftKeyboard();
                     progressBar.setVisibility(View.INVISIBLE);
@@ -103,18 +104,18 @@ public class MainActivity extends AppCompatActivity {
                         Customer customer = (Customer) user;
                         if (customer.getPassword().equals(sPassword)) {
                             intent.putExtra("Customer", (Customer) user);
-                            userHTTPManager.cancel(true);
+                            userHTTPHandler.cancel(true);
 
-                            userHTTPManager = new UserHTTPManager();
+                            userHTTPHandler = new UserHTTPHandler();
 
                             //LOG USER LOGIN
                             JSONObject jsonLog = new JSONObject();
                             jsonLog.put("title", "Login");
                             jsonLog.put("message", customer.getFullName() + " logged in at " + new Date().toString());
 
-                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog, getString(R.string.WS_IP)).get();
+                            userHTTPHandler.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog, getString(R.string.WS_IP)).get();
                             database.addCustomer(customer);
-                            userHTTPManager.cancel(true);
+                            userHTTPHandler.cancel(true);
                             startActivity(intent);
                         } else {
                             hideSoftKeyboard();
@@ -125,18 +126,18 @@ public class MainActivity extends AppCompatActivity {
                         Driver driver = (Driver) user;
                         if (driver.getPassword().equals(sPassword)) {
                             intent.putExtra("Driver", (Driver) user);
-                            userHTTPManager.cancel(true);
+                            userHTTPHandler.cancel(true);
 
-                            userHTTPManager = new UserHTTPManager();
+                            userHTTPHandler = new UserHTTPHandler();
                             //LOG USER LOGIN
                             JSONObject jsonLog = new JSONObject();
                             jsonLog.put("title", "Login");
                             jsonLog.put("message", driver.getFullName() + " logged in at " + new Date().toString());
-                            userHTTPManager.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog, getString(R.string.WS_IP)).get();
+                            userHTTPHandler.execute(new URL(getString(R.string.WS_IP) +  "/logs/new"), "LOG", null, jsonLog, getString(R.string.WS_IP)).get();
                             database.addDriver(driver);
                             database.addNumberOfParcels(0, driver.getDriverId());
 
-                            userHTTPManager.cancel(true);
+                            userHTTPHandler.cancel(true);
                             startActivity(intent);
                         } else {
                             hideSoftKeyboard();
